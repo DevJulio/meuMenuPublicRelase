@@ -1,0 +1,21 @@
+{
+  "files": {
+    "main.css": "/static/css/main.2c70f98f.css",
+    "main.js": "/static/js/main.444e50e5.js",
+    "static/js/787.28cb0dcd.chunk.js": "/static/js/787.28cb0dcd.chunk.js",
+    "static/media/MontserratRegular.ttf": "/static/media/MontserratRegular.2a2d37bf7680d86811db.ttf",
+    "static/media/hamb.png": "/static/media/hamb.aee836ed58ec0496df59.png",
+    "static/media/segundo.gif": "/static/media/segundo.1e89556377d7cf987179.gif",
+    "static/media/primeiro.gif": "/static/media/primeiro.ece74eb805b3c8cd967a.gif",
+    "static/media/footerLogo.png": "/static/media/footerLogo.9c52c998a02415ce7091.png",
+    "static/media/BebasNeue-Regular.woff": "/static/media/BebasNeue-Regular.558c0b09724cc2d2f36f.woff",
+    "index.html": "/index.html",
+    "main.2c70f98f.css.map": "/static/css/main.2c70f98f.css.map",
+    "main.444e50e5.js.map": "/static/js/main.444e50e5.js.map",
+    "787.28cb0dcd.chunk.js.map": "/static/js/787.28cb0dcd.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.2c70f98f.css",
+    "static/js/main.444e50e5.js"
+  ]
+}

@@ -1,0 +1,98 @@
+cardápio precisa ser uma extensão do lugar, parâmetros para deixar mais particular cada estabelicimento.
+criar uns 3 layouts (usar componentização) passagem de parâmentro 
+
+https://coolors.co/palette/003049-d62828-f77f00-fcbf49-eae2b7 -> paleta
+
+Doodle -> estilo do ícone do logo
+
+(Estilo dos ícones, cores (até 3), logo, fontes (talvez) )
+Permitir para o usuário cadastrar playlst do spotift
+
+usar menu com imagens transparentes, aproveitando da cor de fundo 
+
+https://dribbble.com/shots/19642537-Website-Hero-for-Bakery
+
+
+// USAR E ABUSAR DA PORRA DA TRANSPARENCIA
+https://dribbble.com/shots/6458727-Java-Script-3d-charts-mobile-app-product-page
+
+https://dribbble.com/shots/17775390-Resta-App-UI-Explroation
+https://dribbble.com/shots/18894693-Nearfood-Food-Delivery-Landing-Page
+https://dribbble.com/shots/15856926-Foody-Restaurant-Website-Design-UI
+
+
+menu principal com tour: 
+https://dribbble.com/shots/19035989-Tacoda-Mobile-app-design
+
+//Planos
+https://dribbble.com/shots/18236819-SaaS-Pricing-Page/attachments/13440757?mode=media
+
+
+
+//Header com animação
+https://www.storyblocks.com/video/stock/animation---modern-motion-rotation-cheese-background-s5kfwtsvzj4lqyfin
+
+
+1ª parte:
+
+texto na esquerda fundo azul, quadro na direita
+
+ colocar separador branco bem fino com border radious entre o header e a página
+
+2ª parte:
+
+escolher 3 vantagens e usar ícones para cada uma dela outro tom do azul ou branco,
+com border radious na esquerda e na direita
+
+Rápida e fácil atualização
+Reforçar identidade visual
+Espaço para próximos eventos (criar alerta de eventos) *PLANO diferente
+Retenção de clientes (criar alerta de produtos)
+Serviço diferenciado 
+Promoções
+Redes sociais
+
+
+3ª parte:
+fundo azul com border radious na esquerda e na direita
+
+
+tela de login dos clientes:
+https://dribbble.com/shots/18790018-Food-Ordering-Bill-Splitting-Restaurant-App-Animation
+
+
+criar banner principal para cara cliente, onde posso definir quual é o destaque ao entrar no cardápio
+
+
+!!!!!!!!!!!!ACIONAR ENTREGAADOR!!!!!!!!
+
+/////////////////////////////////////////FUTURO/////FUTURO/////FUTURO/////////////////////////////////////////////////////////////
+// Criar fidelidade  
+// Comprar no site
+//     
+/////////////////////////////////////////FUTURO/////FUTURO/////FUTURO/////////////////////////////////////////////////////////////
+
+Planos: 
+Criar nova identidade visual (nova logo)
+
+Apenas arte em adesivo
+
+Arte em suportes em acrilico.
+https://produto.mercadolivre.com.br/MLB-2748995791-display-expositor-l-a5-vertical-acrilico-15x21-50pecas-_JM#position=14&search_layout=stack&type=item&tracking_id=6348f89e-848e-40b5-8ae8-797bd61e75bd
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+FUTUURO CRIAR AGREGADOR DE PREÇO DE SUPERMERCADOS COM COMPARAÇÃO DE PREÇOS E RECEBER AVISOS
+tíquete logitech 10006764 dentro de 24 a 48 horas. (traduzido)
+
+
+
+
+// Adriano
++55 62 9 9112-9270
+
+//Back Node e postgress (Sequelize ORM)
+//Front: next + react + tailwindcss 
+// rodando na amazon.
