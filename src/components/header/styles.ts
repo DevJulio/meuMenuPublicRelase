@@ -68,7 +68,7 @@ export const MenuContainer = styled.div`
     display: flex;
     flex: 1;
     display: flex;
-    margin-left: auto;
+    justify-content: right;
   }
 `;
 
