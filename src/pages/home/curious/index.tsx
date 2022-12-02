@@ -22,7 +22,7 @@ const Curious: React.FC = () => {
         />
       </Styled.BtnContainer>
       <Styled.MainSpanContainer>
-        <Styled.SpanAux style={{ paddingBottom: "3vh" }}>
+        <Styled.SpanAux style={{ paddingBottom: "4vh" }}>
           Com suas cores, sua cozinha e seus temperos!
         </Styled.SpanAux>
       </Styled.MainSpanContainer>
