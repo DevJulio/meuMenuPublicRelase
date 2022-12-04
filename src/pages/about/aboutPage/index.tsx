@@ -3,17 +3,12 @@ import * as Styled from "./styles";
 import { theme } from "../../../theme/theme";
 import InvertBorderPage from "../../../components/invertBorderPage";
 import footerLogo from "../../../assets/logo/footerLogo.png";
+import BorderPage from "../../../components/borderPage";
 
 const AboutPage: React.FC = () => {
   const plans = <></>;
   return (
     <>
-      <InvertBorderPage
-        outsideColor={theme.colors.white.normal}
-        insideColor={theme.colors.blue.palete}
-        destop={<>{plans}</>}
-        mobile={<>{plans} </>}
-      />
       <Styled.Main>
         {/* <Styled.MainSpanContainer></Styled.MainSpanContainer> */}
         <Styled.MainImgContainer>
@@ -28,6 +23,12 @@ const AboutPage: React.FC = () => {
           </Styled.SpanAndIcon>
         </Styled.MainImgContainer>
       </Styled.Main>
+      <Styled.MainTitleContainer>
+        <Styled.Title>Quer saber mais?</Styled.Title>
+        <Styled.TitleAux>
+          clique no botão a baixo e veja uma demonstração em tempo real!
+        </Styled.TitleAux>
+      </Styled.MainTitleContainer>
     </>
   );
 };

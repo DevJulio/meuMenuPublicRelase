@@ -48,7 +48,9 @@ export const MainImgContainer = styled.div`
   background-image: url(${banner});
   background-repeat: no-repeat;
   display: flex;
-  width: 60%;
+  width: 95%;
+  border-radius: 25px;
+  margin-top: 4vh;
   height: 78vh;
   place-content: center;
   background-size: cover;
@@ -89,10 +91,40 @@ export const Main = styled.div`
   }
 `;
 
-
-
-
 export const LogoImg = styled.img`
   display: flex;
   max-width: 60px;
+`;
+
+export const Title = styled.span`
+  color: ${({ theme }) => theme.colors.red.normal};
+  display: flex;
+  margin-right: 12px;
+  font-family: ${({ theme }) => theme.fonts.primary};
+  font-size: ${({ theme }) => theme.fontSize.xxlg};
+  @media ${({ theme }) => theme.devices.tablet} {
+    font-size: ${({ theme }) => theme.fontSize.lg};
+  }
+`;
+
+export const TitleAux = styled.span`
+  color: ${({ theme }) => theme.colors.blue.palete};
+  display: flex;
+  margin-right: 12px;
+  font-family: ${({ theme }) => theme.fonts.secundary};
+  font-size: ${({ theme }) => theme.fontSize.md};
+  @media ${({ theme }) => theme.devices.tablet} {
+    font-size: ${({ theme }) => theme.fontSize.sm};
+    display: flex;
+    text-align: center;
+    width: 95%;
+  }
+`;
+
+export const MainTitleContainer = styled.div`
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  @media ${({ theme }) => theme.devices.tablet} {
+  }
 `;

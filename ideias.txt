@@ -12,12 +12,7 @@ usar menu com imagens transparentes, aproveitando da cor de fundo
 
 https://dribbble.com/shots/19642537-Website-Hero-for-Bakery
 
-
-
-
 ///card e menu https://dribbble.com/shots/17807211-Foodama-Food-delivery-mobile-app
-
-
 
 // USAR E ABUSAR DA PORRA DA TRANSPARENCIA
 https://dribbble.com/shots/6458727-Java-Script-3d-charts-mobile-app-product-page
@@ -91,14 +86,3 @@ https://produto.mercadolivre.com.br/MLB-2748995791-display-expositor-l-a5-vertic
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 FUTUURO CRIAR AGREGADOR DE PREÇO DE SUPERMERCADOS COM COMPARAÇÃO DE PREÇOS E RECEBER AVISOS
-tíquete logitech 10006764 dentro de 24 a 48 horas. (traduzido)
-
-
-
-
-// Adriano
-+55 62 9 9112-9270
-
-//Back Node e postgress (Sequelize ORM)
-//Front: next + react + tailwindcss 
-// rodando na amazon.

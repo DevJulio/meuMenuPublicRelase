@@ -33,7 +33,7 @@ const Header: React.FC = () => {
               <Styled.MenuItem id="home" href="/">
                 Home
               </Styled.MenuItem>
-              <Styled.MenuItem id="about" href="/about">
+              <Styled.MenuItem id="about" href="/sobre">
                 Sobre
               </Styled.MenuItem>
               <Styled.MenuItem id="contact" href="/contact">
@@ -53,7 +53,7 @@ const Header: React.FC = () => {
           </Styled.MenuContainer>
           <Styled.MenuDesktopContainer>
             <Styled.MenuDesktopAnchor>Home</Styled.MenuDesktopAnchor>
-            <Styled.MenuDesktopAnchor>Sobre</Styled.MenuDesktopAnchor>
+            <Styled.MenuDesktopAnchor href="/sobre">Sobre</Styled.MenuDesktopAnchor>
             <Styled.MenuDesktopAnchor>Contato</Styled.MenuDesktopAnchor>
             <Styled.MenuDesktopAnchor>Preços e planos</Styled.MenuDesktopAnchor>
             <Styled.MenuDesktopAnchor
