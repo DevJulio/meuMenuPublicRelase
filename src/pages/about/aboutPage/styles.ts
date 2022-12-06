@@ -128,3 +128,97 @@ export const MainTitleContainer = styled.div`
   @media ${({ theme }) => theme.devices.tablet} {
   }
 `;
+
+
+
+
+
+
+export const MainContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  width: 95%;
+  border-radius: 25px;
+   margin-bottom: 3vh;
+  flex: 2;
+  // background-color: ${({ theme }) => theme.colors.yellow.palete};
+   @media ${({ theme }) => theme.devices.tablet} {
+    flex-direction: column;
+   }
+
+`;
+
+export const MainContainerLeft = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+   flex: 1;
+  padding-left: 10.5vh;
+  @media ${({ theme }) => theme.devices.tablet} {
+    align-items: center;
+    padding-left: 0vh;
+  }
+`;
+
+
+export const MainContainerRight = styled.div`
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  width: 50%;
+  padding-top: 1vh;
+  @media ${({ theme }) => theme.devices.tablet} {
+    align-items: center;
+    width: 100%;
+    padding-bottom: 4vh;
+  }
+`;
+
+export const BgContainer = styled.div`
+ background-color: ${({ theme }) => theme.colors.white.normal};
+width: 90%;
+height: 100%;
+border-radius: 25px;
+`
+
+export const TitleContainer = styled.div`
+  display: flex;
+  cursor: pointer;
+  flex-direction: row;
+  @media ${({ theme }) => theme.devices.tablet} {
+  }
+`;
+
+export const TitleSpan = styled.span`
+  color: ${({ theme }) => theme.colors.blue.palete};
+  display: flex;
+   font-family: ${({ theme }) => theme.fonts.primary};
+  font-size: ${({ theme }) => theme.fontSize.xxlg};
+  @media ${({ theme }) => theme.devices.tablet} {
+    font-size: ${({ theme }) => theme.fontSize.xlg};
+    padding-top: 4vh;
+  }
+`;
+export const Spacer = styled.div`
+width: 3vw;
+height: 16px;
+border-radius: 25px;
+@media ${({ theme }) => theme.devices.tablet} {
+  width: 15vw;
+  align-self: normal;
+  margin-left: 13vw;
+}
+`;
+
+export const TextSpan = styled.span`
+  color: ${({ theme }) => theme.colors.black.normal};
+  display: flex;
+  width: 95%;
+  text-align: justify;
+  padding-top: 1vh;
+  font-family: ${({ theme }) => theme.fonts.secundary};
+  font-size: ${({ theme }) => theme.fontSize.md};
+  @media ${({ theme }) => theme.devices.tablet} {
+    display: none;
+  }
+`;

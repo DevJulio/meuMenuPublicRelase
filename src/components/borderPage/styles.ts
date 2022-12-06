@@ -7,7 +7,7 @@ export const MainContainer = styled.div`
   align-items: center;
   background-color: ${({ theme }) => theme.colors.blue.palete};
   padding-top: 5vh;
-
+  width: 100%;
 `;
 
 export const Container = styled.div`

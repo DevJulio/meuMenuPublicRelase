@@ -24,8 +24,8 @@ const Welcome: React.FC = () => {
             <Styled.ImgAndTextContainer>
               <Styled.ImgAndTextContainerLeft>
                 <Styled.TextSpan style={{ width: "95%" }}>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Nobis
-                  accusamus in voluptates provident totam sapiente corrupti
+                  Conheça o Meu Menu! a solução para restaurantes que tem a sua 
+                  identidade, sua cozinha e seu estabelecimento em um único lugar. 
                   aliquam id, voluptatum eum labore nulla, quam explicabo, culpa
                   iusto! Doloribus, temporibus facere. Officiis.
                 </Styled.TextSpan>
