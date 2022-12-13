@@ -1,16 +1,16 @@
 import React from "react";
 import Header from "../../components/header";
 import Footer from "../../components/footer";
-import PlansPage from "./plansPage";
+import ContactPage from "./contactPage";
 
-const Plans: React.FC = () => {
+const Contact: React.FC = () => {
   return (
     <>
       <Header />
-      <PlansPage />
+      <ContactPage />
       <Footer />
     </>
   );
 };
 
-export default Plans;
+export default Contact;

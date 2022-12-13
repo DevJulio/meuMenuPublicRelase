@@ -4,8 +4,7 @@ export const MainContainer = styled.div`
   place-content: center;
   display: flex;
   flex-direction: column;
-  flex: auto;
-`;
+ `;
 
 export const Btn = styled.button`
   place-self: center;

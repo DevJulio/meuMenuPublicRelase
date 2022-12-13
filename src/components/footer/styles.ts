@@ -112,7 +112,7 @@ export const Shadow = styled.div`
   width: 100%;
   //border-top-left-radius: 15vw;
   //border-top-right-radius: 15vw;
-  padding-top: 5vh;
+  //padding-top: 5vh;
   @media ${({ theme }) => theme.devices.tablet} {
     padding-top: 1vh;
   }

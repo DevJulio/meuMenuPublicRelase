@@ -16,19 +16,59 @@ const AboutPage: React.FC = () => {
           </Styled.TitleContainer>
           <Styled.Spacer style={{ backgroundColor: theme.colors.red.normal }} />
           <Styled.SpanAux>dinamicidade & personalização.</Styled.SpanAux>
-          <Styled.TextSpan>
-            Economize tempo, ofereça serviço de reserva, atualize todas
-            informações das criações vindas da cozinha, crie promoções, reuna todas suas redes sociais,
-            adicione sua localização.
-          </Styled.TextSpan>
-          <Styled.TextSpan>
-            Muito mais que um cardápio por QR code, é a extensão digital do seu
-            estabelecimento. Chega de enviar dezenas de imagens via WhatsApp,
-            envie seu cardápio digital.
-          </Styled.TextSpan>
-          <Styled.TextSpan>
-            Meu menu, para seus clientes, cardápio digital. Para você, sua empresa online.
-          </Styled.TextSpan>
+
+          <Styled.TextContainer>
+            <p>
+              <Styled.TextSpan>
+                Meu Menu oferece uma solução para cardápio digital via QR Code,
+                facilidade para alterar preços, descrições e fotos do cardápio.
+                Caso um produto tenha acabado em estoque, desabilite do
+                cardápio, crie promoções, deixe tudo com a sua identidade
+                visual.
+              </Styled.TextSpan>
+            </p>
+            <p>
+              <Styled.TextSpan>
+                Economize tempo, ofereça serviço de reserva, atualize todas
+                informações das criações vindas da cozinha, crie promoções de
+                maneira dinâmica e automatizadas, reúna todas suas redes
+                sociais, adicione sua localização, escolha as melhores fotos
+                para seu cardápio.
+              </Styled.TextSpan>
+            </p>
+            <p>
+              <Styled.TextSpan>
+                Muito mais que um cardápio por QR code, é a extensão digital do
+                seu estabelecimento. Meu menu é o seu cartão de visitas online.
+                Agregue todas as informações de contato e de redes sociais. (até
+                a playlist do spotify!). Meu Menu não é para ser usado apenas
+                dentro das 4 paredes. Expanda seus horizontes com essa solução
+                digital. Chega de enviar dezenas de imagens via WhatsApp, envie
+                seu cardápio digital.
+              </Styled.TextSpan>
+            </p>
+
+            <p>
+              <Styled.TextSpan>
+                Meu Menu não é para ser usado apenas dentro das 4 paredes.
+                Expanda seus horizontes com essa solução digital. Chega de
+                enviar dezenas de imagens via WhatsApp, envie apenas o seu link
+                do Meu Menu!.
+              </Styled.TextSpan>
+            </p>
+
+            <p>
+              <Styled.TextSpan
+                style={{
+                  fontFamily: theme.fonts.primary,
+                  fontSize: theme.fontSize.md2,
+                }}
+              >
+                Meu menu, para seus clientes, cardápio digital. Para você, sua
+                empresa online.
+              </Styled.TextSpan>
+            </p>
+          </Styled.TextContainer>
         </Styled.MainContainerLeft>
         <Styled.MainContainerRight>
           <Styled.BgContainer>teste</Styled.BgContainer>
@@ -40,7 +80,6 @@ const AboutPage: React.FC = () => {
   return (
     <>
       <Styled.Main>
-        {/* <Styled.MainSpanContainer></Styled.MainSpanContainer> */}
         <Styled.MainImgContainer>
           <Styled.SpanAndIcon>
             <Styled.AuxMainSpanContainer>

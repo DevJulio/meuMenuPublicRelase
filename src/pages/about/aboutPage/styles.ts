@@ -9,20 +9,22 @@ export const Span = styled.span`
   font-size: ${({ theme }) => theme.fontSize.xxlg};
   @media ${({ theme }) => theme.devices.tablet} {
     font-size: ${({ theme }) => theme.fontSize.lg};
+    width: 100%;
+
   }
 `;
 
 export const SpanAux = styled.span`
   color: ${({ theme }) => theme.colors.blue.palete};
   display: flex;
+  margin-top: 1vh;
   font-family: ${({ theme }) => theme.fonts.primary};
   argin-right: auto;
   font-size: ${({ theme }) => theme.fontSize.lg};
   @media ${({ theme }) => theme.devices.tablet} {
-    font-size: ${({ theme }) => theme.fontSize.sm};
-    display: flex;
+     display: flex;
     text-align: center;
-    width: 95%;
+    width: 100%;
   }
 `;
 
@@ -69,14 +71,15 @@ export const AuxMainSpanContainer = styled.div`
   border-radius: 25px;
   padding: 2vh;
   @media ${({ theme }) => theme.devices.tablet} {
+    padding: 1vh;
+    justify-content: center;
   }
 `;
 export const SpanAndIcon = styled.div`
   display: flex;
   flex-direction: row;
   @media ${({ theme }) => theme.devices.tablet} {
-    flex-direction: column;
-  }
+   }
 `;
 
 export const Main = styled.div`
@@ -130,10 +133,6 @@ export const MainTitleContainer = styled.div`
 `;
 
 
-
-
-
-
 export const MainContainer = styled.div`
   display: flex;
   flex-direction: row;
@@ -157,6 +156,7 @@ export const MainContainerLeft = styled.div`
   @media ${({ theme }) => theme.devices.tablet} {
     align-items: center;
     padding-left: 0vh;
+    width: 100%;
   }
 `;
 
@@ -179,6 +179,10 @@ export const BgContainer = styled.div`
 width: 90%;
 height: 100%;
 border-radius: 25px;
+@media ${({ theme }) => theme.devices.tablet} {
+  width: 100%;
+
+}
 `
 
 export const TitleContainer = styled.div`
@@ -196,7 +200,7 @@ export const TitleSpan = styled.span`
   font-size: ${({ theme }) => theme.fontSize.xxlg};
   @media ${({ theme }) => theme.devices.tablet} {
     font-size: ${({ theme }) => theme.fontSize.xlg};
-    padding-top: 4vh;
+    text-align: center;
   }
 `;
 export const Spacer = styled.div`
@@ -206,8 +210,7 @@ border-radius: 25px;
 @media ${({ theme }) => theme.devices.tablet} {
   width: 15vw;
   align-self: normal;
-  margin-left: 13vw;
-}
+ }
 `;
 
 export const TextSpan = styled.span`
@@ -216,9 +219,16 @@ export const TextSpan = styled.span`
   width: 95%;
   text-align: justify;
   padding-top: 1vh;
-  font-family: ${({ theme }) => theme.fonts.secundary};
+   font-family: ${({ theme }) => theme.fonts.secundary};
   font-size: ${({ theme }) => theme.fontSize.md};
   @media ${({ theme }) => theme.devices.tablet} {
-    display: none;
-  }
+    width: 90%;
+   }
+`;
+export const TextContainer = styled.div`
+displat: flex;
+flex-direction: column;
+
+@media ${({ theme }) => theme.devices.tablet} {
+}
 `;
