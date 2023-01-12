@@ -6,11 +6,13 @@ import Homecard from "../../../components/homeCard";
 import { Carousel } from "react-responsive-carousel";
 import cardProps from "./cardsProps";
 import ButtonPrimaryHome from "../../../components/buttons/homeBtn";
+import { useNavigate } from "react-router-dom";
+// import { Navigate } from "react-router-dom";
 
 const Welcome: React.FC = () => {
   const mobile = require("is-mobile");
   const width = window.screen.width;
-
+  const navigate = useNavigate();
   return (
     <>
       <Styled.MainContainer>
@@ -24,16 +26,18 @@ const Welcome: React.FC = () => {
             <Styled.ImgAndTextContainer>
               <Styled.ImgAndTextContainerLeft>
                 <Styled.TextSpan style={{ width: "95%" }}>
-                  Conheça o Meu Menu! a solução para restaurantes que tem a sua 
-                  identidade, sua cozinha e seu estabelecimento em um único lugar. 
-                  aliquam id, voluptatum eum labore nulla, quam explicabo, culpa
-                  iusto! Doloribus, temporibus facere. Officiis.
+                  Conheça o Meu Menu! a solução para restaurantes que tem a sua
+                  identidade, sua cozinha e seu estabelecimento em um único
+                  lugar. Automatize seu dia a dia, crie promoções, mostre aos
+                  seus clientes qual é a especialidade da casa!
                 </Styled.TextSpan>
                 <Styled.TextSpan style={{ width: "95%" }}>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Nobis
-                  accusamus in voluptates provident totam sapiente corrupti
-                  aliquam id, voluptatum eum labore nulla, quam explicabo, culpa
-                  iusto! Doloribus, temporibus facere. Officiis.
+                  Conheça os planos clicando no botão a baixo, e comece seu
+                  cadastro. Reuna todas redes sociais e localização, coloque no
+                  mapa e online todas as formas de encontrar seu
+                  estabelecimento. Escolha as melhores fotos para seu cardápio e
+                  não se preocupe, altere todas as informações, como preço e
+                  disponibilidade de maneira fácil e instantânea
                 </Styled.TextSpan>
               </Styled.ImgAndTextContainerLeft>
               <Styled.ImgAndTextContainerRight>
@@ -43,8 +47,12 @@ const Welcome: React.FC = () => {
             {!mobile() && (
               <>
                 <Styled.BtnContainer>
+                  {/* <Link to={"/planos"}>
+                  </Link> */}
                   <ButtonPrimaryHome
-                    Action={() => {}}
+                    Action={() => {
+                      navigate("/planos");
+                    }}
                     Label="Clique e conheça os planos e condições!"
                   />
                 </Styled.BtnContainer>
