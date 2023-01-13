@@ -19,9 +19,11 @@ import {
   proDetails,
   ultimateDetails,
 } from "../../../utils/plansDetails";
+import { useNavigate } from "react-router-dom";
 
 const Plans: React.FC = () => {
   const [checked, setCheked] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setCheked(true);
@@ -136,7 +138,9 @@ const Plans: React.FC = () => {
       </Styled.PlansContainer>
       <Styled.BtnContainer>
         <ButtonSecondary
-          Action={() => {}}
+          Action={() => {
+            navigate("/planos");
+          }}
           Label="Ainda tem dúvidas sobre os planos? clique aqui e veja todos os detalhes!"
           color={theme.colors.red.normal}
           bgColor={theme.colors.white.normal}

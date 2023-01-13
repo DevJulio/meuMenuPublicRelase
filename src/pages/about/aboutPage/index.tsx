@@ -71,7 +71,7 @@ const AboutPage: React.FC = () => {
           </Styled.TextContainer>
         </Styled.MainContainerLeft>
         <Styled.MainContainerRight>
-          <Styled.BgContainer>teste</Styled.BgContainer>
+          <Styled.BgContainer>EM DESENVOLVIMENTO</Styled.BgContainer>
         </Styled.MainContainerRight>
       </Styled.MainContainer>
     </>
