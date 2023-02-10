@@ -11,7 +11,7 @@ export const liteDetails = [
 export const liteDescription = [
     "Adesivos emborrachados e personalizados com a logo da empresa, para serem fixados em qualquer superfície.",
     "Cadastre no seu cardápio até 30 itens das mais variadas categorias e preços.",
-    "Escolha o estilo dos seus ícones, adicione cores aos textos, escolha as melhores imagens para seu cardápio, cadastre suas redes sociais e também a localização, Meu menu também foi projetado para ser usado fora do estabelecimento!",
+    "Escolha o estilo dos seus ícones, adicione cores aos textos, escolha as melhores imagens para seu cardápio, cadastre suas redes sociais e também a localização, Meu menu também foi feito para ser usado fora do estabelecimento!",
     "Crie promoções! elas farão parte de um menu separado, ele terá destaque em relação aos outros itens cadastrados! Deixe em ênfase suas ofertas e promoções do dia!",
     "Se cadastre e tenha um mês para testar o produto sem compromisso!",
     "No plano Lite, os produtos tem um cadastro básico, contendo título, foto e descrição.",
@@ -31,7 +31,7 @@ export const proDescription = [
     "Cadastro ilimitado. Sem limites de quantidade de produtos em seu cardápio! Adicione todos os seus rótulos, pratos, acompanhamentos, entradas, sobremesas e muito mais!",
     "Crie promoções para serem usadas apenas uma vez e/ou programe para repetir em horários e dias especificos, facilite o Happy Hour do seu cliente, crie combos, mude o preço dos produtos por tempo determinado. Isso tudo terá destaque no seu cardápio!",
     "Crie um menu com as sugestões da cozinha. Mostre a especialidade da casa com todos os acompanhamentos e harmonizações!",
-    "No cadastro avançado, adicione todos os detalhes relacionados ao seu produto, como temperatura de consumo, descrição mais elaborada, preparo, pais de origem, IBU, cor, acompanhamentos, tipo de uva, lúpulo, malte,",
+    "No cadastro avançado, adicione todos os detalhes relacionados ao seu produto, como temperatura de consumo, descrição mais elaborada como: preparo, pais de origem, IBU, cor, acompanhamentos e tipo da uva.",
     "Economize tempo e altere informações de vários produtos de forma simultânea"
 ]
 

@@ -10,6 +10,7 @@ const Homecard: React.FC<TCardProps> = ({
   auxColor,
   textColor,
   customWidth,
+  fontFamily,
 }) => {
   const mobile = require("is-mobile");
 
@@ -21,7 +22,9 @@ const Homecard: React.FC<TCardProps> = ({
           width: mobile ? "80%" : "13%",
         }}
       >
-        <Styled.Title style={{ color: auxColor }}>{title}</Styled.Title>
+        <Styled.Title style={{ color: auxColor, fontFamily: fontFamily }}>
+          {title}
+        </Styled.Title>
         <Styled.LogoImg src={icon} alt="icone" />
         <Styled.Paragraph style={{ color: textColor ? textColor : "#fff" }}>
           {text}

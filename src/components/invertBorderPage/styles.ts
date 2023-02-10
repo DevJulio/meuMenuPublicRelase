@@ -6,18 +6,19 @@ export const MainContainer = styled.div`
   flex-direction: column;
   align-items: center;
   background-color: ${({ theme }) => theme.colors.blue.palete};
- 
+ padding-top: 3vh;
+ overflow-y: scroll;
 `;
 
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: ${({ theme }) => theme.colors.yellow.palete};
-  width: 100%;
-  border-bottom-left-radius: 15vw;
-  border-bottom-right-radius: 15vw;
-  padding-top: 3vh;
+  // background-color: ${({ theme }) => theme.colors.yellow.palete};
+  width: 95%;
+  border-top-left-radius: 15vw;
+  border-top-right-radius: 15vw;
+  padding-top: 5vh;
   cursor: default;
   {
     position:relative;
@@ -77,10 +78,9 @@ display:none;
   align-items: center;
   background-color: ${({ theme }) => theme.colors.white.normal};
   width: 100%;
-  border-top-left-radius: 15vw;
-  border-top-right-radius: 15vw;
-  padding-top: 5vh;
- 
+  border-bottom-left-radius: 50px;
+  border-bottom-right-radius: 50px;
+  min-height: 83.6vh;
 }
 `;
 

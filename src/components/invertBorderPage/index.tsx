@@ -2,27 +2,27 @@ import React from "react";
 import * as Styled from "./styles";
 
 interface IBorderProps {
-  destop: any;
-  mobile: any;
+  children: any;
   outsideColor: string;
   insideColor: string;
+  deskTopChildren?: any;
 }
 
 const InvertBorderPage: React.FC<IBorderProps> = ({
-  destop,
-  mobile,
+  children,
   outsideColor,
   insideColor,
+  deskTopChildren,
 }) => {
   return (
     <>
       <Styled.MainContainer style={{ backgroundColor: outsideColor }}>
-        <Styled.Container style={{ backgroundColor: insideColor }}>
-          {destop}
-        </Styled.Container>
         <Styled.ContainerMobile style={{ backgroundColor: insideColor }}>
-          {mobile}
+          {children}
         </Styled.ContainerMobile>
+        {deskTopChildren && (
+          <Styled.Container>{deskTopChildren}</Styled.Container>
+        )}
       </Styled.MainContainer>
     </>
   );

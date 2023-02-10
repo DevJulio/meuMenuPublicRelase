@@ -4,6 +4,7 @@ import About from "./pages/about";
 import Contact from "./pages/contact";
 
 import Home from "./pages/home";
+import Menu from "./pages/menu";
 import Plans from "./pages/plans";
 
 function RoutesList() {
@@ -14,6 +15,7 @@ function RoutesList() {
         <Route path="/sobre" element={<About />} />
         <Route path="/planos" element={<Plans />} />
         <Route path="/contato" element={<Contact />} />
+        <Route path="/cardapio" element={<Menu />} />
       </Routes>
     </BrowserRouter>
   );
