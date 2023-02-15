@@ -17,6 +17,7 @@ export const MainContainer = styled.div`
   border-radius: 25px;
   margin-left: 2.5vw;
   margin-right: 2.5vw;
+  max-width: 250px;
 `;
 
 export const Img = styled.img`
@@ -24,9 +25,15 @@ export const Img = styled.img`
   border-top-right-radius: 25px;
   border-top-left-radius: 25px;
   margin-top: -1px;
+  max-width:250px;
+  max-height:150px;
+  min-width:250px;
+  min-height:150px;
+  width: auto;
+  height: auto;
 `;
 export const Title = styled.div`
- 
+    text-align: center;
     align-self: center;
     margin-top: 1vh;
     font-family: ${({ theme }) => theme.fonts.primary};
@@ -40,7 +47,8 @@ margin-bottom: 3vh;
 margin-top: 1vh;
 width: 95%;
 align-self: center;
-
+max-height: 100px;
+min-height: 100px;
 `;
 export const Price = styled.div`
 border-bottom-left-radius: 25px;

@@ -10,7 +10,7 @@ export interface IFood {
   description: string;
   img: string;
   fontStyle?: string;
-  price: number;
+  price: string;
   bgColor: string;
   categoryIcon: string;
   category: string;
@@ -25,13 +25,13 @@ const FoodCard: React.FC<IFood> = ({
   price,
   bgColor,
   categoryIcon,
-  category
+  category,
 }) => {
   const [descriptionState, setDescriptionState] = useState<string>(description);
 
   useEffect(() => {
     if (descriptionState.length > 120) {
-      setDescriptionState(descriptionState.substring(0, 120));
+      setDescriptionState(descriptionState.substring(0, 84));
     }
   }, []);
 
@@ -63,7 +63,11 @@ const FoodCard: React.FC<IFood> = ({
         >
           {label}
         </Styled.Title>
-        <Styled.Description>
+        <Styled.Description
+          style={{
+            marginBottom: label.length >= 25 ? "0px" : "3.7vh",
+          }}
+        >
           {descriptionState}
           <Styled.Anchor
             style={{
