@@ -12,8 +12,8 @@ export interface IFood {
   fontStyle?: string;
   price: string;
   bgColor: string;
-  categoryIcon: string;
-  category: string;
+  categoryIcon?: string;
+  category?: string;
 }
 
 const FoodCard: React.FC<IFood> = ({
@@ -31,7 +31,7 @@ const FoodCard: React.FC<IFood> = ({
 
   useEffect(() => {
     if (descriptionState.length > 120) {
-      setDescriptionState(descriptionState.substring(0, 84));
+      setDescriptionState(descriptionState.substring(0, 120));
     }
   }, []);
 
@@ -41,17 +41,19 @@ const FoodCard: React.FC<IFood> = ({
         backgroundColor: color,
       }}
     >
-      <Styled.TitleAndLogo>
-        <Styled.LogoImg src={categoryIcon} alt="icone" />
-        <Styled.Title
-          style={{
-            color: "white",
-            fontFamily: fontStyle,
-          }}
-        >
-          {category}
-        </Styled.Title>
-      </Styled.TitleAndLogo>
+      {categoryIcon && categoryIcon && (
+        <Styled.TitleAndLogo>
+          <Styled.LogoImg src={categoryIcon} alt="icone" />
+          <Styled.Title
+            style={{
+              color: "white",
+              fontFamily: fontStyle,
+            }}
+          >
+            {category}
+          </Styled.Title>
+        </Styled.TitleAndLogo>
+      )}
 
       <Styled.Container>
         <Styled.Img src={img} />

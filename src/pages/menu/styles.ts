@@ -115,7 +115,7 @@ export const Icon = styled.img`
   margin-right: 3.5vw;
   margin-left: 3.5vw;
   margin-top: 1lvw;
-  margin-bottom: 1lvw;
+  margin-bottom: 1vw;
   @media ${({ theme }) => theme.devices.tablet} {
   }
 `;
@@ -136,7 +136,11 @@ justify-content: center;
 export const MainRoundDiv = styled.div`
 display: flex;
 flex-direction: column;
-width: 100%;
+width: 90%;
+border-radius: 25px;
+margin-top: 3vh;
+margin-bottom: 3vh;
+padding: 1vw;
 `;
 export const AuxRoundDiv = styled.div`
 display: flex;
@@ -196,3 +200,18 @@ background-color: ${({ theme }) => theme.colors.white.normal};
 border-radius: 25px;
 padding: 1.5vw;
 `
+export const TitleAndLogo = styled.div`
+  display: flex;
+  align-items: center;
+   flex-direction: row;
+  @media ${({ theme }) => theme.devices.tablet} {
+    font-size: 12px;
+  }
+`;
+export const LogoImg = styled.img`
+  width: 40px;
+   cursor: pointer;
+   @media ${({ theme }) => theme.devices.tablet} {
+    width: 45px;
+  }
+`;

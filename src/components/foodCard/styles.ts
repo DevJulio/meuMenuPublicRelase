@@ -49,6 +49,8 @@ width: 95%;
 align-self: center;
 max-height: 100px;
 min-height: 100px;
+font-size: ${({ theme }) => theme.fontSize.sm};
+
 `;
 export const Price = styled.div`
 border-bottom-left-radius: 25px;

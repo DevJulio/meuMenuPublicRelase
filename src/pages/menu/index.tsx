@@ -7,6 +7,11 @@ import ren from "../../assets/icons/ren.png";
 import Category, { ICategory } from "../../components/category";
 
 import all from "../../assets/icons/categories/ios/all.png";
+import renEntradas from "../../assets/icons/categories/ios/renEntradas.png";
+import renPrincipal from "../../assets/icons/categories/ios/renPrincipal.png";
+import renPrimeiro from "../../assets/icons/categories/ios/renPrimeiro.png";
+import menu from "../../assets/icons/categories/ios/menu.png";
+
 import sobremesa from "../../assets/icons/categories/ios/sobremesa.png";
 import drinks from "../../assets/icons/categories/ios/drinks.png";
 import food from "../../assets/banners/menu/food.png";
@@ -88,7 +93,7 @@ const Menu: React.FC = () => {
     },
 
     {
-      icon: sobremesa,
+      icon: renEntradas,
       label: "Entradas",
       color: "white",
       bgColor: "#386641",
@@ -97,7 +102,7 @@ const Menu: React.FC = () => {
     },
 
     {
-      icon: drinks,
+      icon: renPrimeiro,
       label: "Primeiro Prato",
       color: "white",
       bgColor: "#386641",
@@ -106,7 +111,7 @@ const Menu: React.FC = () => {
     },
 
     {
-      icon: sobremesa,
+      icon: renPrincipal,
       label: "Prato Principal",
       color: "white",
       bgColor: "#386641",
@@ -124,7 +129,7 @@ const Menu: React.FC = () => {
     },
 
     {
-      icon: sobremesa,
+      icon: drinks,
       label: "Bebidas",
       color: "white",
       bgColor: "#386641",
@@ -538,20 +543,87 @@ const Menu: React.FC = () => {
             </>
           )}
         </Styled.SocialMediaContainer>
-        {/* BORDER PAGE NA COR SECUNDÁRIA: */}
       </Styled.MainContainer>
-      {/* <Styled.MainRoundDiv style={{ backgroundColor: header.textColor }}>
-        <Styled.AuxRoundDiv
-          style={{ backgroundColor: header.mainColor }}
-        ></Styled.AuxRoundDiv>
-      </Styled.MainRoundDiv> */}
-      {/* <BorderPage
-        destop={undefined}
-        mobile={undefined}
-        outsideColor={header.mainColor}
-        insideColor={header.textColor}
-      ></BorderPage> */}
-      {/* <Footer /> */}
+      <div
+        style={{
+          marginTop: "-3vh",
+        }}
+      >
+        <BorderPage
+          destop={undefined}
+          mobile={
+            <>
+              <Styled.TitleAndLogo
+                style={{
+                  marginTop: "4vh",
+                }}
+              >
+                <Styled.LogoImg src={menu} alt="icone" />
+                <Styled.Title
+                  style={{
+                    color: header.mainColor,
+                    fontFamily: header.fontStyleAux,
+                    marginLeft: "0vw",
+                    fontSize: theme.fontSize.xxlg,
+                  }}
+                >
+                  Nosso cardápio:
+                </Styled.Title>
+              </Styled.TitleAndLogo>
+
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  width: "100%",
+                }}
+              >
+                <Styled.ContainerCategories
+                  style={{
+                    height: "fit-content",
+                  }}
+                >
+                  {defaultCategory === "Todas"
+                    ? foods
+                        .filter((cate) => cate.isMainDestaque)
+                        .map((foodItem, index) => (
+                          <FoodCard
+                            category=""
+                            categoryIcon=""
+                            bgColor={header.auxColor}
+                            price={foodItem.price}
+                            color={header.textColor}
+                            label={foodItem.label}
+                            description={foodItem.description}
+                            img={foodItem.img}
+                          />
+                        ))
+                    : foods
+                        .filter((cate) => cate.category === defaultCategory)
+                        .map((foodItem, index) => (
+                          <FoodCard
+                            category=""
+                            categoryIcon=""
+                            bgColor={header.auxColor}
+                            price={foodItem.price}
+                            color={header.textColor}
+                            label={foodItem.label}
+                            description={foodItem.description}
+                            img={foodItem.img}
+                          />
+                        ))}
+                </Styled.ContainerCategories>
+              </div>
+              {/* <Styled.MainRoundDiv
+                style={{ backgroundColor: "white" }}
+              ></Styled.MainRoundDiv> */}
+            </>
+          }
+          outsideColor={header.mainColor}
+          insideColor={header.textColor}
+        ></BorderPage>
+      </div>
+      <Footer />
       {/* <Carousel
         width={width - 50}
         autoPlay={true}
