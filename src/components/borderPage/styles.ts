@@ -7,7 +7,7 @@ export const MainContainer = styled.div`
   align-items: center;
   background-color: ${({ theme }) => theme.colors.blue.palete};
   padding-top: 5vh;
-
+  width: 100%;
 `;
 
 export const Container = styled.div`
@@ -80,8 +80,7 @@ display:none;
   width: 100%;
   border-top-left-radius: 15vw;
   border-top-right-radius: 15vw;
-  padding-top: 5vh;
- 
+  // padding-top: 5vh;
 }
 `;
 

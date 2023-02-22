@@ -6,6 +6,7 @@ interface IBorderProps {
   mobile: any;
   outsideColor: string;
   insideColor: string;
+  isRow?: boolean;
 }
 
 const BorderPage: React.FC<IBorderProps> = ({
@@ -13,6 +14,7 @@ const BorderPage: React.FC<IBorderProps> = ({
   mobile,
   outsideColor,
   insideColor,
+  isRow = false,
 }) => {
   return (
     <>
@@ -20,7 +22,12 @@ const BorderPage: React.FC<IBorderProps> = ({
         <Styled.Container style={{ backgroundColor: insideColor }}>
           {destop}
         </Styled.Container>
-        <Styled.ContainerMobile style={{ backgroundColor: insideColor }}>
+        <Styled.ContainerMobile
+          style={{
+            backgroundColor: insideColor,
+            flexDirection: isRow ? "row" : "column",
+          }}
+        >
           {mobile}
         </Styled.ContainerMobile>
       </Styled.MainContainer>

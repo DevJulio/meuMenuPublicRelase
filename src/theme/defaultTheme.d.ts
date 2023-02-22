@@ -20,7 +20,7 @@ declare module "styled-components" {
         normal: string;
         light: string;
       };
-      orange:{
+      orange: {
         normal: string
       },
       red: {
@@ -36,13 +36,14 @@ declare module "styled-components" {
         amog: string;
       };
 
-      blue:{
-        palete:string;
+      blue: {
+        palete: string;
       }
     };
     fonts: {
       primary: string;
       secundary: string;
+      hand: string;
     };
     shadow: {
       vertical: string;

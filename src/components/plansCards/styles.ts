@@ -10,7 +10,8 @@ export const Container = styled.div`
   width: 100%;
   margin-left: 1vw;
   margin-right: 1vw;
-  min-width: 12vw;
+  min-width: 17vw;
+  max-width: 17vw;
 
    {
     position: relative;
@@ -48,7 +49,11 @@ export const Container = styled.div`
     margin-left: 0vw;
     margin-bottom: 3vh;
     place-self: center;
+      min-width: 65vw;
+      max-width: 65vw;
   }
+ 
+
 `;
 
 export const LogoImg = styled.img`

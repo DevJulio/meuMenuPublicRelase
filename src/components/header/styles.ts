@@ -68,7 +68,7 @@ export const MenuContainer = styled.div`
     display: flex;
     flex: 1;
     display: flex;
-    margin-left: auto;
+    justify-content: right;
   }
 `;
 
@@ -82,7 +82,7 @@ export const MenuDesktopContainer = styled.div`
   }
 `;
 export const MenuDesktopAnchor = styled.a`
-  text-decoration: "none";
+text-decoration: none;
   margin-right: 1vw;
   font-size: ${({ theme }) => theme.fontSize.md2};
   font-family: ${({ theme }) => theme.fonts.primary};

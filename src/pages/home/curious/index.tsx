@@ -3,8 +3,11 @@ import * as Styled from "./styles";
 import BorderPage from "../../../components/borderPage";
 import { theme } from "../../../theme/theme";
 import ButtonSecondary from "../../../components/buttons/secondary";
+import { useNavigate } from "react-router-dom";
 
 const Curious: React.FC = () => {
+  const navigate = useNavigate();
+
   const plans = (
     <>
       <Styled.MainSpanContainer>
@@ -15,7 +18,9 @@ const Curious: React.FC = () => {
       </Styled.MainSpanContainer>
       <Styled.BtnContainer>
         <ButtonSecondary
-          Action={() => {}}
+          Action={() => {
+            navigate("/cardapio");
+          }}
           Label="Seu cardápio será assim!"
           color={theme.colors.red.normal}
           bgColor={theme.colors.white.normal}

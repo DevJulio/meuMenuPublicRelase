@@ -1,6 +1,65 @@
 cardápio precisa ser uma extensão do lugar, parâmetros para deixar mais particular cada estabelicimento.
 criar uns 3 layouts (usar componentização) passagem de parâmentro 
 
+
+
+//Regras:
+Cor principal não pode ser branca.
+
+
+Estrutura do banco:
+
+clients: {
+    header: {
+    icon:"",
+    title:"",
+    mainColor:"",
+    auxColor:"",
+    textColor:"",
+    fontStyle:"",
+    fontStyleAux:"",
+    wellcome:"",
+    banner:"",
+    offers:boolean,
+    hasHappyHour:boolean,
+    reservation:boolean,
+    offersText:"",
+    happyHourText:"",
+    reservationText:"",
+    socialMedia:{
+        instagram: { icon: "", link: "" },
+        spotify: { icon: "", link: "" },
+        youtube: { icon: youtube, link: "" },
+        whatsapp: { icon: "", link: "" },
+        address: { icon: "", link: "" },
+        }
+    },
+    categories:[{
+        icon:"",
+        label:"",
+        color:"",
+        bgColor:"",
+        auxColor:"",
+        fontStyle:""
+    }],
+    recomendations:[{// where pela cateogoria.
+        img:"",
+        description:"",
+        price:"",
+        category:"",
+        categoryIcon:"",
+        harmoziation:"",
+        heat:"",
+        images:"",
+        country:"",
+        IBU:"",
+        grape:"",
+        drinkColor:""
+    }]
+}
+
+
+
 https://coolors.co/palette/003049-d62828-f77f00-fcbf49-eae2b7 -> paleta
 
 Doodle -> estilo do ícone do logo
@@ -11,6 +70,12 @@ Permitir para o usuário cadastrar playlst do spotift
 usar menu com imagens transparentes, aproveitando da cor de fundo 
 
 https://dribbble.com/shots/19642537-Website-Hero-for-Bakery
+
+///card e menu https://dribbble.com/shots/17807211-Foodama-Food-delivery-mobile-app
+
+
+//qr code
+https://br.pinterest.com/pin/11047961576576971/
 
 
 // USAR E ABUSAR DA PORRA DA TRANSPARENCIA
@@ -85,14 +150,3 @@ https://produto.mercadolivre.com.br/MLB-2748995791-display-expositor-l-a5-vertic
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 FUTUURO CRIAR AGREGADOR DE PREÇO DE SUPERMERCADOS COM COMPARAÇÃO DE PREÇOS E RECEBER AVISOS
-tíquete logitech 10006764 dentro de 24 a 48 horas. (traduzido)
-
-
-
-
-// Adriano
-+55 62 9 9112-9270
-
-//Back Node e postgress (Sequelize ORM)
-//Front: next + react + tailwindcss 
-// rodando na amazon.

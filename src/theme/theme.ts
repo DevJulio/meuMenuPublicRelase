@@ -1,6 +1,7 @@
 import { createGlobalStyle } from "styled-components";
 import bebas from "../assets/fonts/BebasNeue-Regular.woff"
 import MontserratRegular from "../assets/fonts/MontserratRegular.ttf"
+import CoveredByYourGrace from "../assets/fonts/CoveredByYourGrace.ttf"
 
 
 
@@ -16,7 +17,13 @@ export const FontsImport = createGlobalStyle`
       src: local('MontserratRegular'), local('MontserratRegular'),
        url(${MontserratRegular}) format('woff');
       font-style: normal;
-  }
+  } 
+   @font-face {
+    font-family: 'CoveredByYourGrace';
+    src: local('CoveredByYourGrace'), local('CoveredByYourGrace'),
+     url(${CoveredByYourGrace}) format('woff');
+    font-style: normal;
+}
 `;
 
 
@@ -59,7 +66,8 @@ export const theme = {
   },
   fonts: {
     primary: "bebas, sans-serif",
-    secundary: "MontserratRegular, sans-serif;",
+    secundary: "MontserratRegular, sans-serif",
+    hand: "CoveredByYourGrace, roboto"
   },
 
   fontSize: {
@@ -79,7 +87,7 @@ export const theme = {
     black: "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);",
   },
   animation: {
-    duration: "0.2s ease-in",
+    duration: "0.2s ease-in-out",
     name: "animatetop",
   },
   devices: {

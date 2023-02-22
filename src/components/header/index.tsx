@@ -4,6 +4,7 @@ import burgerMenuStyles from "./burgerMenuStyles";
 import { stack as Menu } from "react-burger-menu";
 import logo from "../../assets/logo/logo.png";
 import { theme } from "../../theme/theme";
+import { redirect } from "react-router-dom";
 
 const Header: React.FC = () => {
   setTimeout(() => {
@@ -21,7 +22,11 @@ const Header: React.FC = () => {
     <>
       <Styled.Container>
         <Styled.MainContainer onClick={() => {}}>
-          <Styled.LogoContainer>
+          <Styled.LogoContainer
+            onClick={() => {
+              redirect("/");
+            }}
+          >
             <Styled.LogoImg src={logo} alt="" />
           </Styled.LogoContainer>
           <Styled.MainSpanContainer>
@@ -30,16 +35,24 @@ const Header: React.FC = () => {
           </Styled.MainSpanContainer>
           <Styled.MenuContainer>
             <Menu styles={burgerMenuStyles}>
-              <Styled.MenuItem id="home" href="/">
+              <Styled.MenuItem
+                id="home"
+                onClick={() => {
+                  return () => {
+                    redirect("/");
+                  };
+                }}
+                href="/"
+              >
                 Home
               </Styled.MenuItem>
-              <Styled.MenuItem id="about" href="/about">
+              <Styled.MenuItem id="about" href="/sobre">
                 Sobre
               </Styled.MenuItem>
-              <Styled.MenuItem id="contact" href="/contact">
+              <Styled.MenuItem id="contact" href="/contato">
                 Contato
               </Styled.MenuItem>
-              <Styled.MenuItem id="contact" href="/contact">
+              <Styled.MenuItem id="plans" href="/planos">
                 Preços e planos
               </Styled.MenuItem>
               <Styled.MenuItem
@@ -52,10 +65,16 @@ const Header: React.FC = () => {
             </Menu>
           </Styled.MenuContainer>
           <Styled.MenuDesktopContainer>
-            <Styled.MenuDesktopAnchor>Home</Styled.MenuDesktopAnchor>
-            <Styled.MenuDesktopAnchor>Sobre</Styled.MenuDesktopAnchor>
-            <Styled.MenuDesktopAnchor>Contato</Styled.MenuDesktopAnchor>
-            <Styled.MenuDesktopAnchor>Preços e planos</Styled.MenuDesktopAnchor>
+            <Styled.MenuDesktopAnchor href="/">Home</Styled.MenuDesktopAnchor>
+            <Styled.MenuDesktopAnchor href="/sobre">
+              Sobre
+            </Styled.MenuDesktopAnchor>
+            <Styled.MenuDesktopAnchor href="/contato">
+              Contato
+            </Styled.MenuDesktopAnchor>
+            <Styled.MenuDesktopAnchor href="/planos">
+              Preços e planos
+            </Styled.MenuDesktopAnchor>
             <Styled.MenuDesktopAnchor
               style={{
                 color: theme.colors.red.normal,
