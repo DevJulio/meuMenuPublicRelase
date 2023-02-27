@@ -210,8 +210,15 @@ export const TitleAndLogo = styled.div`
 `;
 export const LogoImg = styled.img`
   width: 40px;
+    margin-right: 2vw;
    cursor: pointer;
    @media ${({ theme }) => theme.devices.tablet} {
     width: 45px;
   }
+`;
+export const MapContainer = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 2vh;
+  margin-top: 1vh;
 `;

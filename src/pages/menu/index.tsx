@@ -18,6 +18,7 @@ import food from "../../assets/banners/menu/food.png";
 import happyhour from "../../assets/banners/happyhour.jpg";
 import offers from "../../assets/banners/offers.jpeg";
 import reservation from "../../assets/banners/reservation.jpeg";
+import renMarker from "../../assets/icons/renMarker.png";
 
 // 1367x404
 import { Carousel } from "react-responsive-carousel";
@@ -429,6 +430,7 @@ const Menu: React.FC = () => {
               }}
             >
               <Category
+                fontColor={header.mainColor}
                 id={index + 1}
                 icon={cateItem.icon}
                 label={cateItem.label}
@@ -614,41 +616,85 @@ const Menu: React.FC = () => {
                         ))}
                 </Styled.ContainerCategories>
               </div>
-              {/* <Styled.MainRoundDiv
-                style={{ backgroundColor: "white" }}
-              ></Styled.MainRoundDiv> */}
             </>
           }
           outsideColor={header.mainColor}
           insideColor={header.textColor}
         ></BorderPage>
+        <BorderPage
+          outsideColor={header.textColor}
+          insideColor={header.mainColor}
+          destop={<></>}
+          mobile={
+            <>
+              <Styled.TitleAndLogo
+                style={{
+                  marginTop: "2vh",
+                }}
+              >
+                <Styled.LogoImg src={renMarker} alt="icone" />
+                <Styled.Title
+                  style={{
+                    color: header.textColor,
+                    fontFamily: header.fontStyleAux,
+                    marginLeft: "0vw",
+                    fontSize: theme.fontSize.xxlg,
+                  }}
+                >
+                  Onde estamos:
+                </Styled.Title>
+              </Styled.TitleAndLogo>
+              <Styled.MapContainer>
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d30571.286431759458!2d-49.280785039213846!3d-16.70634218493767!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x935ef12544136db3%3A0x1b20c322bbad1d83!2sGoi%C3%A2nia%20Shopping!5e0!3m2!1spt-BR!2sbr!4v1677269482432!5m2!1spt-BR!2sbr"
+                  width={width - 25}
+                  height="400"
+                  style={{ border: "0", borderRadius: "25px" }}
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                ></iframe>
+              </Styled.MapContainer>
+            </>
+          }
+        ></BorderPage>
+        <BorderPage
+          outsideColor={header.mainColor}
+          insideColor={header.auxColor}
+          destop={<></>}
+          mobile={
+            <>
+              <Styled.TitleAndLogo
+                style={{
+                  marginTop: "2vh",
+                }}
+              >
+                <Styled.LogoImg src={spotify} alt="icone" />
+                <Styled.Title
+                  style={{
+                    color: header.mainColor,
+                    fontFamily: header.fontStyleAux,
+                    marginLeft: "0vw",
+                    fontSize: theme.fontSize.xlg,
+                  }}
+                >
+                  Esse é o som do {header.title}
+                </Styled.Title>
+              </Styled.TitleAndLogo>
+              <Styled.MapContainer>
+                <iframe
+                  style={{ borderRadius: "12px" }}
+                  src="https://open.spotify.com/embed/playlist/0usD50UnpFtLPEMYsy3s62?utm_source=generator"
+                  width={width - 25}
+                  height="352"
+                  allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                  loading="lazy"
+                ></iframe>
+              </Styled.MapContainer>
+            </>
+          }
+        ></BorderPage>
       </div>
       <Footer />
-      {/* <Carousel
-        width={width - 50}
-        autoPlay={true}
-        infiniteLoop={true}
-        showArrows={true}
-        onClickItem={(id) => {
-          redirect(id);
-        }}
-      >
-        <Styled.CardsContainerMobile>
-           <Homecard {...cardProps[0]} />
-        </Styled.CardsContainerMobile>
-        <Styled.CardsContainerMobile>
-          <Homecard {...cardProps[2]} />
-        </Styled.CardsContainerMobile>
-        <Styled.CardsContainerMobile>
-          <Homecard {...cardProps[1]} />
-        </Styled.CardsContainerMobile>
-        <Styled.CardsContainerMobile>
-          <Homecard {...cardProps[4]} />
-        </Styled.CardsContainerMobile>
-        <Styled.CardsContainerMobile>
-          <Homecard {...cardProps[3]} />
-        </Styled.CardsContainerMobile>
-      </Carousel> */}
     </>
   );
 };
