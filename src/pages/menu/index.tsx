@@ -19,6 +19,7 @@ import happyhour from "../../assets/banners/happyhour.jpg";
 import offers from "../../assets/banners/offers.jpeg";
 import reservation from "../../assets/banners/reservation.jpeg";
 import renMarker from "../../assets/icons/renMarker.png";
+import renReservation from "../../assets/icons/renReservation.png";
 
 // 1367x404
 import { Carousel } from "react-responsive-carousel";
@@ -29,10 +30,12 @@ import youtube from "../../assets/icons/socialMedia/ios/youtube.png";
 import whatsapp from "../../assets/icons/socialMedia/ios/whatsapp.png";
 import marker from "../../assets/icons/socialMedia/ios/marker.png";
 import BorderPage from "../../components/borderPage";
-import InvertBorderPage from "../../components/invertBorderPage";
 import FoodCard from "../../components/foodCard";
 import HomeBanner from "../../components/homeBanner";
 import foods from "./foods";
+import ButtonSecondary from "../../components/buttons/secondary";
+import Modal from "../../components/modal";
+import FoodModalDetail from "../../components/foodModalDetail";
 
 export type TProducts = {
   img: string;
@@ -45,15 +48,19 @@ export type TProducts = {
   isMainDestaque?: boolean;
   isDrink?: boolean;
   harmoziation?: string;
-  heat?: string;
   images?: string[];
   country?: string;
   IBU?: string;
   grape?: string;
-  drinkColor?: string;
 };
 
 const Menu: React.FC = () => {
+  const [modal, setModal] = useState<boolean>(false);
+
+  const handleClose = () => {
+    setModal(false);
+  };
+
   const header = {
     icon: ren,
     title: "Ren.",
@@ -72,17 +79,16 @@ const Menu: React.FC = () => {
     reservationText: "Reserve sua mesa!",
     socialMedia: {
       instagram: { icon: instagram, link: "//" },
-      spotify: { icon: spotify, link: "//" },
+      spotify: {
+        icon: spotify,
+        link: "https://open.spotify.com/embed/playlist/0usD50UnpFtLPEMYsy3s62?utm_source=generator",
+      },
       youtube: { icon: youtube, link: "" },
       whatsapp: { icon: whatsapp, link: "//" },
       address: { icon: marker, link: "//" },
     },
   };
 
-  //   "Entradas"
-  //  "Primeiro Prato"
-  //  "Prato Principal"
-  //  "Sobremesas"
   const categories: ICategory[] = [
     {
       icon: all,
@@ -93,6 +99,14 @@ const Menu: React.FC = () => {
       fontStyle: header.fontStyle,
     },
 
+    {
+      icon: drinks,
+      label: "Bebidas",
+      color: "white",
+      bgColor: "#386641",
+      auxColor: header.auxColor,
+      fontStyle: header.fontStyle,
+    },
     {
       icon: renEntradas,
       label: "Entradas",
@@ -128,18 +142,10 @@ const Menu: React.FC = () => {
       auxColor: header.auxColor,
       fontStyle: header.fontStyle,
     },
-
-    {
-      icon: drinks,
-      label: "Bebidas",
-      color: "white",
-      bgColor: "#386641",
-      auxColor: header.auxColor,
-      fontStyle: header.fontStyle,
-    },
   ];
 
   const [defaultCategory, setDefaultCategory] = useState<string>("Todas");
+  const [modalIten, setmodalIten] = useState<TProducts>();
 
   const width = window.screen.width;
   const navigate = useNavigate();
@@ -180,11 +186,22 @@ const Menu: React.FC = () => {
 
   useEffect(() => {
     // setRecomendations(recomendationsRes[defaultCategory]);
-    console.log(defaultCategory);
+    // console.log(defaultCategory);
   }, [defaultCategory]);
 
   return (
     <>
+      {modal && modalIten && (
+        <Modal
+          bannerColor={header.auxColor}
+          title={modalIten.label}
+          handleClose={handleClose}
+          titleFont={header.fontStyle}
+        >
+          <FoodModalDetail modalIten={modalIten} />
+        </Modal>
+      )}
+
       <HeaderCustom
         icon={header.icon}
         title={header.title}
@@ -471,16 +488,24 @@ const Menu: React.FC = () => {
               ? foods
                   .filter((cate) => cate.isMainDestaque)
                   .map((foodItem, index) => (
-                    <FoodCard
-                      category=""
-                      categoryIcon=""
-                      bgColor={header.auxColor}
-                      price={foodItem.price}
-                      color={header.textColor}
-                      label={foodItem.label}
-                      description={foodItem.description}
-                      img={foodItem.img}
-                    />
+                    <a
+                      style={{ textDecoration: "none" }}
+                      onClick={() => {
+                        setModal(true);
+                        setmodalIten(foodItem);
+                      }}
+                    >
+                      <FoodCard
+                        category=""
+                        categoryIcon=""
+                        bgColor={header.auxColor}
+                        price={foodItem.price}
+                        color={header.textColor}
+                        label={foodItem.label}
+                        description={foodItem.description}
+                        img={foodItem.img}
+                      />
+                    </a>
                   ))
               : foods
                   .filter(
@@ -488,32 +513,25 @@ const Menu: React.FC = () => {
                       cate.category === defaultCategory && cate.isDestaque
                   )
                   .map((foodItem, index) => (
-                    <FoodCard
-                      category=""
-                      categoryIcon=""
-                      bgColor={header.auxColor}
-                      price={foodItem.price}
-                      color={header.textColor}
-                      label={foodItem.label}
-                      description={foodItem.description}
-                      img={foodItem.img}
-                    />
+                    <a
+                      style={{ textDecoration: "none" }}
+                      onClick={() => {
+                        setModal(true);
+                        setmodalIten(foodItem);
+                      }}
+                    >
+                      <FoodCard
+                        category=""
+                        categoryIcon=""
+                        bgColor={header.auxColor}
+                        price={foodItem.price}
+                        color={header.textColor}
+                        label={foodItem.label}
+                        description={foodItem.description}
+                        img={foodItem.img}
+                      />
+                    </a>
                   ))}
-
-            {/* foods
-                  .filter((cate) => cate.category === defaultCategory)
-                  .map((foodItem, index) => (
-                    <FoodCard
-                      category=""
-                      categoryIcon=""
-                      bgColor={header.auxColor}
-                      price={foodItem.price}
-                      color={header.textColor}
-                      label={foodItem.label}
-                      description={foodItem.description}
-                      img={foodItem.img}
-                    />
-                  ))} */}
           </Styled.ContainerCategories>
         </Styled.CarouselContainer>
         <Styled.SocialMediaContainer
@@ -545,6 +563,16 @@ const Menu: React.FC = () => {
             </>
           )}
         </Styled.SocialMediaContainer>
+        <Styled.Arrow
+          style={{
+            color: header.auxColor,
+            fontFamily: header.fontStyle,
+            marginBottom: "-10px",
+            marginTop: "1vh",
+          }}
+        >
+          Confira todos nossos pratos! 🠛
+        </Styled.Arrow>
       </Styled.MainContainer>
       <div
         style={{
@@ -589,30 +617,46 @@ const Menu: React.FC = () => {
                     ? foods
                         .filter((cate) => cate.isMainDestaque)
                         .map((foodItem, index) => (
-                          <FoodCard
-                            category=""
-                            categoryIcon=""
-                            bgColor={header.auxColor}
-                            price={foodItem.price}
-                            color={header.textColor}
-                            label={foodItem.label}
-                            description={foodItem.description}
-                            img={foodItem.img}
-                          />
+                          <a
+                            style={{ textDecoration: "none" }}
+                            onClick={() => {
+                              setModal(true);
+                              setmodalIten(foodItem);
+                            }}
+                          >
+                            <FoodCard
+                              category=""
+                              categoryIcon=""
+                              bgColor={header.auxColor}
+                              price={foodItem.price}
+                              color={header.textColor}
+                              label={foodItem.label}
+                              description={foodItem.description}
+                              img={foodItem.img}
+                            />
+                          </a>
                         ))
                     : foods
                         .filter((cate) => cate.category === defaultCategory)
                         .map((foodItem, index) => (
-                          <FoodCard
-                            category=""
-                            categoryIcon=""
-                            bgColor={header.auxColor}
-                            price={foodItem.price}
-                            color={header.textColor}
-                            label={foodItem.label}
-                            description={foodItem.description}
-                            img={foodItem.img}
-                          />
+                          <a
+                            style={{ textDecoration: "none" }}
+                            onClick={() => {
+                              setModal(true);
+                              setmodalIten(foodItem);
+                            }}
+                          >
+                            <FoodCard
+                              category=""
+                              categoryIcon=""
+                              bgColor={header.auxColor}
+                              price={foodItem.price}
+                              color={header.textColor}
+                              label={foodItem.label}
+                              description={foodItem.description}
+                              img={foodItem.img}
+                            />
+                          </a>
                         ))}
                 </Styled.ContainerCategories>
               </div>
@@ -646,6 +690,7 @@ const Menu: React.FC = () => {
               </Styled.TitleAndLogo>
               <Styled.MapContainer>
                 <iframe
+                  title="Map"
                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d30571.286431759458!2d-49.280785039213846!3d-16.70634218493767!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x935ef12544136db3%3A0x1b20c322bbad1d83!2sGoi%C3%A2nia%20Shopping!5e0!3m2!1spt-BR!2sbr!4v1677269482432!5m2!1spt-BR!2sbr"
                   width={width - 25}
                   height="400"
@@ -657,42 +702,84 @@ const Menu: React.FC = () => {
             </>
           }
         ></BorderPage>
-        <BorderPage
-          outsideColor={header.mainColor}
-          insideColor={header.auxColor}
-          destop={<></>}
-          mobile={
-            <>
-              <Styled.TitleAndLogo
-                style={{
-                  marginTop: "2vh",
-                }}
-              >
-                <Styled.LogoImg src={spotify} alt="icone" />
-                <Styled.Title
+        {header.socialMedia.spotify.link && (
+          <BorderPage
+            outsideColor={header.mainColor}
+            insideColor={header.auxColor}
+            destop={<></>}
+            mobile={
+              <>
+                <Styled.TitleAndLogo
                   style={{
-                    color: header.mainColor,
-                    fontFamily: header.fontStyleAux,
-                    marginLeft: "0vw",
-                    fontSize: theme.fontSize.xlg,
+                    marginTop: "2vh",
                   }}
                 >
-                  Esse é o som do {header.title}
-                </Styled.Title>
-              </Styled.TitleAndLogo>
-              <Styled.MapContainer>
-                <iframe
-                  style={{ borderRadius: "12px" }}
-                  src="https://open.spotify.com/embed/playlist/0usD50UnpFtLPEMYsy3s62?utm_source=generator"
-                  width={width - 25}
-                  height="352"
-                  allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-                  loading="lazy"
-                ></iframe>
-              </Styled.MapContainer>
-            </>
-          }
-        ></BorderPage>
+                  <Styled.LogoImg src={spotify} alt="icone" />
+                  <Styled.Title
+                    style={{
+                      color: header.mainColor,
+                      fontFamily: header.fontStyleAux,
+                      marginLeft: "0vw",
+                      fontSize: theme.fontSize.xlg,
+                    }}
+                  >
+                    Esse é o som do {header.title}
+                  </Styled.Title>
+                </Styled.TitleAndLogo>
+                <Styled.MapContainer>
+                  <iframe
+                    title="Spotify"
+                    style={{ borderRadius: "12px" }}
+                    src="https://open.spotify.com/embed/playlist/0usD50UnpFtLPEMYsy3s62?utm_source=generator"
+                    width={width - 25}
+                    height="352"
+                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                    loading="lazy"
+                  ></iframe>
+                </Styled.MapContainer>
+              </>
+            }
+          ></BorderPage>
+        )}
+
+        {header.reservation && (
+          <BorderPage
+            outsideColor={header.auxColor}
+            insideColor={header.textColor}
+            destop={<></>}
+            mobile={
+              <>
+                <Styled.TitleAndLogo
+                  style={{
+                    marginTop: "2vh",
+                  }}
+                >
+                  <Styled.LogoImg src={renReservation} alt="icone" />
+                  <Styled.Title
+                    style={{
+                      color: header.mainColor,
+                      fontFamily: header.fontStyleAux,
+                      marginLeft: "0vw",
+                      fontSize: theme.fontSize.xlg,
+                    }}
+                  >
+                    Faça sua reserva no {header.title}
+                  </Styled.Title>
+                </Styled.TitleAndLogo>
+                <Styled.MapContainer>
+                  <ButtonSecondary
+                    Action={() => {
+                      navigate("/cardapio");
+                    }}
+                    Label="clique e saiba mais."
+                    color={header.textColor}
+                    bgColor={header.mainColor}
+                  />
+                </Styled.MapContainer>
+              </>
+            }
+          ></BorderPage>
+        )}
       </div>
       <Footer />
     </>
