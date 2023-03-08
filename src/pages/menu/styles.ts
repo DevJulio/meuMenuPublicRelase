@@ -222,3 +222,15 @@ export const MapContainer = styled.div`
   margin-bottom: 2vh;
   margin-top: 1vh;
 `;
+
+export const HappyContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding: 1.5vw;
+`;
+
+export const ModalBannerImg = styled.img`
+border-radius: 5px;
+min-width: 100%;
+max-height: 10vh;
+`;

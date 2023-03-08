@@ -19,6 +19,7 @@ import happyhour from "../../assets/banners/happyhour.jpg";
 import offers from "../../assets/banners/offers.jpeg";
 import reservation from "../../assets/banners/reservation.jpeg";
 import renMarker from "../../assets/icons/renMarker.png";
+import renOffers from "../../assets/icons/renOffers.png";
 import renReservation from "../../assets/icons/renReservation.png";
 
 // 1367x404
@@ -47,6 +48,7 @@ export type TProducts = {
   isDestaque: boolean;
   isMainDestaque?: boolean;
   isDrink?: boolean;
+  isOffer?: boolean;
   harmoziation?: string;
   images?: string[];
   country?: string;
@@ -56,9 +58,19 @@ export type TProducts = {
 
 const Menu: React.FC = () => {
   const [modal, setModal] = useState<boolean>(false);
+  const [defaultCategory, setDefaultCategory] = useState<string>("Todas");
+  const [modalIten, setmodalIten] = useState<TProducts>();
+  const [modalHappy, setModalHappy] = useState<boolean>(false);
+  const [modalReservation, setModalReservation] = useState<boolean>(false);
 
   const handleClose = () => {
     setModal(false);
+  };
+  const handleCloseHappy = () => {
+    setModalHappy(false);
+  };
+  const handleCloseReservation = () => {
+    setModalReservation(false);
   };
 
   const header = {
@@ -76,6 +88,8 @@ const Menu: React.FC = () => {
     reservation: true,
     offersText: "Confira as promoções do Ren!",
     happyHourText: "É dia de happy hour no Ren!",
+    happyHourTextDetail:
+      "O happy hour é oferecido de segunda a sexta-feira, das 17h às 20h, Durante o happy hour, nossos clientes podem desfrutar de bebidas com descontos especiais, como cervejas, vinhos e coquetéis.",
     reservationText: "Reserve sua mesa!",
     socialMedia: {
       instagram: { icon: instagram, link: "//" },
@@ -144,21 +158,18 @@ const Menu: React.FC = () => {
     },
   ];
 
-  const [defaultCategory, setDefaultCategory] = useState<string>("Todas");
-  const [modalIten, setmodalIten] = useState<TProducts>();
-
   const width = window.screen.width;
   const navigate = useNavigate();
 
   const redirect = (id: number) => {
     if (id === 0) {
-      navigate("/contato");
+      setModalHappy(true);
     }
     if (id === 1) {
-      navigate("/contato");
+      // navigate("/contato");offers
     }
     if (id === 2) {
-      navigate("/contato");
+      setModalReservation(true);
     }
   };
 
@@ -202,6 +213,45 @@ const Menu: React.FC = () => {
         </Modal>
       )}
 
+      {modalHappy && (
+        <Modal
+          bannerColor={header.auxColor}
+          title={header.happyHourText}
+          handleClose={handleCloseHappy}
+          titleFont={header.fontStyle}
+        >
+          <Styled.HappyContainer
+            style={{
+              backgroundColor: header.mainColor,
+              color: header.textColor,
+            }}
+          >
+            <p>{header.happyHourTextDetail}</p>
+            <Styled.ModalBannerImg
+              src={happyhour}
+              style={{ maxHeight: "13vh" }}
+            />
+          </Styled.HappyContainer>
+        </Modal>
+      )}
+      {modalReservation && (
+        <Modal
+          bannerColor={header.auxColor}
+          title={"Reserva no " + header.title}
+          handleClose={handleCloseReservation}
+          titleFont={header.fontStyle}
+        >
+          <Styled.HappyContainer
+            style={{
+              backgroundColor: header.mainColor,
+              color: header.textColor,
+            }}
+          >
+            <p>{header.happyHourTextDetail}</p>
+            <Styled.ModalBannerImg src={happyhour} />
+          </Styled.HappyContainer>
+        </Modal>
+      )}
       <HeaderCustom
         icon={header.icon}
         title={header.title}
@@ -220,224 +270,66 @@ const Menu: React.FC = () => {
         <Styled.BannerContainer>
           <Styled.Banner src={header.banner} />
         </Styled.BannerContainer>
-        {header.offers && header.hasHappyHour && header.reservation && (
-          <>
-            <Styled.MainContainer
+        <>
+          <Styled.MainContainer
+            style={{
+              backgroundColor: header.mainColor,
+              maxHeight: "16vh",
+              marginTop: "-1vh",
+              marginBottom: "4vh",
+              paddingTop: "0",
+            }}
+          >
+            <Styled.CarouselContainer
               style={{
-                backgroundColor: header.mainColor,
-                maxHeight: "16vh",
-                marginTop: "-1vh",
-                marginBottom: "4vh",
-                paddingTop: "0",
+                alignItems: "center",
               }}
             >
-              <Styled.CarouselContainer
-                style={{
-                  alignItems: "center",
+              <Carousel
+                width={width - 25}
+                autoPlay={true}
+                infiniteLoop={true}
+                interval={3000}
+                showArrows={true}
+                onClickItem={(id) => {
+                  redirect(id);
                 }}
               >
-                <Carousel
-                  width={width - 25}
-                  autoPlay={true}
-                  infiniteLoop={true}
-                  interval={3000}
-                  showArrows={true}
-                  onClickItem={(id) => {
-                    redirect(id);
-                  }}
-                >
+                {header.hasHappyHour ? (
                   <HomeBanner
                     bannerDateColor={header.auxColor}
                     bannerImg={happyhour}
                     infoSpan={header.happyHourText}
                     infoSpanColor={header.textColor}
                   />
+                ) : (
+                  <></>
+                )}
+                {header.offers ? (
                   <HomeBanner
                     bannerDateColor={header.textColor}
                     bannerImg={offers}
                     infoSpan={header.offersText}
                     infoSpanColor={header.auxColor}
                   />
+                ) : (
+                  <></>
+                )}
+                {header.reservation ? (
                   <HomeBanner
                     bannerDateColor={header.auxColor}
                     bannerImg={reservation}
                     infoSpan={header.reservationText}
                     infoSpanColor={header.textColor}
                   />
-                </Carousel>
-              </Styled.CarouselContainer>
-            </Styled.MainContainer>
-          </>
-        )}
+                ) : (
+                  <></>
+                )}
+              </Carousel>
+            </Styled.CarouselContainer>
+          </Styled.MainContainer>
+        </>
 
-        {header.offers && header.hasHappyHour && !header.reservation && (
-          <>
-            <Styled.MainContainer
-              style={{
-                backgroundColor: header.mainColor,
-                maxHeight: "16vh",
-                marginTop: "-1vh",
-                marginBottom: "4vh",
-                paddingTop: "0",
-              }}
-            >
-              <Styled.CarouselContainer
-                style={{
-                  alignItems: "center",
-                }}
-              >
-                <Carousel
-                  width={width - 25}
-                  autoPlay={true}
-                  infiniteLoop={true}
-                  interval={3000}
-                  showArrows={true}
-                  onClickItem={(id) => {
-                    redirect(id);
-                  }}
-                >
-                  <HomeBanner
-                    bannerDateColor={header.auxColor}
-                    bannerImg={happyhour}
-                    infoSpan={header.happyHourText}
-                    infoSpanColor={header.textColor}
-                  />
-                  <HomeBanner
-                    bannerDateColor={header.textColor}
-                    bannerImg={offers}
-                    infoSpan={header.offersText}
-                    infoSpanColor={header.auxColor}
-                  />
-                </Carousel>
-              </Styled.CarouselContainer>
-            </Styled.MainContainer>
-          </>
-        )}
-
-        {header.offers && !header.hasHappyHour && header.reservation && (
-          <>
-            <Styled.MainContainer
-              style={{
-                backgroundColor: header.mainColor,
-                maxHeight: "16vh",
-                marginTop: "-1vh",
-                marginBottom: "4vh",
-                paddingTop: "0",
-              }}
-            >
-              <Styled.CarouselContainer
-                style={{
-                  alignItems: "center",
-                }}
-              >
-                <Carousel
-                  width={width - 25}
-                  autoPlay={true}
-                  infiniteLoop={true}
-                  interval={3000}
-                  showArrows={true}
-                  onClickItem={(id) => {
-                    redirect(id);
-                  }}
-                >
-                  <HomeBanner
-                    bannerDateColor={header.textColor}
-                    bannerImg={offers}
-                    infoSpan={header.offersText}
-                    infoSpanColor={header.auxColor}
-                  />
-                  <HomeBanner
-                    bannerDateColor={header.auxColor}
-                    bannerImg={reservation}
-                    infoSpan={header.reservationText}
-                    infoSpanColor={header.textColor}
-                  />
-                </Carousel>
-              </Styled.CarouselContainer>
-            </Styled.MainContainer>
-          </>
-        )}
-
-        {!header.offers && header.hasHappyHour && header.reservation && (
-          <>
-            <Styled.MainContainer
-              style={{
-                backgroundColor: header.mainColor,
-                maxHeight: "16vh",
-                marginTop: "-1vh",
-                marginBottom: "4vh",
-                paddingTop: "0",
-              }}
-            >
-              <Styled.CarouselContainer
-                style={{
-                  alignItems: "center",
-                }}
-              >
-                <Carousel
-                  width={width - 25}
-                  autoPlay={true}
-                  infiniteLoop={true}
-                  interval={3000}
-                  showArrows={true}
-                  onClickItem={(id) => {
-                    redirect(id);
-                  }}
-                >
-                  <HomeBanner
-                    bannerDateColor={header.auxColor}
-                    bannerImg={happyhour}
-                    infoSpan={header.happyHourText}
-                    infoSpanColor={header.textColor}
-                  />
-                  <HomeBanner
-                    bannerDateColor={header.auxColor}
-                    bannerImg={reservation}
-                    infoSpan={header.reservationText}
-                    infoSpanColor={header.textColor}
-                  />
-                </Carousel>
-              </Styled.CarouselContainer>
-            </Styled.MainContainer>
-          </>
-        )}
-
-        {header.hasHappyHour && !header.offers && !header.reservation && (
-          <>
-            <Styled.SingleBanner>
-              <HomeBanner
-                bannerDateColor={header.auxColor}
-                bannerImg={happyhour}
-                infoSpan={header.happyHourText}
-                infoSpanColor={header.textColor}
-              />
-            </Styled.SingleBanner>
-          </>
-        )}
-        {header.offers && !header.hasHappyHour && !header.reservation && (
-          <>
-            <Styled.SingleBanner>
-              <HomeBanner
-                bannerDateColor={header.textColor}
-                bannerImg={offers}
-                infoSpan={header.offersText}
-                infoSpanColor={header.auxColor}
-              />
-            </Styled.SingleBanner>
-          </>
-        )}
-        {header.reservation && !header.offers && !header.hasHappyHour && (
-          <>
-            <Styled.SingleBanner>
-              <HomeBanner
-                bannerDateColor={header.auxColor}
-                bannerImg={reservation}
-                infoSpan={header.reservationText}
-                infoSpanColor={header.textColor}
-              />
-            </Styled.SingleBanner>
-          </>
-        )}
         <Styled.ContainerCategories>
           {categories.map((cateItem, index) => (
             // eslint-disable-next-line jsx-a11y/anchor-is-valid
@@ -571,7 +463,7 @@ const Menu: React.FC = () => {
             marginTop: "1vh",
           }}
         >
-          Confira todos nossos pratos! 🠛
+          Confira todos nossos pratos! 🠫
         </Styled.Arrow>
       </Styled.MainContainer>
       <div
@@ -665,6 +557,73 @@ const Menu: React.FC = () => {
           outsideColor={header.mainColor}
           insideColor={header.textColor}
         ></BorderPage>
+
+        {header.offers && (
+          <BorderPage
+            destop={undefined}
+            mobile={
+              <>
+                <Styled.TitleAndLogo
+                  style={{
+                    marginTop: "4vh",
+                  }}
+                >
+                  <Styled.LogoImg src={renOffers} alt="icone" />
+                  <Styled.Title
+                    style={{
+                      color: header.mainColor,
+                      fontFamily: header.fontStyleAux,
+                      marginLeft: "0vw",
+                      fontSize: theme.fontSize.xxlg,
+                    }}
+                  >
+                    Ofertas!
+                  </Styled.Title>
+                </Styled.TitleAndLogo>
+
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    width: "100%",
+                  }}
+                >
+                  <Styled.ContainerCategories
+                    style={{
+                      height: "fit-content",
+                    }}
+                  >
+                    {foods
+                      .filter((cate) => cate.isOffer)
+                      .map((foodItem, index) => (
+                        <a
+                          style={{ textDecoration: "none" }}
+                          onClick={() => {
+                            setModal(true);
+                            setmodalIten(foodItem);
+                          }}
+                        >
+                          <FoodCard
+                            category=""
+                            categoryIcon=""
+                            bgColor={header.auxColor}
+                            price={foodItem.price}
+                            color={header.textColor}
+                            label={foodItem.label}
+                            description={foodItem.description}
+                            img={foodItem.img}
+                          />
+                        </a>
+                      ))}
+                  </Styled.ContainerCategories>
+                </div>
+              </>
+            }
+            outsideColor={header.textColor}
+            insideColor={header.textColor}
+            hasZeroPadding
+          ></BorderPage>
+        )}
         <BorderPage
           outsideColor={header.textColor}
           insideColor={header.mainColor}
@@ -702,6 +661,7 @@ const Menu: React.FC = () => {
             </>
           }
         ></BorderPage>
+
         {header.socialMedia.spotify.link && (
           <BorderPage
             outsideColor={header.mainColor}

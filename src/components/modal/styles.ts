@@ -37,7 +37,7 @@ export const Title = styled.h2`
   font-size: ${({ theme }) => theme.fontSize.md};
   color: ${({ theme }) => theme.colors.white.normal};
   letter-spacing: 1px;
-  font-weight: 800;
+  font-weight: 100;
 `;
 
 export const Header = styled.div`

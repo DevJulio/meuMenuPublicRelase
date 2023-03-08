@@ -6,8 +6,7 @@ export const MainContainer = styled.div`
   flex-direction: column;
   align-items: center;
   background-color: ${({ theme }) => theme.colors.blue.palete};
-  padding-top: 5vh;
-  width: 100%;
+   width: 100%;
 `;
 
 export const Container = styled.div`

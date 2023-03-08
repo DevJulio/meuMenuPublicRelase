@@ -7,6 +7,7 @@ interface IBorderProps {
   outsideColor: string;
   insideColor: string;
   isRow?: boolean;
+  hasZeroPadding?: boolean;
 }
 
 const BorderPage: React.FC<IBorderProps> = ({
@@ -15,10 +16,16 @@ const BorderPage: React.FC<IBorderProps> = ({
   outsideColor,
   insideColor,
   isRow = false,
+  hasZeroPadding = false,
 }) => {
   return (
     <>
-      <Styled.MainContainer style={{ backgroundColor: outsideColor }}>
+      <Styled.MainContainer
+        style={{
+          backgroundColor: outsideColor,
+          paddingTop: hasZeroPadding ? "0px" : "5vh",
+        }}
+      >
         <Styled.Container style={{ backgroundColor: insideColor }}>
           {destop}
         </Styled.Container>

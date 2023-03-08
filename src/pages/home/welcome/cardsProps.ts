@@ -11,7 +11,7 @@ const cardProps: TCardProps[] = [
   {
     icon: ideia,
     title: "Vá além do obvio",
-    text: "Muito mais que um cardápio digital, traduza sua cozinha, ingredientes e serviços em cores, textos e imagens!",
+    text: "Muito mais que um cardápio digital, uma solução prátrica para seu estabelecimento. Fuja dos app padrões, use suas cores e sua identidade! ",
     mainColor: theme.colors.white.normal,
     auxColor: theme.colors.red.normal,
     textColor: theme.colors.black.normal,

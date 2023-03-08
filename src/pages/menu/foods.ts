@@ -11,8 +11,8 @@ const foods: TProducts[] = [{
     category: "Entradas",
     categoryIcon: "",
     isDrink: false,
-    isDestaque: true
-
+    isDestaque: true,
+    isOffer: true,
 
 }, {
     img: "https://melepimenta.com/wp-content/uploads/2013/02/Antepasto-a-espanhola-Baixa-1024x683.jpg",
@@ -24,6 +24,7 @@ const foods: TProducts[] = [{
     categoryIcon: "",
     isDrink: false,
     isDestaque: true,
+    isOffer: true,
 
     isMainDestaque: true,
 
@@ -144,6 +145,7 @@ const foods: TProducts[] = [{
     price: "25,00",
     category: "Prato Principal",
     categoryIcon: "",
+    isOffer: true,
     isDrink: false,
     isDestaque: false
 
@@ -201,7 +203,8 @@ const foods: TProducts[] = [{
     harmoziation: "A Torta de limão pede por um vinho branco mais doce, como um Riesling ou um Gewürztraminer.",
     description: "Uma crosta crocante recheada com uma mistura cítrica e refrescante de limão, açúcar e creme de leite. (Torta com 8 fatias)",
     price: "30,00",
-    category: "Sobremesas",
+    category: "Sobremesas", isOffer: true,
+
     categoryIcon: "",
     isDrink: false,
     isDestaque: true
@@ -270,7 +273,9 @@ const foods: TProducts[] = [{
     category: "Bebidas",
     categoryIcon: "",
     isDrink: true,
-    isDestaque: false
+    isDestaque: false,
+    isOffer: true,
+
 
 }, {
     img: "https://www.emporiumpax.com.br/wp-content/uploads/2022/05/receita-de-capuccino-cremoso-na-batedeira.png",

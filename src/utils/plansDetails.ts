@@ -39,17 +39,15 @@ export const ultimateDetails = [
     "suportes de QR Code em acrílico",
     "cadastro avançado & facilitado",
     "cadastro completo de cardápio",
-    "Mais de uma foto por produto",
+    // "Mais de uma foto por produto",
     "atualizações em primeira mão",
 ];
 export const ultimateDescription = [
     "Após a contratação definitiva, receba 15 suportes em acrílico com adesivos personalizados com QR Code para exposição mais visível",
     "Tenha acesso a uma lista de produtos pré-cadastrados, como refrigerantes, sucos e cervejas. Apenas altere os preços e imagens caso seja necessário.",
     "Meu Menu cadastra todos os itens já existentes no seu cardápio atual!",
-    "Tem orgulho das suas criações? faça com que seu cliente a veja de todos os ângulos e quase sinta o sabor apenas pelas fotos!",
+    // "Tem orgulho das suas criações? faça com que seu cliente a veja de todos os ângulos e quase sinta o sabor apenas pelas fotos!",
     "Meu Menu ainda é um produto em crescimento e desenvolvimento, as próximas funções como pedidos via WhatsApp, comanda digital em primeira mão!",
-
-
 ]
 
 // eslint-disable-next-line import/no-anonymous-default-export

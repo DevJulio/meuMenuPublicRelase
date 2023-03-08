@@ -26,7 +26,7 @@ export const BannerInfo = styled.div`
 `;
 export const BannerImg = styled.img`
 border-top-right-radius: 25px;
-border-bottom-right-radius: 25px;w2
+border-bottom-right-radius: 25px;
 min-width: 100%;
 max-height: 10vh;
 `;
