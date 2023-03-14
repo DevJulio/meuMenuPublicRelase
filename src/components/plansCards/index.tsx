@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import * as Styled from "./styles";
 import { TCardProps } from "./card";
 import { theme } from "../../theme/theme";
 import ButtonSecondary from "../buttons/homeBtn";
 import point from "../../assets/icons/cardsIcons/plans/point.png";
+import Modal from "../modal";
+import { useNavigate } from "react-router-dom";
 
 const PlansCard: React.FC<TCardProps> = ({
   icon,
@@ -18,6 +20,14 @@ const PlansCard: React.FC<TCardProps> = ({
   priceText,
   isLast,
 }) => {
+  const [modal, setModal] = useState<boolean>(false);
+
+  const navigate = useNavigate();
+
+  const handleClose = () => {
+    setModal(false);
+  };
+
   setTimeout(() => {
     const element = document.querySelector(
       "#root > div:nth-child(3) > div.sc-bYMpWt.kyDhNb > div.sc-ehvNnt.jlTxA > div:nth-child(3) > div.sc-jRwbcX.jMlxSV > span"
@@ -28,8 +38,46 @@ const PlansCard: React.FC<TCardProps> = ({
     }
   }, 150);
 
+  const signIn = () => {
+    localStorage.setItem("meuMenuPlanType", title);
+    setModal(true);
+  };
+  const continueSignIn = () => {
+    handleClose();
+    navigate("/cadastro");
+  };
+
   return (
     <>
+      {modal && (
+        <Modal
+          bannerColor={theme.colors.red.normal}
+          title={title}
+          handleClose={handleClose}
+          titleFont={theme.fonts.primary}
+        >
+          <>
+            <Styled.PlansDetailModal>
+              O plano {title} foi selecionado, deseja continuar para o cadastro?
+            </Styled.PlansDetailModal>
+            <Styled.BtnContainer
+              style={{
+                justifyContent: "center",
+                marginBottom: "2vh",
+              }}
+            >
+              <ButtonSecondary
+                action={continueSignIn}
+                Label={"Começar cadastro!"}
+                fontSize={theme.fontSize.md}
+                color={theme.colors.white.normal}
+                bgColor={theme.colors.red.normal}
+              />
+            </Styled.BtnContainer>
+          </>
+        </Modal>
+      )}
+
       <Styled.Container
         style={{
           backgroundColor: mainColor,
@@ -51,7 +99,7 @@ const PlansCard: React.FC<TCardProps> = ({
         </Styled.PriceAndDescription>
         <Styled.BtnContainer>
           <ButtonSecondary
-            Action={() => {}}
+            action={signIn}
             Label={"assinar e Começar cadastro!"}
             fontSize={theme.fontSize.md}
             color={isLast ? theme.colors.red.normal : theme.colors.white.normal}

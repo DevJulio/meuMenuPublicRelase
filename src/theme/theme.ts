@@ -3,6 +3,16 @@ import bebas from "../assets/fonts/BebasNeue-Regular.woff"
 import MontserratRegular from "../assets/fonts/MontserratRegular.ttf"
 import CoveredByYourGrace from "../assets/fonts/CoveredByYourGrace.ttf"
 
+import AlwaysSmile from "../assets/fonts/AlwaysSmile.otf"
+import Bachelorette from "../assets/fonts/Bachelorette.otf"
+import BeYou from "../assets/fonts/BeYou.otf"
+import Bravely from "../assets/fonts/Bravely.otf"
+import GlossySheen from "../assets/fonts/GlossySheen.ttf"
+import LatoRegular from "../assets/fonts/LatoRegular.ttf"
+import LEMONMILK from "../assets/fonts/LEMONMILK.otf"
+import NiceSugar from "../assets/fonts/NiceSugar.otf"
+import RoughAnthem from "../assets/fonts/RoughAnthem.ttf"
+
 
 
 export const FontsImport = createGlobalStyle`
@@ -21,9 +31,65 @@ export const FontsImport = createGlobalStyle`
    @font-face {
     font-family: 'CoveredByYourGrace';
     src: local('CoveredByYourGrace'), local('CoveredByYourGrace'),
-     url(${CoveredByYourGrace}) format('woff');
+    url(${CoveredByYourGrace}) format('woff');
     font-style: normal;
-}
+   }
+
+   @font-face {
+    font-family: 'AlwaysSmile';
+    src: local('AlwaysSmile'), local('AlwaysSmile'),
+    url(${AlwaysSmile}) format('woff');
+    font-style: normal;
+   }
+   @font-face {
+    font-family: 'Bachelorette';
+    src: local('Bachelorette'), local('Bachelorette'),
+    url(${Bachelorette}) format('woff');
+    font-style: normal;
+   }
+
+   @font-face {
+    font-family: 'BeYou';
+    src: local('BeYou'), local('BeYou'),
+    url(${BeYou}) format('woff');
+    font-style: normal;
+   }
+   @font-face {
+    font-family: 'Bravely';
+    src: local('Bravely'), local('Bravely'),
+    url(${Bravely}) format('woff');
+    font-style: normal;
+   }
+   @font-face {
+    font-family: 'GlossySheen';
+    src: local('GlossySheen'), local('GlossySheen'),
+    url(${GlossySheen}) format('woff');
+    font-style: normal;
+   }
+   @font-face {
+    font-family: 'LatoRegular';
+    src: local('LatoRegular'), local('LatoRegular'),
+    url(${LatoRegular}) format('woff');
+    font-style: normal;
+   }
+   @font-face {
+    font-family: 'LEMONMILK';
+    src: local('LEMONMILK'), local('LEMONMILK'),
+    url(${LEMONMILK}) format('woff');
+    font-style: normal;
+   }
+   @font-face {
+    font-family: 'NiceSugar';
+    src: local('NiceSugar'), local('NiceSugar'),
+    url(${NiceSugar}) format('woff');
+    font-style: normal;
+   }
+   @font-face {
+    font-family: 'RoughAnthem';
+    src: local('RoughAnthem'), local('RoughAnthem'),
+    url(${RoughAnthem}) format('woff');
+    font-style: normal;
+   }
 `;
 
 
@@ -67,7 +133,16 @@ export const theme = {
   fonts: {
     primary: "bebas, sans-serif",
     secundary: "MontserratRegular, sans-serif",
-    hand: "CoveredByYourGrace, roboto"
+    hand: "CoveredByYourGrace, roboto",
+    AlwaysSmile: "AlwaysSmile, roboto",
+    Bachelorette: "Bachelorette, roboto",
+    BeYou: "BeYou, roboto",
+    Bravely: "Bravely, roboto",
+    GlossySheen: "GlossySheen, roboto",
+    LatoRegular: "LatoRegular, roboto",
+    LEMONMILK: "LEMONMILK, roboto",
+    NiceSugar: "NiceSugar, roboto",
+    RoughAnthem: "RoughAnthem, roboto",
   },
 
   fontSize: {

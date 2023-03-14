@@ -22,7 +22,6 @@ import renMarker from "../../assets/icons/renMarker.png";
 import renOffers from "../../assets/icons/renOffers.png";
 import renReservation from "../../assets/icons/renReservation.png";
 
-// 1367x404
 import { Carousel } from "react-responsive-carousel";
 import { useNavigate } from "react-router-dom";
 import instagram from "../../assets/icons/socialMedia/ios/instagram.png";
@@ -86,6 +85,9 @@ const Menu: React.FC = () => {
     offers: true,
     hasHappyHour: true,
     reservation: true,
+    reservationTextDetail:
+      "Evite filas de espera, faça sua reserva no Ren, entre em contato com o número a baixo e verifique a disponibilidade!",
+    reservationContactNumber: "64996140938",
     offersText: "Confira as promoções do Ren!",
     happyHourText: "É dia de happy hour no Ren!",
     happyHourTextDetail:
@@ -166,7 +168,10 @@ const Menu: React.FC = () => {
       setModalHappy(true);
     }
     if (id === 1) {
-      // navigate("/contato");offers
+      const offersrDiv = document.getElementById("offers");
+      if (offersrDiv) {
+        offersrDiv.scrollIntoView({ behavior: "smooth" });
+      }
     }
     if (id === 2) {
       setModalReservation(true);
@@ -247,8 +252,19 @@ const Menu: React.FC = () => {
               color: header.textColor,
             }}
           >
-            <p>{header.happyHourTextDetail}</p>
-            <Styled.ModalBannerImg src={happyhour} />
+            <p>{header.reservationTextDetail}</p>
+            <ButtonSecondary
+              action={() => {
+                window.location.href = `https://api.whatsapp.com/send?phone=55${header.reservationContactNumber}&text=Olá, desejo fazer uma reserva no ${header.title}!`;
+              }}
+              Label="clique e saiba mais."
+              color={header.mainColor}
+              bgColor={header.textColor}
+            />
+            <Styled.ModalBannerImg
+              src={reservation}
+              style={{ marginTop: "2vh" }}
+            />
           </Styled.HappyContainer>
         </Modal>
       )}
@@ -431,27 +447,58 @@ const Menu: React.FC = () => {
         >
           {header.socialMedia.address.link && (
             <>
-              <Styled.Icon src={header.socialMedia.address.icon} />
+              <Styled.Icon
+                src={header.socialMedia.address.icon}
+                onClick={() => {
+                  const whereWeAre = document.getElementById("offers");
+                  if (whereWeAre) {
+                    whereWeAre.scrollIntoView({ behavior: "smooth" });
+                  }
+                }}
+              />
             </>
           )}
           {header.socialMedia.instagram.link && (
             <>
-              <Styled.Icon src={header.socialMedia.instagram.icon} />
+              <Styled.Icon
+                src={header.socialMedia.instagram.icon}
+                onClick={() => {
+                  window.location.href = header.socialMedia.instagram.link;
+                }}
+              />
             </>
           )}
           {header.socialMedia.spotify.link && (
             <>
-              <Styled.Icon src={header.socialMedia.spotify.icon} />
+              <Styled.Icon
+                src={header.socialMedia.spotify.icon}
+                onClick={() => {
+                  const sound = document.getElementById("sound");
+                  if (sound) {
+                    sound.scrollIntoView({ behavior: "smooth" });
+                  }
+                }}
+              />
             </>
           )}
           {header.socialMedia.whatsapp.link && (
             <>
-              <Styled.Icon src={header.socialMedia.whatsapp.icon} />
+              <Styled.Icon
+                src={header.socialMedia.whatsapp.icon}
+                onClick={() => {
+                  window.location.href = `https://api.whatsapp.com/send?phone=55${header.reservationContactNumber}&text=Olá, quero conhecer melhor o ${header.title}!`;
+                }}
+              />
             </>
           )}
           {header.socialMedia.youtube.link && (
             <>
-              <Styled.Icon src={header.socialMedia.youtube.icon} />
+              <Styled.Icon
+                src={header.socialMedia.youtube.icon}
+                onClick={() => {
+                  window.location.href = header.socialMedia.youtube.link;
+                }}
+              />
             </>
           )}
         </Styled.SocialMediaContainer>
@@ -564,6 +611,7 @@ const Menu: React.FC = () => {
             mobile={
               <>
                 <Styled.TitleAndLogo
+                  id="offers"
                   style={{
                     marginTop: "4vh",
                   }}
@@ -631,6 +679,7 @@ const Menu: React.FC = () => {
           mobile={
             <>
               <Styled.TitleAndLogo
+                id="whereWeAre"
                 style={{
                   marginTop: "2vh",
                 }}
@@ -670,6 +719,7 @@ const Menu: React.FC = () => {
             mobile={
               <>
                 <Styled.TitleAndLogo
+                  id="sound"
                   style={{
                     marginTop: "2vh",
                   }}
@@ -728,8 +778,9 @@ const Menu: React.FC = () => {
                 </Styled.TitleAndLogo>
                 <Styled.MapContainer>
                   <ButtonSecondary
-                    Action={() => {
-                      navigate("/cardapio");
+                    action={() => {
+                      setModalReservation(true);
+                      // navigate("/cardapio");
                     }}
                     Label="clique e saiba mais."
                     color={header.textColor}

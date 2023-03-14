@@ -49,6 +49,7 @@ display:none;
 }
 `;
 export const VantageSpan = styled.span`
+  margin-top: 3vh;
   color: ${({ theme }) => theme.colors.black.normal};
   display: flex;
   margin-right: 12px;

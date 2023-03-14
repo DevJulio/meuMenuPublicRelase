@@ -138,7 +138,7 @@ const Plans: React.FC = () => {
       </Styled.PlansContainer>
       <Styled.BtnContainer>
         <ButtonSecondary
-          Action={() => {
+          action={() => {
             navigate("/planos");
           }}
           Label="Ainda tem dúvidas sobre os planos? clique aqui e veja todos os detalhes!"

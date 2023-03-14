@@ -3,6 +3,7 @@ import styled from "styled-components";
 export const Span = styled.span`
   color: ${({ theme }) => theme.colors.black.normal};
   display: flex;
+  margin-top: 3vh;
   margin-right: 12px;
   font-family: ${({ theme }) => theme.fonts.primary};
   font-size: ${({ theme }) => theme.fontSize.xxlg};

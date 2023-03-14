@@ -44,6 +44,15 @@ declare module "styled-components" {
       primary: string;
       secundary: string;
       hand: string;
+      AlwaysSmile: string;
+      Bachelorette: string;
+      BeYou: string;
+      Bravely: string;
+      GlossySheen: string;
+      LatoRegular: string;
+      LEMONMILK: string;
+      NiceSugar: string;
+      RoughAnthem: string;
     };
     shadow: {
       vertical: string;

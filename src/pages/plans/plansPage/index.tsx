@@ -199,7 +199,7 @@ const PlansPage: React.FC = () => {
 
       {/* <Styled.BtnContainer>
         <ButtonSecondary
-          Action={() => {}}
+          action={() => {}}
           Label="Ainda tem dúvidas sobre os planos? clique aqui e veja todos os detalhes!"
           color={theme.colors.red.normal}
           bgColor={theme.colors.white.normal}

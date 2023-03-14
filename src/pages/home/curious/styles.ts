@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
 export const Span = styled.span`
+  margin-top: 3vh;
   color: ${({ theme }) => theme.colors.white.normal};
   display: flex;
   margin-right: 12px;
