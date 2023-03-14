@@ -7,6 +7,8 @@ export const TitleSpan = styled.span`
   font-size: ${({ theme }) => theme.fontSize.xxlg};
   text-align: center;
   align-self: center;
+  margin-top: 5vh;
+  margin-bottom: 5vh;
   font-family: ${({ theme }) => theme.fonts.primary};
   @media ${({ theme }) => theme.devices.tablet} {
     font-size: ${({ theme }) => theme.fontSize.lg};
@@ -31,6 +33,10 @@ export const MenusRow = styled.div`
   width: 100%;
   background-color: ${({ theme }) => theme.colors.blue.palete};
   flex-direction: row;
+  @media ${({ theme }) => theme.devices.tablet} {
+    flex-direction: column;
+
+  }
 `;
 export const FormItemContainer = styled.div`
   margin-left: 40px;
@@ -73,6 +79,7 @@ place-Self: center;
 `;
 export const IconCentralize = styled.div`
 display: flex;
+align-items: center;
 flex-direction: column;
 place-Self: center;
 place-items: center;
@@ -103,4 +110,30 @@ export const Icon = styled.img`
   margin-bottom: 1vw;
   @media ${({ theme }) => theme.devices.tablet} {
   }
+`;
+export const Fonts = styled.span`
+  color: ${({ theme }) => theme.colors.red.normal};
+  display: flex;
+  font-size: ${({ theme }) => theme.fontSize.xxlg};
+  text-align: center;
+  align-self: center;
+  @media ${({ theme }) => theme.devices.tablet} {
+    padding-top: 2vh;
+  }
+`;
+
+export const BtnContainer = styled.div`
+  display: flex;
+   margin-top: 4vw;
+  margin-bottom: 4vw; 
+`;
+export const PlansDetailModal = styled.span`
+  display: flex;
+  justify-content: left;
+  width: 95%;
+  padding: 2vh;
+  justify-content: center;
+  font-family: ${({ theme }) => theme.fonts.secundary};
+  font-size: ${({ theme }) => theme.fontSize.mm};
+ 
 `;
