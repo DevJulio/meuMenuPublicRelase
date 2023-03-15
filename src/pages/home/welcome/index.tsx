@@ -50,7 +50,7 @@ const Welcome: React.FC = () => {
                   {/* <Link to={"/planos"}>
                   </Link> */}
                   <ButtonPrimaryHome
-                    Action={() => {
+                    action={() => {
                       navigate("/planos");
                     }}
                     Label="Clique e conheça os planos e condições!"
@@ -119,7 +119,7 @@ const Welcome: React.FC = () => {
             <>
               <Styled.BtnContainer>
                 <ButtonPrimaryHome
-                  Action={() => {}}
+                  action={() => {}}
                   Label="Clique e conheça os planos e condições!"
                 />
               </Styled.BtnContainer>

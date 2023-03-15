@@ -3,14 +3,14 @@ import { theme } from "../../../theme/theme";
 import * as Styled from "./styles";
 
 interface Props {
-  Action: Function;
+  action: Function;
   Label: string;
   color?: string;
   bgColor?: string;
   fontSize?: string;
 }
 const ButtonPrimaryHome: React.FC<Props> = ({
-  Action,
+  action,
   Label,
   color,
   bgColor,
@@ -26,7 +26,7 @@ const ButtonPrimaryHome: React.FC<Props> = ({
             fontSize: fontSize ? fontSize : theme.fontSize.md2,
           }}
           onClick={() => {
-            Action();
+            action();
           }}
         >
           {Label}

@@ -54,7 +54,7 @@ export const PaymentCard: React.FC<Props> = ({
                 {!continueDelete ? (
                   <>
                     {/* <ButtonPrimaryHome
-                      Action={() => {
+                      action={() => {
                         setContinueDelete(!continueDelete);
                       }}
                       color={"red"}

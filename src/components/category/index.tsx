@@ -9,6 +9,7 @@ export interface ICategory {
   bgColor: string;
   auxColor: string;
   fontStyle: string;
+  fontColor?: string;
   id?: number;
 }
 
@@ -19,6 +20,7 @@ const Category: React.FC<ICategory> = ({
   bgColor,
   auxColor,
   fontStyle,
+  fontColor,
   id,
 }) => {
   return (
@@ -54,7 +56,14 @@ const Category: React.FC<ICategory> = ({
       }}
     >
       <img src={icon} alt="icon" />
-      <span id={id ? id.toString() + "Span" : ""}>{label}</span>
+      <span
+        style={{
+          color: fontColor,
+        }}
+        id={id ? id.toString() + "Span" : ""}
+      >
+        {label}
+      </span>
     </Styled.Container>
   );
 };

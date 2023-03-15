@@ -181,3 +181,13 @@ export const BtnContainer = styled.div`
   @media ${({ theme }) => theme.devices.tablet} {
   }
 `;
+export const PlansDetailModal = styled.span`
+  display: flex;
+  justify-content: left;
+  width: 95%;
+  padding: 2vh;
+  justify-content: center;
+  font-family: ${({ theme }) => theme.fonts.secundary};
+  font-size: ${({ theme }) => theme.fontSize.mm};
+ 
+`;

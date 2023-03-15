@@ -1,8 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import * as Styled from "./styles";
-
-import { theme } from "../../theme/theme";
-import { log } from "console";
 
 export interface IFood {
   label: string;
@@ -27,14 +24,6 @@ const FoodCard: React.FC<IFood> = ({
   categoryIcon,
   category,
 }) => {
-  const [descriptionState, setDescriptionState] = useState<string>(description);
-
-  useEffect(() => {
-    if (descriptionState.length > 120) {
-      setDescriptionState(descriptionState.substring(0, 120));
-    }
-  }, []);
-
   return (
     <Styled.MainContainer
       style={{
@@ -70,7 +59,7 @@ const FoodCard: React.FC<IFood> = ({
             marginBottom: label.length >= 25 ? "0px" : "3.7vh",
           }}
         >
-          {descriptionState}
+          {description.substring(0, 120)}...
           <Styled.Anchor
             style={{
               color: bgColor,

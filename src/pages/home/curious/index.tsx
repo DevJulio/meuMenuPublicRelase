@@ -18,7 +18,7 @@ const Curious: React.FC = () => {
       </Styled.MainSpanContainer>
       <Styled.BtnContainer>
         <ButtonSecondary
-          Action={() => {
+          action={() => {
             navigate("/cardapio");
           }}
           Label="Seu cardápio será assim!"
