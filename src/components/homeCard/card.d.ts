@@ -5,6 +5,6 @@ export type TCardProps = {
   mainColor: string;
   auxColor: string;
   textColor?: string;
-  customWidth?: string;
+  customWidth?: boolean;
   fontFamily?: string;
 }

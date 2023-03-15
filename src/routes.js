@@ -2,6 +2,7 @@ import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import About from "./pages/about";
 import SolicitationMeuMenu from "./pages/adm/createForm";
+import MenuMeuMenu from "./pages/adm/createMenu";
 import Contact from "./pages/contact";
 
 import Home from "./pages/home";
@@ -20,6 +21,7 @@ function RoutesList() {
         <Route path="/cardapio" element={<Menu />} />
         <Route path="/cardapios" element={<PreMenu />} />
         <Route path="/cadastro" element={<SolicitationMeuMenu />} />
+        <Route path="/cadastro-cardapio" element={<MenuMeuMenu />} />
       </Routes>
     </BrowserRouter>
   );

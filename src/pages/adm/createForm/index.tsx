@@ -20,8 +20,10 @@ import Modal from "../../../components/modal";
 
 const SolicitationMeuMenu: React.FC = () => {
   const [brandName, setBrandName] = useState<string>("Sua empresa");
-  const [email, setEmail] = useState<string>("Sua empresa");
-  const [contact, setContact] = useState<string>("Sua empresa");
+  const [email, setEmail] = useState<string>("");
+  const [contact, setContact] = useState<string>("");
+  const [login, setLogin] = useState<string>("");
+  const [password, setPassword] = useState<string>();
 
   const [welcome, setWelcome] = useState<string>("");
   const [instagranLink, setInstagranLink] = useState<string>("");
@@ -54,16 +56,11 @@ const SolicitationMeuMenu: React.FC = () => {
       email &&
       contact &&
       welcome &&
-      instagranLink &&
-      localizacao &&
-      spotifyLink &&
-      whatsAppLink &&
-      youtubeLink &&
-      reservationText &&
-      happyHourText &&
       logo &&
       banner &&
-      fontStyle
+      fontStyle &&
+      login &&
+      password
     ) {
       setModal(true);
       setModalFail(false);
@@ -100,6 +97,14 @@ const SolicitationMeuMenu: React.FC = () => {
                   O seu cadastro foi realizado, em breve a equipe do Meu Menu
                   entrará em contato para finalizar o processo de adesão e para
                   começar o cadastro do seu cardápio!
+                  <p>
+                    Use as credenciais de login e senha para acessar o Meu Menu
+                    e acompanhar o andamento do cardápio.
+                  </p>
+                  <p>
+                    Entraremos em contato apresentando uma prévia do seu novo
+                    cardápio em breve!
+                  </p>
                   <p
                     style={{
                       textAlignLast: "center",
@@ -117,6 +122,7 @@ const SolicitationMeuMenu: React.FC = () => {
                 }}
               >
                 <ButtonSecondary
+                  //TODO: COLOCAR NUMERO DO ZAP
                   action={() => {}}
                   Label={"Entrar em contato com o Meu Menu!"}
                   fontSize={theme.fontSize.md}
@@ -215,10 +221,18 @@ const SolicitationMeuMenu: React.FC = () => {
           <Styled.TitleSpan
             style={{
               marginTop: "5vh",
+              marginBottom: "-1vh",
             }}
           >
             Redes Sociais:
           </Styled.TitleSpan>
+          <Styled.ItemSpan
+            style={{
+              fontFamily: theme.fonts.secundary,
+            }}
+          >
+            Desconsiderar caso não tenha as redes sociais a seguir:
+          </Styled.ItemSpan>
           <Styled.MenusRow>
             <Styled.SocialMediaContainer>
               <Styled.IconCentralize>
@@ -236,8 +250,8 @@ const SolicitationMeuMenu: React.FC = () => {
                 <Input
                   labelColor={theme.colors.red.normal}
                   setValue={setLocalizacao}
-                  label="Localização"
-                  customWidth={isMobile() ? "250px" : "170px"}
+                  label="Endereço"
+                  customWidth={isMobile() ? "250px" : "300px"}
                 />
               </Styled.IconCentralize>
               <Styled.IconCentralize>
@@ -277,6 +291,13 @@ const SolicitationMeuMenu: React.FC = () => {
           >
             Reservas / Happy Hour:
           </Styled.TitleSpan>
+          <Styled.ItemSpan
+            style={{
+              fontFamily: theme.fonts.secundary,
+            }}
+          >
+            Desconsiderar caso não ofereça os serviços a seguir:
+          </Styled.ItemSpan>
           <Styled.MenusRow>
             <Styled.SocialMediaContainer>
               <Styled.IconCentralize>
@@ -311,7 +332,7 @@ const SolicitationMeuMenu: React.FC = () => {
           </Styled.TitleSpan>
           <Styled.ItemSpan
             style={{
-              fontFamily: theme.fonts.hand,
+              fontFamily: theme.fonts.secundary,
             }}
           >
             Selecione a fonte que mais combina com seu estabelecimento para os
@@ -508,7 +529,37 @@ const SolicitationMeuMenu: React.FC = () => {
               />
             </Styled.IconCentralize>
           </Styled.MenusRow>
+
+          <Styled.TitleSpan>
+            Informações Para acesso do Meu Menu
+          </Styled.TitleSpan>
+          <Styled.ItemSpan
+            style={{
+              fontFamily: theme.fonts.secundary,
+            }}
+          >
+            Login e senha para realizar o acesso a plataforma.
+          </Styled.ItemSpan>
+          <Styled.MenusRow>
+            <Styled.FormItemContainer>
+              <Input
+                setValue={setLogin}
+                label="E-mail para login na plataforma"
+              />
+            </Styled.FormItemContainer>
+            <Styled.FormItemContainer>
+              <Input isPassowd setValue={setPassword} label={"Senha"}></Input>
+            </Styled.FormItemContainer>
+          </Styled.MenusRow>
+
           <Styled.TitleSpan>Informações Para o Meu Menu</Styled.TitleSpan>
+          <Styled.ItemSpan
+            style={{
+              fontFamily: theme.fonts.secundary,
+            }}
+          >
+            Informações para a equipe do Meu Menu entrar em contato.
+          </Styled.ItemSpan>
           <Styled.MenusRow>
             <Styled.FormItemContainer>
               <InputMasked

@@ -24,8 +24,7 @@ export const Input = styled.input.attrs(() => ({
 export const InputPw = styled.input.attrs(() => ({
   type: "password",
 }))`
-  color: ${({ theme }) => theme.colors.white.normal};
-  font-size: 25px;
+   font-size: 25px;
   border: 2px solid ${({ theme }) => theme.colors.white.normal};
   border-radius: 5px;
   margin-top: 10px;
