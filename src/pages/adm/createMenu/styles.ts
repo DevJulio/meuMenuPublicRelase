@@ -133,3 +133,8 @@ export const PlansDetailModal = styled.span`
   font-size: ${({ theme }) => theme.fontSize.mm};
  
 `;
+
+export const BackBtnContainer = styled.div`
+  display: flex;
+   margin-bottom: 1vw;
+ `;

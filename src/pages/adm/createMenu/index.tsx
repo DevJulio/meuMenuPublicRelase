@@ -38,12 +38,21 @@ const MenuMeuMenu: React.FC = () => {
           drinkDiv.style.display = "flex";
 
           break;
+        case "":
+          mainCategoryDiv.style.display = "flex";
+          foodDiv.style.display = "none";
+          drinkDiv.style.display = "none";
 
+          break;
         default:
           break;
       }
     }
   }, [mainCategory]);
+
+  useEffect(() => {
+    console.log(secondayCategory);
+  }, [secondayCategory]);
 
   //Criar um array de arrays contendo 3 cards em cada posição do array de arrays
 
@@ -76,8 +85,29 @@ const MenuMeuMenu: React.FC = () => {
       });
     } else {
     }
+    // percorre o array criado e adiciona cards a variavel;
+    const cardRowsDone = cardsRows.map((row: TCardProps[]) => {
+      return (
+        <Styled.CardsContainer>
+          {row.map((item: TCardProps) => {
+            return (
+              <div
+                style={{
+                  width: "50%",
+                }}
+                onClick={() => {
+                  setSecondayCategory(item.title);
+                }}
+              >
+                <Homecard {...item} />
+              </div>
+            );
+          })}
+        </Styled.CardsContainer>
+      );
+    });
 
-    return cardsRows;
+    return cardRowsDone;
   };
 
   const foodRows = createRows(foodCategories);
@@ -143,6 +173,17 @@ const MenuMeuMenu: React.FC = () => {
         )}
 
         <Styled.TitleSpan>Cadastro de cardápio.</Styled.TitleSpan>
+        <Styled.BackBtnContainer>
+          <ButtonSecondary
+            action={() => {
+              setMainCategory("");
+            }}
+            Label={"← Escolher categoria"}
+            fontSize={theme.fontSize.md}
+            color={theme.colors.white.normal}
+            bgColor={theme.colors.red.normal}
+          />
+        </Styled.BackBtnContainer>
         <Styled.CategoryContainer id="mainCategory">
           <Styled.ItemSpan>Categoria: </Styled.ItemSpan>
           <Styled.CardsContainer>
@@ -171,51 +212,11 @@ const MenuMeuMenu: React.FC = () => {
         </Styled.CategoryContainer>
         <Styled.CategoryContainer style={{ display: "none" }} id="food">
           <Styled.ItemSpan>Selecione a categoria da comida: </Styled.ItemSpan>
-          {/* fazer usando laços de repetição */}
-
-          {foodRows.map((row: TCardProps[]) => {
-            return (
-              <Styled.CardsContainer>
-                {row.map((item: TCardProps) => {
-                  return (
-                    <div
-                      style={{
-                        width: "50%",
-                      }}
-                      onClick={() => {
-                        setSecondayCategory(item.title);
-                      }}
-                    >
-                      <Homecard {...item} />
-                    </div>
-                  );
-                })}
-              </Styled.CardsContainer>
-            );
-          })}
+          {foodRows}
         </Styled.CategoryContainer>
         <Styled.CategoryContainer style={{ display: "none" }} id="drink">
           <Styled.ItemSpan>Selecione a categoria da Bebida: </Styled.ItemSpan>
-          {drinkRows.map((row: TCardProps[]) => {
-            return (
-              <Styled.CardsContainer>
-                {row.map((item: TCardProps) => {
-                  return (
-                    <div
-                      style={{
-                        width: "50%",
-                      }}
-                      onClick={() => {
-                        setSecondayCategory(item.title);
-                      }}
-                    >
-                      <Homecard {...item} />
-                    </div>
-                  );
-                })}
-              </Styled.CardsContainer>
-            );
-          })}
+          {drinkRows}
         </Styled.CategoryContainer>
       </Styled.MainContainer>
       <Footer />

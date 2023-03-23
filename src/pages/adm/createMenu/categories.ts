@@ -13,6 +13,20 @@ import bolos from "../../../assets/icons/categories/allCategories/bolos.png";
 import vegetariana from "../../../assets/icons/categories/allCategories/vegetariana.png";
 import churrasco from "../../../assets/icons/categories/allCategories/churrasco.png";
 import outro from "../../../assets/icons/categories/allCategories/outro.png";
+
+import cerveja from "../../../assets/icons/categories/allCategories/cerveja.png";
+import refrigerante from "../../../assets/icons/categories/allCategories/refrigerante.png";
+import drinkAux from "../../../assets/icons/categories/allCategories/drink.png";
+import vinho from "../../../assets/icons/categories/allCategories/vinho.png";
+import champanhe from "../../../assets/icons/categories/allCategories/champanhe.png";
+import milkshake from "../../../assets/icons/categories/allCategories/milkshake.png";
+import whiskey from "../../../assets/icons/categories/allCategories/whiskey.png";
+import dose from "../../../assets/icons/categories/allCategories/dose.png";
+import suco from "../../../assets/icons/categories/allCategories/suco.png";
+
+
+
+
 import { TCardProps } from "../../../components/plansCards/card";
 import { theme } from "../../../theme/theme";
 
@@ -151,85 +165,94 @@ export const foodCategories: TCardProps[] = [
 
 export const drinkCategories = [
     {
-        icon: hamburguer,
+        icon: cerveja,
         title: "Cervejas",
         text: "Cervejas geladas, por favor.",
         mainColor: theme.colors.red.normal,
         auxColor: "white",
         textColor: "white",
         customWidth: true,
+
+
     },
     {
-        icon: hamburguer,
+        icon: refrigerante,
         title: "Refrigerantes",
         text: "Refrigerantes para dias quentes",
-        mainColor: theme.colors.red.normal,
-        auxColor: "white",
-        textColor: "white",
+        mainColor: theme.colors.yellow.palete,
+        auxColor: "",
+        textColor: "black",
         customWidth: true,
+
+
     },
     {
-        icon: hamburguer,
+        icon: suco,
         title: "Sucos",
         text: "Naturais e frescos",
-        mainColor: theme.colors.red.normal,
-        auxColor: "white",
-        textColor: "white",
+        mainColor: theme.colors.blue.palete,
+        auxColor: theme.colors.white.normal,
+        textColor: theme.colors.white.normal,
         customWidth: true,
     },
     {
-        icon: hamburguer,
+        icon: drinkAux,
         title: "Drinks",
-        text: "O favorito de muitos!",
-        mainColor: theme.colors.red.normal,
-        auxColor: "white",
-        textColor: "white",
+        text: "Combinações, cores e sabores.",
+        mainColor: theme.colors.white.normal,
+        auxColor: theme.colors.red.normal,
+        textColor: theme.colors.blue.palete,
         customWidth: true,
+
     },
     {
-        icon: hamburguer,
+        icon: vinho,
         title: "Vinhos",
-        text: "O favorito de muitos!",
-        mainColor: theme.colors.red.normal,
-        auxColor: "white",
-        textColor: "white",
+        text: "Qual é o rótulo?",
+        mainColor: theme.colors.blue.palete,
+        auxColor: theme.colors.red.normal,
+        textColor: theme.colors.white.normal,
         customWidth: true,
+
     },
     {
-        icon: hamburguer,
+        icon: champanhe,
         title: "champagne/Espumantes",
-        text: "O favorito de muitos!",
+        text: "Ideal para comemorar!",
+        mainColor: theme.colors.yellow.palete,
+        auxColor: theme.colors.white.normal,
+        textColor: theme.colors.black.normal,
+        customWidth: true,
+
+    },
+    {
+        icon: milkshake,
+        title: "Cremes/Milkshakes",
+        text: "Doce & Gelado",
         mainColor: theme.colors.red.normal,
-        auxColor: "white",
-        textColor: "white",
+        auxColor: "",
+        textColor: theme.colors.white.normal,
         customWidth: true,
     },
     {
-        icon: hamburguer,
-        title: "Cremes",
-        text: "O favorito de muitos!",
-        mainColor: theme.colors.red.normal,
-        auxColor: "white",
-        textColor: "white",
-        customWidth: true,
-    },
-    {
-        icon: hamburguer,
+        icon: whiskey,
         title: "Whiskey/Licor",
-        text: "O favorito de muitos!",
-        mainColor: theme.colors.red.normal,
-        auxColor: "white",
-        textColor: "white",
+        text: "Cowboy ou com Gelo?",
+        mainColor: theme.colors.white.normal,
+        auxColor: theme.colors.blue.palete,
+        textColor: theme.colors.black.normal,
         customWidth: true,
+
     },
     {
-        icon: hamburguer,
+        icon: dose,
         title: "Doses",
-        text: "O favorito de muitos!",
-        mainColor: theme.colors.red.normal,
-        auxColor: "white",
-        textColor: "white",
+        text: "Dupla, por favor!",
+        mainColor: theme.colors.blue.palete,
+        auxColor: theme.colors.yellow.palete,
+        textColor: theme.colors.red.normal,
         customWidth: true,
+
     },
 ];
 // eslint-disable-next-line import/no-anonymous-default-export
