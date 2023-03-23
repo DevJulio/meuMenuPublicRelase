@@ -1,22 +1,20 @@
 import React, { useEffect, useState } from "react";
 import Footer from "../../../components/footer";
 import Header from "../../../components/header";
-import Input from "../../../components/input";
 import * as Styled from "./styles";
 
 import { theme } from "../../../theme/theme";
-import isMobile from "is-mobile";
 
 import ButtonSecondary from "../../../components/buttons/secondary";
 import Modal from "../../../components/modal";
 import Homecard from "../../../components/homeCard";
-
-import food from "../../../assets/icons/food.png";
-import drink from "../../../assets/icons/drink.png";
+import { TCardProps } from "../../../components/plansCards/card";
+import { drinkCategories, foodCategories, mainCategories } from "./categories";
 
 const MenuMeuMenu: React.FC = () => {
   const [modal, setModal] = useState<boolean>(false);
   const [mainCategory, setMainCategory] = useState<string>("");
+  const [secondayCategory, setSecondayCategory] = useState<string>("");
 
   const handleClose = () => {
     setModal(false);
@@ -47,26 +45,43 @@ const MenuMeuMenu: React.FC = () => {
     }
   }, [mainCategory]);
 
-  const mainCategories = [
-    {
-      icon: food,
-      title: "Para comer",
-      text: "O Melhor da sua cozinha",
-      mainColor: theme.colors.red.normal,
-      auxColor: "white",
-      textColor: "white",
-      customWidth: true,
-    },
-    {
-      icon: drink,
-      title: "para beber",
-      text: "O melhor da sua adega",
-      mainColor: theme.colors.yellow.palete,
-      auxColor: "",
-      textColor: "black",
-      customWidth: true,
-    },
-  ];
+  //Criar um array de arrays contendo 3 cards em cada posição do array de arrays
+
+  const createRows = (category: TCardProps[]) => {
+    let rowsConter = 0;
+    const byTree = category.length / 3;
+    const byTreeFinal = Math.trunc(byTree);
+    const byTreeResto = category.length % 3;
+
+    let cardsRows: Array<Array<TCardProps>> = [];
+
+    if (!byTreeResto) {
+      for (let index = 0; index < byTreeFinal; index++) {
+        cardsRows.push([]);
+      }
+    }
+    // O array possui o tamanho certo.
+    //a cada 3 itens, o 4 não é renderizado.
+
+    if (!byTreeResto) {
+      category.forEach((foodItem: TCardProps, index) => {
+        if (cardsRows[rowsConter].length < 3) {
+          cardsRows[rowsConter].push(foodItem);
+        } else if (rowsConter <= byTreeFinal) {
+          //problema era que só adicionava +1 sem adicionar o item para o array, no caso pulava certos intens.
+
+          cardsRows[rowsConter + 1].push(foodItem);
+          rowsConter++;
+        }
+      });
+    } else {
+    }
+
+    return cardsRows;
+  };
+
+  const foodRows = createRows(foodCategories);
+  const drinkRows = createRows(drinkCategories);
 
   return (
     <>
@@ -156,55 +171,51 @@ const MenuMeuMenu: React.FC = () => {
         </Styled.CategoryContainer>
         <Styled.CategoryContainer style={{ display: "none" }} id="food">
           <Styled.ItemSpan>Selecione a categoria da comida: </Styled.ItemSpan>
-          <Styled.CardsContainer>
-            <div
-              style={{
-                width: "50%",
-              }}
-              onClick={() => {
-                setMainCategory("comer");
-              }}
-            >
-              <Homecard {...mainCategories[0]} />
-            </div>
-            <div
-              style={{
-                width: "50%",
-                marginRight: "1vw",
-              }}
-              onClick={() => {
-                setMainCategory("beber");
-              }}
-            >
-              <Homecard {...mainCategories[1]} />
-            </div>
-          </Styled.CardsContainer>
+          {/* fazer usando laços de repetição */}
+
+          {foodRows.map((row: TCardProps[]) => {
+            return (
+              <Styled.CardsContainer>
+                {row.map((item: TCardProps) => {
+                  return (
+                    <div
+                      style={{
+                        width: "50%",
+                      }}
+                      onClick={() => {
+                        setSecondayCategory(item.title);
+                      }}
+                    >
+                      <Homecard {...item} />
+                    </div>
+                  );
+                })}
+              </Styled.CardsContainer>
+            );
+          })}
         </Styled.CategoryContainer>
         <Styled.CategoryContainer style={{ display: "none" }} id="drink">
           <Styled.ItemSpan>Selecione a categoria da Bebida: </Styled.ItemSpan>
-          <Styled.CardsContainer>
-            <div
-              style={{
-                width: "50%",
-              }}
-              onClick={() => {
-                setMainCategory("comer");
-              }}
-            >
-              <Homecard {...mainCategories[0]} />
-            </div>
-            <div
-              style={{
-                width: "50%",
-                marginRight: "1vw",
-              }}
-              onClick={() => {
-                setMainCategory("beber");
-              }}
-            >
-              <Homecard {...mainCategories[1]} />
-            </div>
-          </Styled.CardsContainer>
+          {drinkRows.map((row: TCardProps[]) => {
+            return (
+              <Styled.CardsContainer>
+                {row.map((item: TCardProps) => {
+                  return (
+                    <div
+                      style={{
+                        width: "50%",
+                      }}
+                      onClick={() => {
+                        setSecondayCategory(item.title);
+                      }}
+                    >
+                      <Homecard {...item} />
+                    </div>
+                  );
+                })}
+              </Styled.CardsContainer>
+            );
+          })}
         </Styled.CategoryContainer>
       </Styled.MainContainer>
       <Footer />
