@@ -10,15 +10,12 @@ import Modal from "../../../components/modal";
 import Homecard from "../../../components/homeCard";
 import { TCardProps } from "../../../components/plansCards/card";
 import { drinkCategories, foodCategories, mainCategories } from "./categories";
+import { useNavigate } from "react-router-dom";
 
 const MenuMeuMenu: React.FC = () => {
   const [modal, setModal] = useState<boolean>(false);
   const [mainCategory, setMainCategory] = useState<string>("");
-  const [secondayCategory, setSecondayCategory] = useState<string>("");
-
-  const handleClose = () => {
-    setModal(false);
-  };
+  // const [secondayCategory, setSecondayCategory] = useState<string>("");
 
   useEffect(() => {
     const mainCategoryDiv = document.getElementById("mainCategory");
@@ -50,9 +47,11 @@ const MenuMeuMenu: React.FC = () => {
     }
   }, [mainCategory]);
 
-  useEffect(() => {
-    console.log(secondayCategory);
-  }, [secondayCategory]);
+  const navigate = useNavigate();
+
+  const handleClose = () => {
+    setModal(false);
+  };
 
   //Criar um array de arrays contendo 3 cards em cada posição do array de arrays
 
@@ -96,7 +95,8 @@ const MenuMeuMenu: React.FC = () => {
                   width: "50%",
                 }}
                 onClick={() => {
-                  setSecondayCategory(item.title);
+                  localStorage.setItem("meuMenuFoodCategory", item.title);
+                  navigate("/cadastro-item-cardapio");
                 }}
               >
                 <Homecard {...item} />
@@ -192,6 +192,7 @@ const MenuMeuMenu: React.FC = () => {
                 width: "50%",
               }}
               onClick={() => {
+                localStorage.setItem("meuMenuFoodType", "comer");
                 setMainCategory("comer");
               }}
             >
@@ -203,6 +204,7 @@ const MenuMeuMenu: React.FC = () => {
                 marginRight: "1vw",
               }}
               onClick={() => {
+                localStorage.setItem("meuMenuFoodType", "beber");
                 setMainCategory("beber");
               }}
             >

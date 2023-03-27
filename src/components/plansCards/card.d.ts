@@ -11,4 +11,5 @@ export type TCardProps = {
   priceText?: string;
   isLast?: boolean;
   customWidth?: boolean;
+  url?: string;
 };
