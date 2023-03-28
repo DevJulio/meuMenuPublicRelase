@@ -2,6 +2,7 @@ import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import About from "./pages/about";
 import RestaurantHome from "./pages/adm/adm/home";
+import AdmMenu from "./pages/adm/admMenu";
 import CreateFood from "./pages/adm/createFood";
 import SolicitationMeuMenu from "./pages/adm/createForm";
 import MenuMeuMenu from "./pages/adm/createMenu";
@@ -27,7 +28,7 @@ function RoutesList() {
         <Route path="/cadastro-item-cardapio" element={<CreateFood />} />
         {/* ADM */}
         <Route path="/home" element={<RestaurantHome />} />
-        <Route path="/adm/cardapio" element={<></>} />
+        <Route path="/adm/cardapio" element={<AdmMenu />} />
         <Route path="/adm/ofertas" element={<></>} />
         <Route path="/adm/destaques" element={<></>} />
         <Route path="/adm/atualizar" element={<></>} />

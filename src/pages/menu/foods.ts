@@ -1,5 +1,14 @@
 
 import { TProducts } from ".";
+import { ICategory } from "../../components/category";
+import { theme } from "../../theme/theme";
+
+import all from "../../assets/icons/categories/ios/all.png";
+import renEntradas from "../../assets/icons/categories/ios/renEntradas.png";
+import renPrincipal from "../../assets/icons/categories/ios/renPrincipal.png";
+import renPrimeiro from "../../assets/icons/categories/ios/renPrimeiro.png";
+import drinks from "../../assets/icons/categories/ios/drinks.png";
+import sobremesa from "../../assets/icons/categories/ios/sobremesa.png";
 
 
 const foods: TProducts[] = [{
@@ -306,5 +315,58 @@ const foods: TProducts[] = [{
 
 
 ];
+export const renCategories: ICategory[] = [
+    {
+        icon: all,
+        label: "Todas",
+        color: "white",
+        bgColor: "#386641",
+        auxColor: "#BC4749",
+        fontStyle: theme.fonts.hand,
+    },
 
+    {
+        icon: drinks,
+        label: "Bebidas",
+        color: "white",
+        bgColor: "#386641",
+        auxColor: "#BC4749",
+        fontStyle: theme.fonts.hand,
+    },
+    {
+        icon: renEntradas,
+        label: "Entradas",
+        color: "white",
+        bgColor: "#386641",
+        auxColor: "#BC4749",
+        fontStyle: theme.fonts.hand,
+    },
+
+    {
+        icon: renPrimeiro,
+        label: "Primeiro Prato",
+        color: "white",
+        bgColor: "#386641",
+        auxColor: "#BC4749",
+        fontStyle: theme.fonts.hand,
+    },
+
+    {
+        icon: renPrincipal,
+        label: "Prato Principal",
+        color: "white",
+        bgColor: "#386641",
+        auxColor: "#BC4749",
+        fontStyle: theme.fonts.hand,
+    },
+
+    {
+        icon: sobremesa,
+        label: "Sobremesas",
+        color: "white",
+        bgColor: "#386641",
+        auxColor: "#BC4749",
+        fontStyle: theme.fonts.hand,
+    },
+];
 export default foods;

@@ -173,17 +173,22 @@ const MenuMeuMenu: React.FC = () => {
         )}
 
         <Styled.TitleSpan>Cadastro de cardápio.</Styled.TitleSpan>
-        <Styled.BackBtnContainer>
-          <ButtonSecondary
-            action={() => {
-              setMainCategory("");
-            }}
-            Label={"← Escolher categoria"}
-            fontSize={theme.fontSize.md}
-            color={theme.colors.white.normal}
-            bgColor={theme.colors.red.normal}
-          />
-        </Styled.BackBtnContainer>
+        {mainCategory && (
+          <>
+            <Styled.BackBtnContainer>
+              <ButtonSecondary
+                action={() => {
+                  setMainCategory("");
+                }}
+                Label={"← Escolher categoria"}
+                fontSize={theme.fontSize.md}
+                color={theme.colors.white.normal}
+                bgColor={theme.colors.red.normal}
+              />
+            </Styled.BackBtnContainer>
+          </>
+        )}
+
         <Styled.CategoryContainer id="mainCategory">
           <Styled.ItemSpan>Categoria: </Styled.ItemSpan>
           <Styled.CardsContainer>

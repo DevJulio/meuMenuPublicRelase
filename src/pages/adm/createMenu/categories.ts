@@ -23,6 +23,12 @@ import milkshake from "../../../assets/icons/categories/allCategories/milkshake.
 import whiskey from "../../../assets/icons/categories/allCategories/whiskey.png";
 import dose from "../../../assets/icons/categories/allCategories/dose.png";
 import suco from "../../../assets/icons/categories/allCategories/suco.png";
+import agua from "../../../assets/icons/categories/allCategories/agua.png";
+import cafe from "../../../assets/icons/categories/allCategories/cafe.png";
+import cha from "../../../assets/icons/categories/allCategories/cha.png";
+import acai from "../../../assets/icons/categories/allCategories/acai.png";
+import hotdog from "../../../assets/icons/categories/allCategories/hotdog.png";
+import sorvete from "../../../assets/icons/categories/allCategories/sorvete.png";
 
 
 
@@ -153,6 +159,72 @@ export const foodCategories: TCardProps[] = [
         customWidth: true,
     },
     {
+        icon: hotdog, //10
+        title: "Cachorro Quente",
+        text: "Tradicional e delicioso",
+        mainColor: theme.colors.red.normal,
+        auxColor: theme.colors.white.normal,
+        textColor: theme.colors.white.normal,
+        customWidth: true,
+    }, {
+        icon: acai, //10
+        title: "Açaí",
+        text: "Ideal para adoçar dias quentes",
+        mainColor: theme.colors.white.normal,
+        auxColor: theme.colors.blue.palete,
+        textColor: theme.colors.blue.palete,
+        customWidth: true,
+    }, {
+        icon: sorvete, //10
+        title: "Sorvetes/Picolés",
+        text: "Quem não gosta?",
+        mainColor: theme.colors.blue.palete,
+        auxColor: theme.colors.white.normal,
+        textColor: theme.colors.white.normal,
+        customWidth: true,
+    },
+
+
+
+
+
+
+
+
+    // {
+    //     icon: hotdog, //10
+    //     title: "Padaria",
+    //     text: "Direto do forno",
+    //     mainColor: theme.colors.red.normal,
+    //     auxColor: theme.colors.white.normal,
+    //     textColor: theme.colors.white.normal,
+    //     customWidth: true,
+    // }, {
+    //     icon: churrasco, //10
+    //     title: "Açaí",
+    //     text: "Ideal para adoçar dias quentes",
+    //     mainColor: theme.colors.white.normal,
+    //     auxColor: theme.colors.blue.palete,
+    //     textColor: theme.colors.blue.palete,
+    //     customWidth: true,
+    // }, {
+    //     icon: churrasco, //10
+    //     title: "Diversos",
+    //     text: "Quem não gosta?",
+    //     mainColor: theme.colors.blue.palete,
+    //     auxColor: theme.colors.blue.palete,
+    //     textColor: theme.colors.blue.palete,
+    //     customWidth: true,
+    // },
+
+
+
+
+
+
+
+
+    {
         icon: outro, //11 <===========
         title: "Outra..",
         text: "Crie uma nova categoria",
@@ -252,6 +324,40 @@ export const drinkCategories = [
         auxColor: theme.colors.yellow.palete,
         textColor: theme.colors.red.normal,
         customWidth: true,
+
+    },
+
+
+
+    {
+        icon: cafe,
+        title: "Cafés",
+        text: "Cafés, expressos, capuccinos..",
+        mainColor: theme.colors.yellow.palete,
+        auxColor: "",
+        textColor: "black",
+        customWidth: true,
+
+
+    },
+    {
+        icon: cha,
+        title: "Chá",
+        text: "Gelado ou quente?",
+        mainColor: theme.colors.blue.palete,
+        auxColor: theme.colors.white.normal,
+        textColor: theme.colors.white.normal,
+        customWidth: true,
+    },
+    {
+        icon: agua,
+        title: "Água",
+        text: "Gelada.",
+        mainColor: theme.colors.red.normal,
+        auxColor: "white",
+        textColor: "white",
+        customWidth: true,
+
 
     },
 ];

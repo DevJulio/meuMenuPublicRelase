@@ -161,7 +161,6 @@ const Menu: React.FC = () => {
   ];
 
   const width = window.screen.width;
-  const navigate = useNavigate();
 
   const redirect = (id: number) => {
     if (id === 0) {
