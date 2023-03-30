@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 const RestaurantHome: React.FC = () => {
   const navigate = useNavigate();
 
+  //Divide em linhas de 3 itens cada
   const createRows = (category: TCardProps[]) => {
     let rowsConter = 0;
     const byTree = category.length / 3;

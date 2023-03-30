@@ -6,6 +6,7 @@ import AdmMenu from "./pages/adm/admMenu";
 import CreateFood from "./pages/adm/createFood";
 import SolicitationMeuMenu from "./pages/adm/createForm";
 import MenuMeuMenu from "./pages/adm/createMenu";
+import UpdateFood from "./pages/adm/updateFood";
 import Contact from "./pages/contact";
 
 import Home from "./pages/home";
@@ -34,6 +35,8 @@ function RoutesList() {
         <Route path="/adm/atualizar" element={<></>} />
         <Route path="/adm/comanda" element={<></>} />
         <Route path="/adm/suporte" element={<></>} />
+        {/* UPDATE */}
+        <Route path="/adm/update/cardapio" element={<UpdateFood />} />
       </Routes>
     </BrowserRouter>
   );

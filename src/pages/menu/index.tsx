@@ -38,6 +38,7 @@ import Modal from "../../components/modal";
 import FoodModalDetail from "../../components/foodModalDetail";
 
 export type TProducts = {
+  isEnable: boolean;
   img: string;
   description: string;
   price: string;

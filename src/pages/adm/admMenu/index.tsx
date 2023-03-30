@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Footer from "../../../components/footer";
 import Header from "../../../components/header";
 import * as Styled from "./styles";
+import Switch from "react-switch";
 
 import { theme } from "../../../theme/theme";
 
@@ -16,11 +17,19 @@ import FoodCard from "../../../components/foodCard";
 import Modal from "../../../components/modal";
 import FoodModalDetail from "../../../components/foodModalDetail";
 import { TProducts } from "../../menu";
+import { ICategory } from "../../../components/category";
+
+type TSwitch = {
+  id: string;
+  checked: boolean;
+  label: string;
+};
 
 const AdmMenu: React.FC = () => {
   const [mainCategory, setMainCategory] = useState<string>("");
   const [foodCategory, setFoodCategory] = useState<string>("");
   const [modal, setModal] = useState<boolean>(false);
+  const [switchStates, setSwitchStates] = useState<TSwitch[]>([]);
   const [modalIten, setmodalIten] = useState<TProducts>();
 
   const mainCategories: TCardProps[] = [
@@ -44,6 +53,18 @@ const AdmMenu: React.FC = () => {
       customWidth: true,
     },
   ];
+
+  const navigate = useNavigate();
+
+  const renIndex = renCategories.findIndex(
+    (categoria) => categoria.label === "Todas" //usa o método findIndex para acessar o index de um objeto dentro de um array que possua um valor especifico
+  );
+
+  const getArraysExceptIndex = (list: ICategory[], index: number) => {
+    return list.filter((_, i) => i !== index);
+  };
+
+  const parsedRenCategories = getArraysExceptIndex(renCategories, renIndex);
 
   useEffect(() => {
     const mainCategoryDiv = document.getElementById("mainCategory");
@@ -71,16 +92,46 @@ const AdmMenu: React.FC = () => {
   }, [mainCategory]);
 
   useEffect(() => {
+    const switches: TSwitch[] = [];
     foods
       .filter((food) => food.category === foodCategory)
-      .map((foodItem) => console.log(foodItem));
+      .map((foodItem, index) =>
+        switches.push({
+          id: index.toString(),
+          checked: foodItem.isEnable,
+          label: foodItem.label,
+        })
+      );
+    // console.log(switches);
+    setSwitchStates(switches);
   }, [foodCategory]);
 
-  const navigate = useNavigate();
+  // useEffect(() => {
+  //   console.log(switchStates);
+  // }, [switchStates]);
+
+  const handleSwitchChange = async (id: string) => {
+    const currentFoodItem = foods.filter(
+      (cate) => cate.category === foodCategory
+    );
+
+    console.log(currentFoodItem[Number(id)]);
+
+    setSwitchStates((prevSwitchStates) =>
+      prevSwitchStates.map((switchState) =>
+        switchState.id === id
+          ? { ...switchState, checked: !switchState.checked }
+          : switchState
+      )
+    );
+    //Chamar Api.
+    //Alterar o elemento currentFoodItem[Number(id)] no banco de dados.
+  };
 
   const handleClose = () => {
     setModal(false);
   };
+
   return (
     <>
       <Header />
@@ -145,7 +196,7 @@ const AdmMenu: React.FC = () => {
             Selecione a categoria do prato:
           </Styled.ItemSpan>
           <Styled.CateRow>
-            {renCategories.map((cateItem, index) => (
+            {parsedRenCategories.map((cateItem, index) => (
               // eslint-disable-next-line jsx-a11y/anchor-is-valid
               <a
                 onClick={() => {
@@ -166,11 +217,6 @@ const AdmMenu: React.FC = () => {
           style={{ display: "none", width: "85%" }}
           id="listFoods"
         >
-          {/* {foods &&
-            foodCategory &&
-            foods
-              .filter((food) => food.category === foodCategory)
-              .map((foodItem) => <>{foodItem.label}</>)} */}
           <div
             style={{
               display: "flex",
@@ -189,49 +235,74 @@ const AdmMenu: React.FC = () => {
                     : "auto",
               }}
             >
-              {foodCategory === "Todas"
-                ? foods
-                    .filter((cate) => cate.isMainDestaque)
-                    .map((foodItem) => (
-                      <Styled.FoodCategoryItem
-                        onClick={() => {
-                          // setModal(true);
-                          // setmodalIten(foodItem);
-                        }}
-                      >
-                        <FoodCard
-                          category=""
-                          categoryIcon=""
-                          bgColor={"#BC4749"}
-                          price={foodItem.price}
-                          color={"#386641"}
-                          label={foodItem.label}
-                          description={foodItem.description}
-                          img={foodItem.img}
-                        />
-                      </Styled.FoodCategoryItem>
-                    ))
-                : foods
-                    .filter((cate) => cate.category === foodCategory)
-                    .map((foodItem) => (
-                      <Styled.FoodCategoryItem
-                        onClick={() => {
-                          // setModal(true);
-                          // setmodalIten(foodItem);
-                        }}
-                      >
-                        <FoodCard
-                          category=""
-                          categoryIcon=""
-                          bgColor={"#BC4749"}
-                          price={foodItem.price}
-                          color={"#386641"}
-                          label={foodItem.label}
-                          description={foodItem.description}
-                          img={foodItem.img}
-                        />
-                      </Styled.FoodCategoryItem>
-                    ))}
+              {switchStates.length &&
+                foodCategory &&
+                foods
+                  .filter((cate) => cate.category === foodCategory)
+                  .map((foodItem, index) => (
+                    <Styled.FoodCategoryItem
+                      onClick={() => {
+                        // setModal(true);
+                        // setmodalIten(foodItem);
+                      }}
+                    >
+                      <FoodCard
+                        category=""
+                        categoryIcon=""
+                        bgColor={"#BC4749"}
+                        price={foodItem.price}
+                        color={"#386641"}
+                        label={foodItem.label}
+                        description={foodItem.description}
+                        img={foodItem.img}
+                      />
+                      <Styled.SwitchContainerRow>
+                        <Styled.SwitchContainer>
+                          <Styled.SwitchSpan
+                            style={{ color: theme.colors.yellow.palete }}
+                          >
+                            Disponibilidade:
+                          </Styled.SwitchSpan>
+                          <Switch
+                            id={index.toString()}
+                            height={35}
+                            width={90}
+                            offColor={theme.colors.red.normal}
+                            onColor={theme.colors.green.normal}
+                            onChange={() => {
+                              handleSwitchChange(index.toString());
+                            }}
+                            checked={switchStates[index].checked}
+                          />
+                          {switchStates[index].checked ? (
+                            <Styled.SwitchSpan>Ativo</Styled.SwitchSpan>
+                          ) : (
+                            <Styled.SwitchSpan>Desativado </Styled.SwitchSpan>
+                          )}
+                        </Styled.SwitchContainer>
+                        <Styled.SwitchBtnContainer>
+                          <Styled.SwitchSpan
+                            style={{
+                              color: theme.colors.red.normal,
+                              fontSize: theme.fontSize.md2,
+                            }}
+                            onClick={() => {
+                              const currentFoodItem = foods.filter(
+                                (cate) => cate.category === foodCategory
+                              );
+                              localStorage.setItem(
+                                "meuMenuFoodDetail",
+                                JSON.stringify(currentFoodItem[Number(index)])
+                              );
+                              navigate("/adm/update/cardapio");
+                            }}
+                          >
+                            Editar
+                          </Styled.SwitchSpan>
+                        </Styled.SwitchBtnContainer>
+                      </Styled.SwitchContainerRow>
+                    </Styled.FoodCategoryItem>
+                  ))}
             </Styled.ContainerCategories>
           </div>
         </Styled.CategoryContainerAux>
