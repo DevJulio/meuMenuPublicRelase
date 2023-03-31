@@ -6,6 +6,7 @@ import AdmMenu from "./pages/adm/admMenu";
 import CreateFood from "./pages/adm/createFood";
 import SolicitationMeuMenu from "./pages/adm/createForm";
 import MenuMeuMenu from "./pages/adm/createMenu";
+import OffersMenu from "./pages/adm/keepOffers";
 import UpdateFood from "./pages/adm/updateFood";
 import Contact from "./pages/contact";
 
@@ -30,7 +31,7 @@ function RoutesList() {
         {/* ADM */}
         <Route path="/home" element={<RestaurantHome />} />
         <Route path="/adm/cardapio" element={<AdmMenu />} />
-        <Route path="/adm/ofertas" element={<></>} />
+        <Route path="/adm/ofertas" element={<OffersMenu />} />
         <Route path="/adm/destaques" element={<></>} />
         <Route path="/adm/atualizar" element={<></>} />
         <Route path="/adm/comanda" element={<></>} />
