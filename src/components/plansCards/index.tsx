@@ -119,14 +119,15 @@ const PlansCard: React.FC<TCardProps> = ({
             {includeText}
           </Styled.Include>
           <>
-            {list.map((text, id) => {
-              return (
-                <Styled.ListItem>
-                  <Styled.ListImg src={point} />
-                  <Styled.ListSpan>{text}</Styled.ListSpan>
-                </Styled.ListItem>
-              );
-            })}
+            {list &&
+              list.map((text, id) => {
+                return (
+                  <Styled.ListItem>
+                    <Styled.ListImg src={point} />
+                    <Styled.ListSpan>{text}</Styled.ListSpan>
+                  </Styled.ListItem>
+                );
+              })}
           </>
         </Styled.List>
       </Styled.Container>

@@ -6,8 +6,10 @@ export type TCardProps = {
   auxColor: string;
   textColor?: string;
   price?: number;
-  list: string[];
-  includeText: string;
-  priceText: string;
+  list?: string[];
+  includeText?: string;
+  priceText?: string;
   isLast?: boolean;
+  customWidth?: boolean;
+  url?: string;
 };

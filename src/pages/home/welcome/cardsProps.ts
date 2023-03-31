@@ -15,7 +15,6 @@ const cardProps: TCardProps[] = [
     mainColor: theme.colors.white.normal,
     auxColor: theme.colors.red.normal,
     textColor: theme.colors.black.normal,
-    customWidth: "10vw",
   },
   {
     icon: central,
@@ -23,7 +22,6 @@ const cardProps: TCardProps[] = [
     text: "Muito mais que um cardápio digital. Todas suas redes socias e contatos (até a playlist do spotify!) em um único lugar",
     mainColor: theme.colors.blue.palete,
     auxColor: theme.colors.white.normal,
-    customWidth: "10vw",
   },
   {
     icon: visita,
@@ -32,7 +30,6 @@ const cardProps: TCardProps[] = [
     mainColor: theme.colors.yellow.palete,
     auxColor: "",
     textColor: theme.colors.black.normal,
-    customWidth: "10vw",
   },
   {
     icon: personalizar,
@@ -40,7 +37,6 @@ const cardProps: TCardProps[] = [
     text: "Muito mais que um cardápio digital! Traduza a cozinha, seus ingredientes, seus serviços em cores, textos e imagens!",
     mainColor: theme.colors.blue.palete,
     auxColor: theme.colors.red.normal,
-    customWidth: "10vw",
   },
   {
     icon: easy,
@@ -49,7 +45,6 @@ const cardProps: TCardProps[] = [
     mainColor: theme.colors.white.normal,
     auxColor: theme.colors.red.normal,
     textColor: theme.colors.black.normal,
-    customWidth: "10vw",
   },
   {
     icon: sail,
@@ -58,7 +53,6 @@ const cardProps: TCardProps[] = [
     mainColor: theme.colors.yellow.palete,
     auxColor: theme.colors.blue.palete,
     textColor: theme.colors.blue.palete,
-    customWidth: "10vw",
   },
 ];
 

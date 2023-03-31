@@ -15,9 +15,13 @@ export const MainContainer = styled.div`
   display: flex;
   flex-direction: column;
   border-radius: 25px;
-  margin-left: 2.5vw;
-  margin-right: 2.5vw;
+  margin-left: 1.5vw;
+  margin-right: 1.5vw;
   max-width: 250px;
+  @media ${({ theme }) => theme.devices.tablet} {
+    margin-left: 2.5vw;
+    margin-right: 2.5vw;
+  }
 `;
 
 export const Img = styled.img`

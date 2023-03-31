@@ -16,20 +16,37 @@ const Homecard: React.FC<TCardProps> = ({
 
   return (
     <>
-      <Styled.Container
-        style={{
-          backgroundColor: mainColor,
-          width: mobile ? "80%" : "13%",
-        }}
-      >
-        <Styled.Title style={{ color: auxColor, fontFamily: fontFamily }}>
-          {title}
-        </Styled.Title>
-        <Styled.LogoImg src={icon} alt="icone" />
-        <Styled.Paragraph style={{ color: textColor ? textColor : "#fff" }}>
-          {text}
-        </Styled.Paragraph>
-      </Styled.Container>
+      {!customWidth ? (
+        <Styled.Container
+          style={{
+            backgroundColor: mainColor,
+            width: mobile ? "80%" : "13%",
+          }}
+        >
+          <Styled.Title style={{ color: auxColor, fontFamily: fontFamily }}>
+            {title}
+          </Styled.Title>
+          <Styled.LogoImg src={icon} alt="icone" />
+          <Styled.Paragraph style={{ color: textColor ? textColor : "#fff" }}>
+            {text}
+          </Styled.Paragraph>
+        </Styled.Container>
+      ) : (
+        <Styled.ContainerAux
+          style={{
+            backgroundColor: mainColor,
+            width: mobile ? "80%" : "13%",
+          }}
+        >
+          <Styled.Title style={{ color: auxColor, fontFamily: fontFamily }}>
+            {title}
+          </Styled.Title>
+          <Styled.LogoImg src={icon} alt="icone" />
+          <Styled.Paragraph style={{ color: textColor ? textColor : "#fff" }}>
+            {text}
+          </Styled.Paragraph>
+        </Styled.ContainerAux>
+      )}
     </>
   );
 };
