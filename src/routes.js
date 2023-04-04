@@ -14,6 +14,8 @@ import Home from "./pages/home";
 import Menu from "./pages/menu";
 import Plans from "./pages/plans";
 import PreMenu from "./pages/preMenu";
+import OffersMenuPrice from "./pages/adm/keepOffersPrice";
+import OffersMenuCombo from "./pages/adm/keepOffersCombo";
 
 function RoutesList() {
   return (
@@ -32,6 +34,8 @@ function RoutesList() {
         <Route path="/home" element={<RestaurantHome />} />
         <Route path="/adm/cardapio" element={<AdmMenu />} />
         <Route path="/adm/ofertas" element={<OffersMenu />} />
+        <Route path="/adm/ofertas/preco" element={<OffersMenuPrice />} />
+        <Route path="/adm/ofertas/combo" element={<OffersMenuCombo />} />
         <Route path="/adm/destaques" element={<></>} />
         <Route path="/adm/atualizar" element={<></>} />
         <Route path="/adm/comanda" element={<></>} />

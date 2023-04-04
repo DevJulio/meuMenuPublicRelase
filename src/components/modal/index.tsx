@@ -8,6 +8,7 @@ interface Props {
   title: string;
   bannerColor: string;
   titleFont: string;
+  customWidth?: number;
 }
 
 const Modal: React.FC<Props> = ({
@@ -16,11 +17,14 @@ const Modal: React.FC<Props> = ({
   title,
   bannerColor,
   titleFont,
+  customWidth,
 }) => {
   return (
     <>
       <Styled.Container>
-        <Styled.Content>
+        <Styled.Content
+          style={{ width: customWidth ? `${customWidth}%` : "60%" }}
+        >
           <Styled.Header
             style={{ backgroundColor: bannerColor, fontFamily: titleFont }}
           >
