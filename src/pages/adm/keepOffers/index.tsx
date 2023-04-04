@@ -8,64 +8,44 @@ import { TCardProps } from "../../../components/plansCards/card";
 
 import { mainAdmCategories, offerCategories } from "./categories";
 import { useNavigate } from "react-router-dom";
-import { renCategories } from "../../menu/foods";
-import { ICategory } from "../../../components/category";
+import ButtonSecondary from "../../../components/buttons/secondary";
+import { theme } from "../../../theme/theme";
 
 const OffersMenu: React.FC = () => {
   const navigate = useNavigate();
 
   const [mainCategory, setMainCategory] = useState<string>("");
-
-  //////////////////////////////////////////////////////////////////////////////////////////////////
-
-  const renIndex = renCategories.findIndex(
-    (categoria) => categoria.label === "Todas" //usa o método findIndex para acessar o index de um objeto dentro de um array que possua um valor especifico
-  );
-
-  const getArraysExceptIndex = (list: ICategory[], index: number) => {
-    return list.filter((_, i) => i !== index);
-  };
-
-  const parsedRenCategories = getArraysExceptIndex(renCategories, renIndex);
-
-  //////////////////////////////////////////////////////////////////////////////////////////////////
+  const [backOfferMenu, setBackOfferMenu] = useState<boolean>(false);
 
   useEffect(() => {
-    // const mainDiv = document.getElementById("mainDiv");
-    // const list = document.getElementById("list");
-
-    // if (mainDiv && list) {
-    //   if (mainCategory === "listagem") {
-    //     mainDiv.style.display = "none";
-    //     list.style.display = "flex";
-    //   }
-    // }
-
     const mainDiv = document.getElementById("mainDiv");
-    const list = document.getElementById("list");
-    const offerCate = document.getElementById("offerCate");
-
-    if (mainDiv && list && offerCate) {
+    const offerType = document.getElementById("offerType");
+    const myOffers = document.getElementById("myOffers");
+    if (mainDiv && myOffers && offerType) {
       switch (mainCategory) {
-        case "listagem":
+        case "Criar nova Oferta":
+          setBackOfferMenu(true);
+          offerType.style.display = "flex";
+          myOffers.style.display = "none";
           mainDiv.style.display = "none";
-          list.style.display = "flex";
-          // offerCate.style.display = "flex";
-
           break;
-        case "offerCategories":
+        case "Minhas Ofertas":
+          setBackOfferMenu(true);
+          myOffers.style.display = "flex";
+          offerType.style.display = "none";
           mainDiv.style.display = "none";
-          list.style.display = "none";
-          offerCate.style.display = "flex";
           break;
-
+        case "menu":
+          mainDiv.style.display = "flex";
+          myOffers.style.display = "none";
+          offerType.style.display = "none";
+          break;
         default:
           break;
       }
     }
   }, [mainCategory]);
 
-  //Divide em linhas de 3 itens cada
   const createRows = (category: TCardProps[], qtd: number) => {
     let rowsConter = 0;
     const byTree = category.length / qtd;
@@ -74,6 +54,7 @@ const OffersMenu: React.FC = () => {
 
     let cardsRows: Array<Array<TCardProps>> = [];
 
+    //Evitar que quebre o layout, precisa ter a quantidade correta de itens.
     if (!byTreeResto) {
       for (let index = 0; index < byTreeFinal; index++) {
         cardsRows.push([]);
@@ -106,12 +87,11 @@ const OffersMenu: React.FC = () => {
                   width: "50%",
                 }}
                 onClick={() => {
+                  localStorage.setItem("meuMenuComboCounter", "0");
                   if (item.url) {
                     navigate(item.url);
                   } else {
-                    console.log("kkkkklistagem");
-
-                    setMainCategory("listagem");
+                    setMainCategory(item.title);
                   }
                 }}
               >
@@ -133,19 +113,50 @@ const OffersMenu: React.FC = () => {
     <>
       <Header />
       <Styled.MainContainer>
+        <Styled.TitleSpan>Ofertas</Styled.TitleSpan>
         <Styled.CategoryContainer id="mainDiv">
-          <Styled.ItemSpan> Ofertas</Styled.ItemSpan>
+          <Styled.ItemSpan>Menu de Ofertas</Styled.ItemSpan>
           {optionsRows}
         </Styled.CategoryContainer>
-
-        <Styled.CategoryContainer style={{ display: "none" }} id="list">
-          <Styled.ItemSpan>Selecione a categoria da oferta:</Styled.ItemSpan>
+        {!backOfferMenu && (
+          <>
+            <Styled.BackBtnContainer>
+              <ButtonSecondary
+                action={() => {
+                  setBackOfferMenu(false);
+                  navigate("/home");
+                }}
+                Label={"← voltar ao menu principal"}
+                fontSize={theme.fontSize.md}
+                color={theme.colors.white.normal}
+                bgColor={theme.colors.red.normal}
+              />
+            </Styled.BackBtnContainer>
+          </>
+        )}
+        <Styled.CategoryContainer style={{ display: "none" }} id="myOffers">
+          {/* Listagem das ofertas */}
+        </Styled.CategoryContainer>
+        <Styled.CategoryContainer style={{ display: "none" }} id="offerType">
+          <Styled.ItemSpan>Qual é o tipo da oferta?</Styled.ItemSpan>
           {offerRows}
         </Styled.CategoryContainer>
-        <Styled.CategoryContainer style={{ display: "none" }} id="offerCate">
-          <Styled.ItemSpan>Selecione a categoria da oferta: </Styled.ItemSpan>
-          {offerRows}
-        </Styled.CategoryContainer>
+        {backOfferMenu && (
+          <>
+            <Styled.BackBtnContainer>
+              <ButtonSecondary
+                action={() => {
+                  setBackOfferMenu(false);
+                  setMainCategory("menu");
+                }}
+                Label={"← voltar ao menu de ofertas"}
+                fontSize={theme.fontSize.md}
+                color={theme.colors.white.normal}
+                bgColor={theme.colors.red.normal}
+              />
+            </Styled.BackBtnContainer>
+          </>
+        )}
       </Styled.MainContainer>
       <Footer />
     </>

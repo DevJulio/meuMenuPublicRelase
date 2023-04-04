@@ -29,8 +29,8 @@ const AdmMenu: React.FC = () => {
   const [mainCategory, setMainCategory] = useState<string>("");
   const [foodCategory, setFoodCategory] = useState<string>("");
   const [modal, setModal] = useState<boolean>(false);
-  const [switchStates, setSwitchStates] = useState<TSwitch[]>([]);
   const [modalIten, setmodalIten] = useState<TProducts>();
+  const [switchStates, setSwitchStates] = useState<TSwitch[]>([]);
 
   const mainCategories: TCardProps[] = [
     {
@@ -111,12 +111,6 @@ const AdmMenu: React.FC = () => {
   // }, [switchStates]);
 
   const handleSwitchChange = async (id: string) => {
-    const currentFoodItem = foods.filter(
-      (cate) => cate.category === foodCategory
-    );
-
-    console.log(currentFoodItem[Number(id)]);
-
     setSwitchStates((prevSwitchStates) =>
       prevSwitchStates.map((switchState) =>
         switchState.id === id

@@ -44,10 +44,8 @@ export const offerCategories: TCardProps[] = [
         auxColor: theme.colors.blue.palete,
         textColor: "black",
         customWidth: true,
-        // url: "/adm/cardapio"
-    },
-
-    {
+        url: "/adm/ofertas/preco"
+    }, {
         icon: combo,
         title: "Combos",
         text: "Crie ofertas combinando produtos.",
@@ -55,21 +53,21 @@ export const offerCategories: TCardProps[] = [
         auxColor: theme.colors.blue.palete,
         textColor: "black",
         customWidth: true,
-        // url: "/adm/ofertas"//Url p/ criar oferta, criar tela ainda 
+        url:"/adm/ofertas/combo"
     }, {
         icon: precoCombo,
-        title: "Combo + Preço",
-        text: "Crie combos com melhores preços",
+        title: "Automatização das ofertas",
+        text: "Selecione as ofertas já criadas e defina dias e perídos para deixar disponível.",
         mainColor: theme.colors.blue.palete,
         auxColor: theme.colors.white.normal,
         textColor: theme.colors.white.normal,
         customWidth: true,
-        // url: "/adm/cardapio"
     },
-
 ];
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
     mainAdmCategories,
     offerCategories
 }
+
+///IA, para costumer service,

@@ -1,6 +1,5 @@
 import styled from "styled-components";
 
-
 export const TitleSpan = styled.span`
   color: ${({ theme }) => theme.colors.yellow.palete};
   display: flex;
@@ -21,24 +20,6 @@ export const MainContainer = styled.div`
   background-color: ${({ theme }) => theme.colors.blue.palete};
   flex-direction: column;
 `;
-export const CategoryContainer = styled.div`
-justify-content: center;
-margin-top: 5vh;
-display: flex;
-flex-direction: column;
-border-radius: 25px;
-width: 75%;
-text-align: -webkit-center;
-box-shadow: 1px 5px 5px rgb(0 0 0 / 32%);
-background-color: ${({ theme }) => theme.colors.white.normal};
-align-self: center;
-justify-content: center;
-@media ${({ theme }) => theme.devices.tablet} {
-  flex-direction: column;
-}
-`;
-
-
 export const ItemSpan = styled.span`
   color: white;
   margin-top: 4vh;
@@ -52,38 +33,22 @@ export const ItemSpan = styled.span`
     text-align-last: left;
   }
 `;
-export const CardsContainer = styled.div`
-  justify-content: center;
+
+export const BackBtnContainer = styled.div`
   display: flex;
-  flex: 3;
-  flex-direction: row;
-  overflow-x: auto;
-  width: 100%;
-  align-self: center;
-  padding-bottom: 2vh;
-   @media ${({ theme }) => theme.devices.tablet} {
-    width: 100%;
-  }
-`;
-export const CategoryContainerAux = styled.div`
-justify-content: center;
-margin-top: 5vh;
-display: flex;
-flex-direction: column;
-border-radius: 25px;
-width: 65%;
-text-align: -webkit-center;
-align-self: center;
-justify-content: center;
-@media ${({ theme }) => theme.devices.tablet} {
-  flex-direction: column;
-}
-`;
+   margin-top:2vw;
+ `;
+export const MenuContainer = styled.div`
+ display: flex;
+ width: 100%;
+ background-color: ${({ theme }) => theme.colors.blue.palete};
+ flex-direction: column;
+  `;
 export const CateRow = styled.div`
-display: flex;
-flex-direction: row;
-align-self: center;
- `
+  display: flex;
+  flex-direction: row;
+  align-self: center;
+   `
 
 export const CateItem = styled.div`
 display: flex;
@@ -91,6 +56,7 @@ margin-inline: 3vh;
 cursor: pointer;
 flex-direction: column;
 align-self: center;
+align-items: center;
 justify-content: center;
   span {
     font-family: ${({ theme }) => theme.fonts.primary};
@@ -109,16 +75,55 @@ flex-direction: row;
 margin-top: 2vh;
 margin-bottom: 1vh;
  height: 12vh;
-
+`;
+export const CategoryContainerAux = styled.div`
+justify-content: center;
+margin-top: 1vh;
+display: flex;
+flex-direction: column;
+border-radius: 25px;
+width: 65%;
+text-align: -webkit-center;
+align-self: center;
+justify-content: center;
+@media ${({ theme }) => theme.devices.tablet} {
+  flex-direction: column;
+}
 `;
 export const FoodCategoryItem = styled.div`
 display: flex;
 margin-bottom: 5vh;
 cursor: pointer;
 flex-direction: column;
- `
 
-export const BackBtnContainer = styled.div`
+ `
+export const FormItemContainer = styled.div`
+  margin-left: 40px;
+  margin-right: 40px;
+      align-self: center;
+
+  width: 40%;
   display: flex;
-   margin-top: 1vw;
- `;
+  flex-direction: column;
+  @media ${({ theme }) => theme.devices.tablet} {
+    margin-left: 0px;
+    margin-right: 0px;
+    width: 95%;
+    align-self: center;
+  }
+`;
+export const ModalContainer = styled.div`
+display: flex;
+margin-bottom: 5vh;
+flex-direction: column;
+  `
+  export const PlansDetailModal = styled.span`
+  display: flex;
+  justify-content: left;
+  width: 95%;
+  padding: 2vh;
+  justify-content: center;
+  font-family: ${({ theme }) => theme.fonts.secundary};
+  font-size: ${({ theme }) => theme.fontSize.mm};
+ 
+`;
