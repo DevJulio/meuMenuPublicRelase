@@ -105,7 +105,21 @@ const OffersMenuCombo: React.FC = () => {
   };
 
   const parsedRenCategories = getArraysExceptIndex(renCategories, renIndex);
-  console.log(conterStates);
+
+  const getPrice = () => {
+    if (comboState) {
+      let formatedPrice = 0;
+
+      comboState.forEach((comboItem) => {
+        if (comboItem.qtd && comboItem.price) {
+          formatedPrice +=
+            Number(comboItem.price.replace(",", ".")) * comboItem.qtd;
+        }
+      });
+
+      return Number(formatedPrice).toFixed(2);
+    }
+  };
 
   return (
     <>
@@ -449,7 +463,13 @@ const OffersMenuCombo: React.FC = () => {
               </Styled.FoodCategoryItem>
             </Styled.ContainerCategories>
           </div>
-
+          {comboState && (
+            <Styled.LblPriceDetail>
+              <Styled.PageSpan>
+                Valor total dos produtos R$ {getPrice()}
+              </Styled.PageSpan>
+            </Styled.LblPriceDetail>
+          )}
           {/* Criar formulário para receber título, descrição, banner, preço e tbm criar label grande somando todos os valores */}
         </Styled.MenuContainer>
       </Styled.MainContainer>

@@ -175,3 +175,19 @@ export const ItemCol = styled.div`
    flex-direction: column;
    align-self: center;
     `
+export const LblPriceDetail = styled.div`
+display: flex;
+flex-direction: row;
+align-self: center;
+background-color: ${({ theme }) => theme.colors.red.normal};
+    border-radius: 25px;
+ 
+`
+export const PageSpan = styled.span`
+  font-family: ${({ theme }) => theme.fonts.primary};
+  font-size: ${({ theme }) => theme.fontSize.xlg};
+  color: ${({ theme }) => theme.colors.white.normal};
+  margin-top: 2vh;
+  margin-bottom: 2vh;
+margin-inline: 3vw;
+`;
