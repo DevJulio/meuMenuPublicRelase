@@ -76,6 +76,7 @@ const OffersMenuCombo: React.FC = () => {
     // console.log(counter);
     setCounterStates(counter);
   }, [foodCategory]);
+  useEffect(() => {}, [comboState]);
 
   const handleConterChange = async (id: string, add: boolean) => {
     setCounterStates((prevConterStates) =>
@@ -226,9 +227,44 @@ const OffersMenuCombo: React.FC = () => {
             <ButtonSecondary
               action={() => {
                 handleCloseAux();
-                const itensList: TProducts[] = comboState ? comboState : [];
-                itensList.push(modalIten);
-                setComboState(itensList);
+                if (comboState) {
+                  const currentComboItens: TProducts[] = comboState; //Itens atuais da lista de combos.
+                  const duplicated = comboState.findIndex(
+                    //Busca o index do item duplicado
+                    (combo) => combo.label === modalIten.label
+                  );
+
+                  if (duplicated >= 0) {
+                    const sumItens = comboState[duplicated].qtd + modalIten.qtd; //soma a qtd
+
+                    const parsedComboItem: TProducts = {
+                      isEnable: modalIten.isEnable,
+                      img: modalIten.img,
+                      description: modalIten.description,
+                      price: modalIten.price,
+                      category: modalIten.category,
+                      categoryIcon: modalIten.categoryIcon,
+                      label: modalIten.label,
+                      isDestaque: modalIten.isDestaque,
+                      harmoziation: modalIten.harmoziation,
+                      isDrink: modalIten.isDrink,
+                      qtd: sumItens, //cria um novo objeto para ser adicionado a lista
+                    };
+
+                    currentComboItens.push(parsedComboItem); //Adiciona a lista
+                    const finalFormatedComboItens = [...currentComboItens];
+                    finalFormatedComboItens.splice(duplicated, 1); //remove o item original com a qtd antiga.
+
+                    setComboState(finalFormatedComboItens); //Atualiza a lista.
+                  } else {
+                    currentComboItens.push(modalIten);
+                    setComboState(currentComboItens);
+                  }
+                } else {
+                  const itensList: TProducts[] = comboState ? comboState : [];
+                  itensList.push(modalIten);
+                  setComboState(itensList);
+                }
                 setModal(true);
               }}
               Label={"Adicionar"}
@@ -254,7 +290,7 @@ const OffersMenuCombo: React.FC = () => {
         <Styled.TitleSpan>Ofertas</Styled.TitleSpan>
         <Styled.MenuContainer id="mainContainer">
           <Styled.ItemSpan style={{ color: "white" }}>
-            Selecione a categoria do {comboState ? comboState.length : 0}º
+            Selecione a categoria do {comboState ? comboState.length : 1}º
             prato:
           </Styled.ItemSpan>
           <Styled.CateRow>
@@ -291,7 +327,7 @@ const OffersMenuCombo: React.FC = () => {
           id="foodListContainer"
         >
           <Styled.ItemSpan style={{ color: "white" }}>
-            Selecione o {comboState ? comboState.length : 1}º prato:
+            Selecione o {comboState ? comboState.length + 1 : 1}º prato:
           </Styled.ItemSpan>
 
           <Styled.CategoryContainerAux style={{ width: "85%" }}>
@@ -447,8 +483,9 @@ const OffersMenuCombo: React.FC = () => {
                         />
                         <Styled.DeleteContainer
                           onClick={() => {
-                            // setComboState(comboState.splice(index, 1));
-                            //Remover do array nessa posição
+                            const newItems = [...comboState];
+                            newItems.splice(index, 1);
+                            setComboState(newItems);
                           }}
                         >
                           <Styled.DeleteSpan

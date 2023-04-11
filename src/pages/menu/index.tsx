@@ -54,7 +54,7 @@ export type TProducts = {
   country?: string;
   IBU?: string;
   grape?: string;
-  qtd?: number;
+  qtd: number;
 };
 
 const Menu: React.FC = () => {
