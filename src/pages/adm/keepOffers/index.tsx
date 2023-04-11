@@ -140,6 +140,7 @@ const OffersMenu: React.FC = () => {
         <Styled.CategoryContainer style={{ display: "none" }} id="offerType">
           <Styled.ItemSpan>Qual é o tipo da oferta?</Styled.ItemSpan>
           {offerRows}
+          {/* Para a automação: selecionar a oferta, depois definir para quais dias da semana, quais horários */}
         </Styled.CategoryContainer>
         {backOfferMenu && (
           <>
