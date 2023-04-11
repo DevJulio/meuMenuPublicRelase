@@ -12,6 +12,8 @@ import { ICategory } from "../../../components/category";
 import FoodCard from "../../../components/foodCardOffer";
 import { TProducts } from "../../menu";
 import Modal from "../../../components/modal";
+import Input from "../../../components/input";
+import isMobile from "is-mobile";
 
 type TCounter = {
   id: string;
@@ -27,6 +29,10 @@ const OffersMenuCombo: React.FC = () => {
   const [modalIten, setmodalIten] = useState<TProducts>();
   const [comboState, setComboState] = useState<TProducts[]>();
   const [conterStates, setCounterStates] = useState<TCounter[]>([]);
+  const [banner, setBanner] = useState();
+  const [price, setPrice] = useState<string>("");
+  const [title, setTitle] = useState<string>("");
+  const [descriptionText, setDescriptionText] = useState<string>("");
 
   useEffect(() => {
     const mainContainer = document.getElementById("mainContainer");
@@ -118,6 +124,18 @@ const OffersMenuCombo: React.FC = () => {
       });
 
       return Number(formatedPrice).toFixed(2);
+    }
+  };
+
+  const changeInput = (e: any) => {
+    // const localFile = e.target.files[0];
+    // console.log(localFile);
+    if (e.target.files && e.target.files.length > 0) {
+      setBanner(e.target.files[0]);
+    }
+  };
+  const createCombo = () => {
+    if (banner && price && title && descriptionText && comboState?.length) {
     }
   };
 
@@ -471,6 +489,65 @@ const OffersMenuCombo: React.FC = () => {
             </Styled.LblPriceDetail>
           )}
           {/* Criar formulário para receber título, descrição, banner, preço e tbm criar label grande somando todos os valores */}
+
+          <Styled.TitleSpan>Preencha todos os campos</Styled.TitleSpan>
+          <Styled.Menus>
+            <Styled.MenusRow>
+              <Styled.FormItemContainer>
+                <Input setValue={setTitle} value={title} label="Título" />
+              </Styled.FormItemContainer>
+
+              <Styled.FormItemContainer>
+                <Input setValue={setPrice} value={price} label="Preço" />
+              </Styled.FormItemContainer>
+              <Styled.FormItemContainer>
+                <Styled.ItemSpan
+                  style={{ color: "white", marginBottom: "-5vh" }}
+                >
+                  Selecione a foto para o cardápio.
+                </Styled.ItemSpan>
+                <Styled.Centralize>
+                  <Styled.FileInput
+                    type="file"
+                    id="mainBanner"
+                    accept="image/*"
+                    onChange={(e) => {
+                      changeInput(e);
+                    }}
+                  />
+                </Styled.Centralize>
+              </Styled.FormItemContainer>
+            </Styled.MenusRow>
+
+            <Styled.MenusRow>
+              <Styled.IconCentralize>
+                <Input
+                  labelColor={theme.colors.red.normal}
+                  setValue={setDescriptionText}
+                  value={descriptionText}
+                  label="Descrição e detalhes"
+                  isTextArea
+                  customWidth={isMobile() ? "250px" : "650px"}
+                />
+              </Styled.IconCentralize>
+            </Styled.MenusRow>
+            {banner && (
+              <Styled.MenusRow>
+                <Styled.MenuBanner
+                  src={URL.createObjectURL(banner)}
+                ></Styled.MenuBanner>
+              </Styled.MenusRow>
+            )}
+          </Styled.Menus>
+          <Styled.BackBtnContainer>
+            <ButtonSecondary
+              action={createCombo}
+              Label={"Salvar alterações"}
+              fontSize={theme.fontSize.md}
+              color={theme.colors.white.normal}
+              bgColor={theme.colors.red.normal}
+            />
+          </Styled.BackBtnContainer>
         </Styled.MenuContainer>
       </Styled.MainContainer>
       <Footer />

@@ -75,8 +75,7 @@ export const ContainerCategories = styled.div`
 display: flex;
 flex-direction: row;
 margin-top: 2vh;
-margin-bottom: 1vh;
- height: 12vh;
+height: 12vh;
 `;
 export const CategoryContainerAux = styled.div`
 justify-content: center;
@@ -190,4 +189,51 @@ export const PageSpan = styled.span`
   margin-top: 2vh;
   margin-bottom: 2vh;
 margin-inline: 3vw;
+`;
+
+export const Menus = styled.div`
+  display: flex;
+  width: 100%;
+  background-color: ${({ theme }) => theme.colors.blue.palete};
+  flex-direction: column;
+`;
+export const MenusRow = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  background-color: ${({ theme }) => theme.colors.blue.palete};
+  flex-direction: row;
+  @media ${({ theme }) => theme.devices.tablet} {
+    flex-direction: column;
+
+  }
+`;
+export const IconCentralize = styled.div`
+display: flex;
+align-items: center;
+flex-direction: column;
+place-Self: center;
+place-items: center;
+text-align-last: center;
+margin-inline: 2vw;
+margin-bottom: 1vw;
+`;
+export const Centralize = styled.div`
+display: flex;
+place-Self: center;
+`;
+export const MenuBanner = styled.img`
+  width: 500px;
+  margin-top: 1vw;
+  margin-bottom: 1vw;
+  @media ${({ theme }) => theme.devices.tablet} {
+  }
+`;
+export const FileInput = styled.input`
+  display: flex;
+  flex-direction: column;
+  padding-top: 20px;
+  color: ${({ theme }) => theme.colors.white.normal};
+  font-size: ${({ theme }) => theme.fontSize.md};
+  font-family: ${({ theme }) => theme.fonts.primary};
 `;
