@@ -16,6 +16,7 @@ import Plans from "./pages/plans";
 import PreMenu from "./pages/preMenu";
 import OffersMenuPrice from "./pages/adm/keepOffersPrice";
 import OffersMenuCombo from "./pages/adm/keepOffersCombo";
+import OffersMenuAuto from "./pages/adm/keepOffersAuto";
 
 function RoutesList() {
   return (
@@ -36,6 +37,7 @@ function RoutesList() {
         <Route path="/adm/ofertas" element={<OffersMenu />} />
         <Route path="/adm/ofertas/preco" element={<OffersMenuPrice />} />
         <Route path="/adm/ofertas/combo" element={<OffersMenuCombo />} />
+        <Route path="/adm/ofertas/automacao" element={<OffersMenuAuto />} />
         <Route path="/adm/destaques" element={<></>} />
         <Route path="/adm/atualizar" element={<></>} />
         <Route path="/adm/comanda" element={<></>} />

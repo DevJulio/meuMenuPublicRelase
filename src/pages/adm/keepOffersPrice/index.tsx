@@ -9,10 +9,11 @@ import ButtonSecondary from "../../../components/buttons/secondary";
 import { theme } from "../../../theme/theme";
 import foods, { renCategories } from "../../menu/foods";
 import { ICategory } from "../../../components/category";
-import FoodCard from "../../../components/foodCardOffer";
+import FoodCard from "../../../components/foodCard";
 import { TProducts } from "../../menu";
 import Modal from "../../../components/modal";
 import Input from "../../../components/input";
+import { message, Typography } from "antd";
 
 const OffersMenuPrice: React.FC = () => {
   const [foodCategory, setFoodCategory] = useState<string>("");
@@ -66,6 +67,28 @@ const OffersMenuPrice: React.FC = () => {
 
   const parsedRenCategories = getArraysExceptIndex(renCategories, renIndex);
 
+  const setNewPriceToIten = () => {
+    //Enviar para o bd.
+    if (modalIten) {
+      const updatedValue: TProducts = {
+        img: modalIten.img,
+        isEnable: modalIten.isEnable,
+        label: modalIten.label,
+        qtd: modalIten.qtd,
+        harmoziation: modalIten.harmoziation,
+        description: modalIten.description,
+        price: modalIten.price,
+        category: modalIten.category,
+        categoryIcon: modalIten.categoryIcon,
+        isDrink: modalIten.isDrink,
+        isDestaque: modalIten.isDestaque,
+        isOffer: true,
+        offerPrice: newPrice,
+      };
+      console.log(updatedValue);
+    }
+  };
+
   return (
     <>
       <Header />
@@ -87,9 +110,13 @@ const OffersMenuPrice: React.FC = () => {
             <Styled.BackBtnContainer>
               <ButtonSecondary
                 action={() => {
-                  // salvar
-                  handleClose();
-                  setModalAux(true);
+                  if (newPrice) {
+                    setNewPriceToIten();
+                    handleClose();
+                    setModalAux(true);
+                  } else {
+                    message.error("Verifique o valor e tente novamente.");
+                  }
                 }}
                 Label={"Salvar"}
                 fontSize={theme.fontSize.md}

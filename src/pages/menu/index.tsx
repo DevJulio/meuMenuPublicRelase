@@ -37,15 +37,23 @@ import ButtonSecondary from "../../components/buttons/secondary";
 import Modal from "../../components/modal";
 import FoodModalDetail from "../../components/foodModalDetail";
 
+type TAutomation = {
+  daysWeek: [];
+  time: string;
+};
+
 export type TProducts = {
+  automation?: TAutomation;
   isEnable: boolean;
   img: string;
   description: string;
-  price: string;
   category: string;
   categoryIcon: string;
   label: string;
   isDestaque: boolean;
+  qtd: number;
+  price: string;
+  offerPrice?: string;
   isMainDestaque?: boolean;
   isDrink?: boolean;
   isOffer?: boolean;
@@ -54,7 +62,6 @@ export type TProducts = {
   country?: string;
   IBU?: string;
   grape?: string;
-  qtd: number;
 };
 
 const Menu: React.FC = () => {

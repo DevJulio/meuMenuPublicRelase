@@ -9,7 +9,7 @@ import ButtonSecondary from "../../../components/buttons/secondary";
 import { theme } from "../../../theme/theme";
 import foods, { renCategories } from "../../menu/foods";
 import { ICategory } from "../../../components/category";
-import FoodCard from "../../../components/foodCardOffer";
+import FoodCard from "../../../components/foodCard";
 import { TProducts } from "../../menu";
 import Modal from "../../../components/modal";
 

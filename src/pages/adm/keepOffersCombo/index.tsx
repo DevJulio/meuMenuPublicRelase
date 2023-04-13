@@ -9,16 +9,25 @@ import ButtonSecondary from "../../../components/buttons/secondary";
 import { theme } from "../../../theme/theme";
 import foods, { renCategories } from "../../menu/foods";
 import { ICategory } from "../../../components/category";
-import FoodCard from "../../../components/foodCardOffer";
+import FoodCard from "../../../components/foodCard";
 import { TProducts } from "../../menu";
 import Modal from "../../../components/modal";
 import Input from "../../../components/input";
 import isMobile from "is-mobile";
+import { message } from "antd";
 
 type TCounter = {
   id: string;
   counter: number;
   label: string;
+};
+
+export type TCombo = {
+  banner: string;
+  price: string;
+  title: string;
+  descriptionText: string;
+  comboItens: TProducts[];
 };
 
 const OffersMenuCombo: React.FC = () => {
@@ -129,14 +138,15 @@ const OffersMenuCombo: React.FC = () => {
   };
 
   const changeInput = (e: any) => {
-    // const localFile = e.target.files[0];
-    // console.log(localFile);
     if (e.target.files && e.target.files.length > 0) {
       setBanner(e.target.files[0]);
     }
   };
   const createCombo = () => {
     if (banner && price && title && descriptionText && comboState?.length) {
+      console.log({ banner, price, title, descriptionText, comboState });
+    } else {
+      message.error("Verifique os campos e tente novamente.");
     }
   };
 
