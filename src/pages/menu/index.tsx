@@ -37,9 +37,12 @@ import ButtonSecondary from "../../components/buttons/secondary";
 import Modal from "../../components/modal";
 import FoodModalDetail from "../../components/foodModalDetail";
 
-type TAutomation = {
+export type TAutomation = {
   daysWeek: [];
-  time: string;
+  time: {
+    startAt: string;
+    endAt: string;
+  };
 };
 
 export type TProducts = {

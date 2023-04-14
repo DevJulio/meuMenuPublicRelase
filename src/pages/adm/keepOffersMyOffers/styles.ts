@@ -34,8 +34,8 @@ export const Container = styled.div`
 `;
 export const TitleSpan = styled.span`
   color: ${({ theme }) => theme.colors.yellow.palete};
-  font-size: ${({ theme }) => theme.fontSize.xxlg};
   display: flex;
+  font-size: ${({ theme }) => theme.fontSize.xxlg};
   text-align: center;
   align-self: center;
   margin-top: 3vh;
@@ -44,36 +44,4 @@ export const TitleSpan = styled.span`
     font-size: ${({ theme }) => theme.fontSize.lg};
     padding-top: 2vh;
   }
-`;
-export const CheckBoxRow = styled.div`
-  display: flex;
-  flex-direction: row;
-`;
-export const CheckBoxItem = styled.div`
-  margin-inline: 1vw;
-`;
-export const ClockContainer = styled.div`
-  margin-top: 3vh;
-  display: flex;
-  flex-direction: row;
-`;
-export const ClockContainerCol = styled.div`
-  margin-top: 1vh;
-  display: flex;
-  text-align: center;
-  align-self: center;
-  flex-direction: column;
-  margin-inline: 4vw;
-  width: 10vw;
-`;
-export const ClockSpan = styled.span`
-  margin-bottom: 3vh;
-  color: ${({ theme }) => theme.colors.white.normal};
-  font-size: ${({ theme }) => theme.fontSize.md2};
-  font-family: ${({ theme }) => theme.fonts.primary};
-`;
-export const BtnContainer = styled.div`
-  display: flex;
-  margin-top: 4vw;
-  margin-bottom: 2vw;
 `;

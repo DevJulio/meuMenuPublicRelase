@@ -8,19 +8,19 @@ import { theme } from "../../../theme/theme";
 import * as Styled from "./styles";
 import dayjs from "dayjs";
 import ButtonSecondary from "../../../components/buttons/secondary";
-import { useNavigate } from "react-router-dom";
 
 const OffersMenuAuto: React.FC = () => {
   const format = "HH:mm";
-  const navigate = useNavigate();
-
-  const [domingo, setDomingo] = useState(false);
-  const [segundaFeira, setSegundaFeira] = useState(false);
-  const [tercaFeira, setTercaFeira] = useState(false);
-  const [quartaFeira, setQuartaFeira] = useState(false);
-  const [quintaFeira, setQuintaFeira] = useState(false);
-  const [sextaFeira, setSextaFeira] = useState(false);
-  const [sabado, setSabado] = useState(false);
+  const defaultDaysOfWeek = [
+    { label: "Domingo", checked: false },
+    { label: "Segunda-feira", checked: false },
+    { label: "Terça-feira", checked: false },
+    { label: "Quarta-feira", checked: false },
+    { label: "Quinta-feira", checked: false },
+    { label: "Sexta-feira", checked: false },
+    { label: "Sábado", checked: false },
+  ];
+  const [daysOfWeekState, setDaysOfWeekState] = useState(defaultDaysOfWeek);
 
   const offers = [
     {
@@ -126,8 +126,16 @@ const OffersMenuAuto: React.FC = () => {
   useEffect(() => {
     if (promoItem) {
       const promoItemAux = promoItem as any;
+      const days = promoItemAux.automation.daysWeek;
       const time = promoItemAux.automation.time;
+      let daysAux = daysOfWeekState;
 
+      days.map((day: number) => {
+        daysAux[day].checked = true;
+      });
+
+      setDaysOfWeekState(defaultDaysOfWeek);
+      // setDaysOfWeekState(daysAux);
       setStartAt(time.startAt);
       setEndAt(time.endAt);
 
@@ -135,22 +143,9 @@ const OffersMenuAuto: React.FC = () => {
         setDivChange("dates");
       }, 200);
     }
-  }, [promoItem]);
+  }, [promoItem, daysOfWeekState]);
 
-  const createAutomation = () => {
-    console.log(
-      domingo,
-      segundaFeira,
-      tercaFeira,
-      quartaFeira,
-      quintaFeira,
-      sextaFeira,
-      sabado,
-      startAt,
-      endAt,
-      promoItem
-    );
-  };
+  const updateCheckValue = () => {};
 
   return (
     <>
@@ -209,17 +204,6 @@ const OffersMenuAuto: React.FC = () => {
               ))}
             </Styled.CardsRow>
           </Styled.Container>
-          <Styled.BtnContainer>
-            <ButtonSecondary
-              action={() => {
-                navigate("/adm/ofertas");
-              }}
-              Label={"Voltar"}
-              fontSize={theme.fontSize.md}
-              color={theme.colors.white.normal}
-              bgColor={theme.colors.red.normal}
-            />
-          </Styled.BtnContainer>
         </Styled.MainCardsContainer>
 
         {/* Lista com as ofertas, incluindo os novos cards */}
@@ -228,69 +212,19 @@ const OffersMenuAuto: React.FC = () => {
         <Styled.Container id="dates" style={{ display: "none" }}>
           <Styled.TitleSpan>Defina os dias e horários:</Styled.TitleSpan>
           <Styled.CheckBoxRow>
-            <Styled.CheckBoxItem>
-              <Checkbox
-                label="Domingo"
-                setValue={() => {
-                  setDomingo(!domingo);
-                }}
-                value={domingo}
-              />
-            </Styled.CheckBoxItem>
-            <Styled.CheckBoxItem>
-              <Checkbox
-                label={"Segunda Feira"}
-                setValue={() => {
-                  setSegundaFeira(!segundaFeira);
-                }}
-                value={segundaFeira}
-              />
-            </Styled.CheckBoxItem>
-            <Styled.CheckBoxItem>
-              <Checkbox
-                label={"Terça Feira"}
-                setValue={() => {
-                  setTercaFeira(!tercaFeira);
-                }}
-                value={tercaFeira}
-              />
-            </Styled.CheckBoxItem>
-            <Styled.CheckBoxItem>
-              <Checkbox
-                label={"Quarta Feira"}
-                setValue={() => {
-                  setQuartaFeira(!quartaFeira);
-                }}
-                value={quartaFeira}
-              />
-            </Styled.CheckBoxItem>
-            <Styled.CheckBoxItem>
-              <Checkbox
-                label={"Quinta Feira"}
-                setValue={() => {
-                  setQuintaFeira(!quintaFeira);
-                }}
-                value={quintaFeira}
-              />
-            </Styled.CheckBoxItem>
-            <Styled.CheckBoxItem>
-              <Checkbox
-                label={"Sexta Feira"}
-                setValue={() => {
-                  setSextaFeira(!sextaFeira);
-                }}
-                value={sextaFeira}
-              />
-            </Styled.CheckBoxItem>
-            <Styled.CheckBoxItem>
-              <Checkbox
-                label={"Sábado"}
-                setValue={() => {
-                  setSabado(!sabado);
-                }}
-                value={sabado}
-              />
-            </Styled.CheckBoxItem>
+            {daysOfWeekState.map((day) => {
+              return (
+                <Styled.CheckBoxItem>
+                  <Checkbox
+                    label={day.label}
+                    setValue={() => {
+                      // setDaysOfWeekState()
+                    }}
+                    value={day.checked}
+                  />
+                </Styled.CheckBoxItem>
+              );
+            })}
           </Styled.CheckBoxRow>
           <Styled.TitleSpan>Horário da promoção:</Styled.TitleSpan>
           <Styled.ClockContainer>
@@ -327,7 +261,7 @@ const OffersMenuAuto: React.FC = () => {
             />
             <div style={{ marginLeft: "5vw" }}>
               <ButtonSecondary
-                action={createAutomation}
+                action={() => {}}
                 Label={"Salvar"}
                 fontSize={theme.fontSize.md}
                 color={theme.colors.white.normal}
