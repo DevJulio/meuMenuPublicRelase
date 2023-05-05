@@ -16,7 +16,7 @@ import Input from "../../../components/input";
 import isMobile from "is-mobile";
 import { message } from "antd";
 
-type TCounter = {
+export type TCounter = {
   id: string;
   counter: number;
   label: string;
@@ -332,6 +332,7 @@ const OffersMenuCombo: React.FC = () => {
             />
           </Styled.BackBtnContainer>
         </Styled.MenuContainer>
+        
         <Styled.MenuContainer
           style={{ display: "none" }}
           id="foodListContainer"

@@ -1,23 +1,26 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import FoodCardOffer from "../../../components/foodCardOffer";
 import Footer from "../../../components/footer";
 import Header from "../../../components/header";
 import { theme } from "../../../theme/theme";
-import { TProducts } from "../../menu";
-import { TCombo } from "../keepOffersCombo";
-import * as Styled from "./styles";
 
-const OffersMenuDetails: React.FC = () => {
-  const daysOfWeek = [
-    "Domingo",
-    "Segunda-feira",
-    "Terça-feira",
-    "Quarta-feira",
-    "Quinta-feira",
-    "Sexta-feira",
-    "Sábado",
-  ];
-  const [daysOfWeekState, setDaysOfWeekState] = useState([]);
+import * as Styled from "./styles";
+import ButtonSecondary from "../../../components/buttons/secondary";
+import { useNavigate } from "react-router-dom";
+import SwitchCard from "../../../components/SwitchCard";
+import Modal from "../../../components/modal";
+import Input from "../../../components/input";
+import { TSwitch } from "../admMenu";
+import { message } from "antd";
+
+const OffersMyOffers: React.FC = () => {
+  const [modalUpdate, setModalUpdate] = useState<boolean>(false);
+  const [switchStates, setSwitchStates] = useState<TSwitch[]>([]);
+  const [newPrice, setNewPrice] = useState<string>("");
+
+  const [modalItem, setModalItem] = useState<any>();
+
+  const navigate = useNavigate();
 
   const offers = [
     {
@@ -38,6 +41,7 @@ const OffersMenuDetails: React.FC = () => {
       offerPrice: "12,50",
     },
     {
+      isEnable: true,
       banner:
         "https://static.vecteezy.com/ti/vetor-gratis/p3/8770068-combo-refeicoes-instagram-posts-template-food-social-media-background-yellow-background-for-banner-advertising-vetor.jpg",
       price: "45,00",
@@ -80,14 +84,98 @@ const OffersMenuDetails: React.FC = () => {
     },
   ];
 
-  //criar 2 cards diferentes, card com preço e card de combo.
+  useEffect(() => {
+    const switches: any[] = [];
+    offers.map((foodItem, index) =>
+      switches.push({
+        id: index.toString(),
+        checked: foodItem.isEnable,
+        label: foodItem.label,
+      })
+    );
+    setSwitchStates(switches);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  //   Todo: selecionar oferta, mostrar div com os detalhes, criar mais uma interface com os detalhes: dias da semana e horários
+  const handleSwitchChange = async (id: string) => {
+    if (switchStates[Number(id)].checked) {
+      message.error("Item desativado.");
+    } else {
+      message.success("Item ativado.");
+    }
+    setSwitchStates((prevSwitchStates) =>
+      prevSwitchStates.map((switchState) =>
+        switchState.id === id
+          ? { ...switchState, checked: !switchState.checked }
+          : switchState
+      )
+    );
+  };
+
+  const handleClose = () => {
+    setModalUpdate(false);
+  };
+
+  const updatePrice = () => {
+    console.log("atualizar o " + modalItem + " com o preço " + newPrice);
+    //chamar api
+  };
+
   return (
     <>
       <Header />
+      {modalUpdate && (
+        <Modal
+          bannerColor={"#BC4749"} //AuxColor
+          title={"Edição de promoção"}
+          handleClose={handleClose}
+          titleFont={theme.fonts.hand}
+        >
+          <Styled.ModalContainer>
+            <Styled.FormItemContainer>
+              <Input
+                setValue={setNewPrice}
+                labelColor={theme.colors.blue.palete}
+                label="Novo preço: "
+              />
+            </Styled.FormItemContainer>
+            <Styled.BackBtnContainer>
+              <ButtonSecondary
+                action={() => {
+                  if (newPrice) {
+                    updatePrice();
+                    handleClose();
+                  } else {
+                    message.error("Verifique o valor e tente novamente.");
+                  }
+                }}
+                Label={"Salvar"}
+                fontSize={theme.fontSize.md}
+                color={theme.colors.white.normal}
+                bgColor={theme.colors.green.normal}
+              />
+            </Styled.BackBtnContainer>
+          </Styled.ModalContainer>
+          {/* Novo preço e botão de confirmar cadastro de promoção */}
+          {/* redirecionar para outro modal */}
+        </Modal>
+      )}
+
       <Styled.Container id="offers">
         <Styled.TitleSpan>selecione a oferta:</Styled.TitleSpan>
+        <>
+          <Styled.BackBtnContainer>
+            <ButtonSecondary
+              action={() => {
+                navigate("/adm/ofertas");
+              }}
+              Label={"← voltar ao menu de ofertas"}
+              fontSize={theme.fontSize.md}
+              color={theme.colors.white.normal}
+              bgColor={theme.colors.red.normal}
+            />
+          </Styled.BackBtnContainer>
+        </>
         <Styled.MainCardsContainer>
           <Styled.Container
             style={{
@@ -103,37 +191,64 @@ const OffersMenuDetails: React.FC = () => {
                 overflowX: offers.length > 5 ? "scroll" : "auto",
               }}
             >
-              {offers.map((offer, index) => (
-                <Styled.CardItem onClick={() => {}}>
-                  {offer.comboItens ? (
-                    <>
-                      <FoodCardOffer
-                        isCombo={true}
-                        bgColor={"white"}
-                        price={offer.price}
-                        color={theme.colors.yellow.palete}
-                        label={offer.title}
-                        description={offer.descriptionText}
-                        img={offer.banner}
-                        comboItens={offer.comboItens}
-                      />
-                    </>
-                  ) : (
-                    <>
-                      <FoodCardOffer
-                        isCombo={false}
-                        bgColor={theme.colors.blue.palete}
-                        oldPrice={offer.price}
-                        price={offer.offerPrice}
-                        color={"#386641"}
-                        label={offer.label}
-                        description={offer.description}
-                        img={offer.img}
-                      />
-                    </>
-                  )}
-                </Styled.CardItem>
-              ))}
+              {switchStates.length &&
+                offers.map((offer, index) => (
+                  <Styled.CardItem onClick={() => {}}>
+                    {offer.comboItens ? (
+                      <>
+                        <FoodCardOffer
+                          isCombo={true}
+                          bgColor={"white"}
+                          price={offer.price}
+                          color={theme.colors.yellow.palete}
+                          label={offer.title}
+                          description={offer.descriptionText}
+                          img={offer.banner}
+                          comboItens={offer.comboItens}
+                        />
+                        <SwitchCard
+                          handleSwitchChange={() => {
+                            handleSwitchChange(index.toString());
+                          }}
+                          id={index.toString()}
+                          value={switchStates[index].checked}
+                          updateFunc={() => {
+                            console.log({offer});
+                            localStorage.setItem(
+                              "meuMenuEditOfferCombo",
+                              JSON.stringify(offer)
+                            );
+                            navigate("/adm/ofertas/minhas-ofertas/edicao");
+                          }}
+                        />
+                      </>
+                    ) : (
+                      <>
+                        <FoodCardOffer
+                          isCombo={false}
+                          bgColor={theme.colors.blue.palete}
+                          oldPrice={offer.price}
+                          price={offer.offerPrice}
+                          color={"#386641"}
+                          label={offer.label}
+                          description={offer.description}
+                          img={offer.img}
+                        />
+                        <SwitchCard
+                          handleSwitchChange={() => {
+                            handleSwitchChange(index.toString());
+                          }}
+                          id={index.toString()}
+                          value={switchStates[index].checked}
+                          updateFunc={() => {
+                            setModalItem(offer);
+                            setModalUpdate(true);
+                          }}
+                        />
+                      </>
+                    )}
+                  </Styled.CardItem>
+                ))}
             </Styled.CardsRow>
           </Styled.Container>
         </Styled.MainCardsContainer>
@@ -145,4 +260,4 @@ const OffersMenuDetails: React.FC = () => {
     </>
   );
 };
-export default OffersMenuDetails;
+export default OffersMyOffers;

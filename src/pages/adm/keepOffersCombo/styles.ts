@@ -92,10 +92,10 @@ justify-content: center;
 }
 `;
 export const FoodCategoryItem = styled.div`
-display: flex;
-margin-bottom: 5vh;
-cursor: pointer;
-flex-direction: column;
+  display: flex;
+  margin-bottom: 5vh;
+  cursor: pointer;
+  flex-direction: column;
  `
 export const FormItemContainer = styled.div`
   margin-left: 40px;

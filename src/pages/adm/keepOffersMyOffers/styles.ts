@@ -45,3 +45,37 @@ export const TitleSpan = styled.span`
     padding-top: 2vh;
   }
 `;
+export const BackBtnContainer = styled.div`
+  display: flex;
+   margin-top: 1vw;
+ `;
+
+ export const ModalContainer = styled.div`
+  display: flex;
+  margin-bottom: 5vh;
+  flex-direction: column;
+`;
+export const PlansDetailModal = styled.span`
+  display: flex;
+  justify-content: left;
+  width: 95%;
+  padding: 2vh;
+  justify-content: center;
+  font-family: ${({ theme }) => theme.fonts.secundary};
+  font-size: ${({ theme }) => theme.fontSize.mm};
+`;
+export const FormItemContainer = styled.div`
+  margin-left: 40px;
+  margin-right: 40px;
+  align-self: center;
+
+  width: 40%;
+  display: flex;
+  flex-direction: column;
+  @media ${({ theme }) => theme.devices.tablet} {
+    margin-left: 0px;
+    margin-right: 0px;
+    width: 95%;
+    align-self: center;
+  }
+`;

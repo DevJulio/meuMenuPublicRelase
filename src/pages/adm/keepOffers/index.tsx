@@ -34,6 +34,7 @@ const OffersMenu: React.FC = () => {
           myOffers.style.display = "flex";
           offerType.style.display = "none";
           mainDiv.style.display = "none";
+          navigate("/adm/ofertas/minhas-ofertas")
           break;
         case "menu":
           mainDiv.style.display = "flex";
