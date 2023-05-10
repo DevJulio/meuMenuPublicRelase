@@ -26,6 +26,16 @@ export const mainAdmCategories: TCardProps[] = [
     textColor: "black",
     customWidth: true,
   },
+  {
+    icon: precoCombo,
+    title: "Automatização das ofertas",
+    text: "Automatize e defina peridos e dias das suas ofertas!",
+    mainColor: theme.colors.blue.palete,
+    auxColor: theme.colors.white.normal,
+    textColor: theme.colors.white.normal,
+    customWidth: true,
+    url: "/adm/ofertas/automacao",
+  },
 ];
 
 export const offerCategories: TCardProps[] = [

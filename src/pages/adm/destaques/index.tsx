@@ -13,11 +13,12 @@ import FoodCard from "../../../components/foodCard";
 import { TProducts } from "../../menu";
 import Modal from "../../../components/modal";
 
-const OffersMenuPriceBKP: React.FC = () => {
+const Destaques: React.FC = () => {
   const [foodCategory, setFoodCategory] = useState<string>("");
   const [mainCategory, setMainCategory] = useState<string>("");
   const [modal, setModal] = useState<boolean>(false);
   const [modalIten, setmodalIten] = useState<TProducts>();
+  const [plus, setPlus] = useState<boolean>(false);
 
   useEffect(() => {
     const mainContainer = document.getElementById("mainContainer");
@@ -140,26 +141,63 @@ const OffersMenuPriceBKP: React.FC = () => {
               >
                 {foodCategory &&
                   foods
-                    .filter((cate) => cate.category === foodCategory)
-                    .map((foodItem, index) => (
-                      <Styled.FoodCategoryItem
-                        onClick={() => {
-                          setModal(true);
-                          setmodalIten(foodItem);
-                        }}
-                      >
-                        <FoodCard
-                          category=""
-                          categoryIcon=""
-                          bgColor={"#BC4749"}
-                          price={foodItem.price}
-                          color={"#386641"}
-                          label={foodItem.label}
-                          description={foodItem.description}
-                          img={foodItem.img}
-                        />
+                    .filter((cate) =>
+                      plus
+                        ? cate.category === foodCategory
+                        : cate.category === foodCategory &&
+                          cate.isDestaque === true
+                    )
+                    .map((foodItem) => (
+                      <Styled.FoodCategoryItem>
+                        <>
+                          <FoodCard
+                            category=""
+                            categoryIcon=""
+                            bgColor={"#BC4749"}
+                            price={foodItem.price}
+                            color={"#386641"}
+                            label={foodItem.label}
+                            description={foodItem.description}
+                            img={foodItem.img}
+                          />
+                          <Styled.DeleteContainer
+                            onClick={(foodItem) => {
+                              if (plus) {
+                                //Tornar destaque
+                                setPlus(false);
+                              } else {
+                                //"Remover Destaque"
+                              }
+                            }}
+                          >
+                            <Styled.DeleteSpan
+                              style={{ color: theme.colors.yellow.palete }}
+                            >
+                              {plus ? "Tornar Destaque" : "Remover Destaque"}
+                            </Styled.DeleteSpan>
+                          </Styled.DeleteContainer>
+                        </>
                       </Styled.FoodCategoryItem>
                     ))}
+                <Styled.FoodCategoryItem
+                  style={{
+                    alignSelf: "center",
+                    marginTop: "-8vh",
+                    // margin-top: -8vh;
+                  }}
+                  onClick={() => {
+                    setPlus(true);
+                    setMainCategory("listagemCategorias");
+                  }}
+                >
+                  <Styled.PlusContainer>
+                    <Styled.PlusSpan
+                      style={{ marginTop: "1vh", marginBottom: "0vh" }}
+                    >
+                      +
+                    </Styled.PlusSpan>
+                  </Styled.PlusContainer>
+                </Styled.FoodCategoryItem>
               </Styled.ContainerCategories>
             </div>
           </Styled.CategoryContainerAux>
@@ -181,4 +219,4 @@ const OffersMenuPriceBKP: React.FC = () => {
   );
 };
 
-export default OffersMenuPriceBKP;
+export default Destaques;

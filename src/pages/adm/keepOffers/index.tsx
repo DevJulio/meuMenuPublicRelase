@@ -107,7 +107,7 @@ const OffersMenu: React.FC = () => {
     return cardRowsDone;
   };
 
-  const optionsRows = createRows(mainAdmCategories, 2);
+  const optionsRows = createRows(mainAdmCategories, 3);
   const offerRows = createRows(offerCategories, 3);
 
   return (

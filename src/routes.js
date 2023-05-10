@@ -19,6 +19,7 @@ import OffersMenuCombo from "./pages/adm/keepOffersCombo";
 import OffersMenuAuto from "./pages/adm/keepOffersAuto";
 import OffersMyOffers from "./pages/adm/keepOffersMyOffers";
 import OffersEditCombo from "./pages/adm/keepOffersEditCombo";
+import Destaques from "./pages/adm/destaques";
 
 function RoutesList() {
   return (
@@ -42,7 +43,7 @@ function RoutesList() {
         <Route path="/adm/ofertas/automacao" element={<OffersMenuAuto />} />
         <Route path="/adm/ofertas/minhas-ofertas" element={<OffersMyOffers />} />
         <Route path="/adm/ofertas/minhas-ofertas/edicao" element={<OffersEditCombo />} />
-        <Route path="/adm/destaques" element={<></>} />
+        <Route path="/adm/destaques" element={<Destaques/>} />
         <Route path="/adm/atualizar" element={<></>} />
         <Route path="/adm/comanda" element={<></>} />
         <Route path="/adm/suporte" element={<></>} />
