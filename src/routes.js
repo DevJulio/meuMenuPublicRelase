@@ -20,6 +20,8 @@ import OffersMenuAuto from "./pages/adm/keepOffersAuto";
 import OffersMyOffers from "./pages/adm/keepOffersMyOffers";
 import OffersEditCombo from "./pages/adm/keepOffersEditCombo";
 import Destaques from "./pages/adm/destaques";
+import UpdateData from "./pages/adm/updateData";
+import ContactAdm from "./pages/adm/adm/contact";
 
 function RoutesList() {
   return (
@@ -41,12 +43,18 @@ function RoutesList() {
         <Route path="/adm/ofertas/preco" element={<OffersMenuPrice />} />
         <Route path="/adm/ofertas/combo" element={<OffersMenuCombo />} />
         <Route path="/adm/ofertas/automacao" element={<OffersMenuAuto />} />
-        <Route path="/adm/ofertas/minhas-ofertas" element={<OffersMyOffers />} />
-        <Route path="/adm/ofertas/minhas-ofertas/edicao" element={<OffersEditCombo />} />
-        <Route path="/adm/destaques" element={<Destaques/>} />
-        <Route path="/adm/atualizar" element={<></>} />
+        <Route
+          path="/adm/ofertas/minhas-ofertas"
+          element={<OffersMyOffers />}
+        />
+        <Route
+          path="/adm/ofertas/minhas-ofertas/edicao"
+          element={<OffersEditCombo />}
+        />
+        <Route path="/adm/destaques" element={<Destaques />} />
+        <Route path="/adm/atualizar" element={<UpdateData />} />
+        <Route path="/adm/suporte" element={<ContactAdm />} />
         <Route path="/adm/comanda" element={<></>} />
-        <Route path="/adm/suporte" element={<></>} />
         {/* UPDATE */}
         <Route path="/adm/update/cardapio" element={<UpdateFood />} />
       </Routes>

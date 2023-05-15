@@ -6,6 +6,7 @@ interface Props {
   placeholder?: string;
   lblColor?: string;
   value?: boolean;
+  id?: string;
 }
 const Checkbox: React.FC<Props> = ({
   setValue,
@@ -13,6 +14,7 @@ const Checkbox: React.FC<Props> = ({
   placeholder,
   lblColor,
   value,
+  id,
 }) => {
   return (
     <>
@@ -21,6 +23,7 @@ const Checkbox: React.FC<Props> = ({
           {label}
         </Styled.Label>
         <Styled.Input
+          id={id}
           checked={value}
           placeholder={placeholder}
           onChange={(e) => {
