@@ -36,6 +36,7 @@ import foods from "./foods";
 import ButtonSecondary from "../../components/buttons/secondary";
 import Modal from "../../components/modal";
 import FoodModalDetail from "../../components/foodModalDetail";
+import isMobile from "is-mobile";
 
 export type TAutomation = {
   daysWeek: [];
@@ -220,6 +221,7 @@ const Menu: React.FC = () => {
     <>
       {modal && modalIten && (
         <Modal
+          customWidth={isMobile() ? 90 : 60}
           bannerColor={header.auxColor}
           title={modalIten.label}
           handleClose={handleClose}

@@ -82,8 +82,7 @@ const OffersMenuCombo: React.FC = () => {
           label: foodItem.label,
         })
       );
-    // console.log(counter);
-    setCounterStates(counter);
+     setCounterStates(counter);
   }, [foodCategory]);
   useEffect(() => {}, [comboState]);
 
@@ -100,8 +99,6 @@ const OffersMenuCombo: React.FC = () => {
           : counterState
       )
     );
-    //Chamar Api.
-    //Alterar o elemento currentFoodItem[Number(id)] no banco de dados.
   };
 
   const navigate = useNavigate();
@@ -332,7 +329,7 @@ const OffersMenuCombo: React.FC = () => {
             />
           </Styled.BackBtnContainer>
         </Styled.MenuContainer>
-        
+
         <Styled.MenuContainer
           style={{ display: "none" }}
           id="foodListContainer"

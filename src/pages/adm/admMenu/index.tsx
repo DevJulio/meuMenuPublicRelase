@@ -19,6 +19,7 @@ import FoodModalDetail from "../../../components/foodModalDetail";
 import { TProducts } from "../../menu";
 import { ICategory } from "../../../components/category";
 import { message } from "antd";
+import isMobile from "is-mobile";
 
 export type TSwitch = {
   id: string;
@@ -134,6 +135,7 @@ const AdmMenu: React.FC = () => {
       {modal && modalIten && (
         <Modal
           bannerColor={"#BC4749"} //AuxColor
+          customWidth={isMobile() ? 90 : 60}
           title={modalIten.label}
           handleClose={handleClose}
           titleFont={theme.fonts.hand}

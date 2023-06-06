@@ -68,7 +68,6 @@ export const FormItemContainer = styled.div`
   margin-left: 40px;
   margin-right: 40px;
   align-self: center;
-
   width: 40%;
   display: flex;
   flex-direction: column;
