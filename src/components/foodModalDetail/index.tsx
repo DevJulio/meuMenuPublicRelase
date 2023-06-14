@@ -7,12 +7,10 @@ import grape from "../../assets/icons/grape.png";
 import flag from "../../assets/icons/flag.gif";
 import saibaMais from "../../assets/icons/saibaMais.gif";
 import IBU from "../../assets/icons/IBU.gif";
-import color from "../../assets/icons/color.gif";
-
 import { theme } from "../../theme/theme";
 
 interface TFood {
-  modalIten: TProducts;
+  modalIten: any; //TProducts
 }
 
 const FoodModalDetail: React.FC<TFood> = ({ modalIten }) => {
@@ -23,7 +21,9 @@ const FoodModalDetail: React.FC<TFood> = ({ modalIten }) => {
           <Styled.HarmozizationIcon src={saibaMais} />
           <Styled.Harmozization>Saiba mais!</Styled.Harmozization>
         </Styled.HarmozizationContainer>
-        {modalIten.description}
+        {modalIten.description
+          ? modalIten.description
+          : modalIten.descriptionText}
         {modalIten.harmoziation && (
           <>
             <Styled.HarmozizationContainer>

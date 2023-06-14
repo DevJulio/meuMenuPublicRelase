@@ -69,7 +69,11 @@ const FoodCardOffer: React.FC<IFood> = ({
               Itens do combo: {comboItensState}
             </Styled.ComboParagrah>
 
-            <Styled.ComboParagrah>
+            <Styled.ComboParagrah
+              style={{
+                marginBottom: "3.37vh",
+              }}
+            >
               {description.substring(0, 170)}...
               <Styled.Anchor
                 style={{
@@ -121,13 +125,15 @@ const FoodCardOffer: React.FC<IFood> = ({
               style={{
                 color: color,
                 fontFamily: fontStyle,
+                fontSize:
+                  label.length <= 19 ? theme.fontSize.lg : theme.fontSize.md2,
               }}
             >
               {label}
             </Styled.Title>
             <Styled.Description
               style={{
-                marginBottom: label.length >= 25 ? "0px" : "0.7vh",
+                marginBottom: label.length >= 19 ? "1vh" : "0.1vh",
               }}
             >
               {description.substring(0, 120)}...

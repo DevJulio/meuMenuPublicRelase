@@ -59,7 +59,7 @@ export const Price = styled.div`
   justify-content: center;
   height: 5vh;
   align-items: center;
-  background-color: ${({ theme }) => theme.colors.green.dark};
+  background-color: ${({ theme }) => theme.colors.blue.palete};
   span {
     font-family: ${({ theme }) => theme.fonts.primary};
     font-size: ${({ theme }) => theme.fontSize.md};

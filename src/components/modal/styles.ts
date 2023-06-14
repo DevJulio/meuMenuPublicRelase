@@ -95,4 +95,8 @@ export const FooterContainer = styled.div`
   justify-content: end;
   background-color: ${({ theme }) => theme.colors.white.normal};
   border-radius: 25px;
+  padding: 0.9vh;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-right: 10px;
  `;

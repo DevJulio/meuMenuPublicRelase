@@ -40,7 +40,7 @@ const OffersMenuCombo: React.FC = () => {
   const [conterStates, setCounterStates] = useState<TCounter[]>([]);
   const [banner, setBanner] = useState();
   const [price, setPrice] = useState<string>("");
-  const [title, setTitle] = useState<string>("");
+  const [label, setLabel] = useState<string>("");
   const [descriptionText, setDescriptionText] = useState<string>("");
 
   useEffect(() => {
@@ -140,8 +140,8 @@ const OffersMenuCombo: React.FC = () => {
     }
   };
   const createCombo = () => {
-    if (banner && price && title && descriptionText && comboState?.length) {
-      console.log({ banner, price, title, descriptionText, comboState });
+    if (banner && price && label && descriptionText && comboState?.length) {
+      console.log({ banner, price, label, descriptionText, comboState });
     } else {
       message.error("Verifique os campos e tente novamente.");
     }
@@ -539,7 +539,7 @@ const OffersMenuCombo: React.FC = () => {
           <Styled.Menus>
             <Styled.MenusRow>
               <Styled.FormItemContainer>
-                <Input setValue={setTitle} value={title} label="Título" />
+                <Input setValue={setLabel} value={label} label="Título" />
               </Styled.FormItemContainer>
 
               <Styled.FormItemContainer>

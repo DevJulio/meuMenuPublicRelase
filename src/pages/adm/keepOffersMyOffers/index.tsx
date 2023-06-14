@@ -45,7 +45,7 @@ const OffersMyOffers: React.FC = () => {
       banner:
         "https://static.vecteezy.com/ti/vetor-gratis/p3/8770068-combo-refeicoes-instagram-posts-template-food-social-media-background-yellow-background-for-banner-advertising-vetor.jpg",
       price: "45,00",
-      title: "Combo 1",
+      label: "Combo 1",
       descriptionText:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut iaculis blandit magna, ac commodo tortor consectetur nec. Sed nec massa sapien. Proin eget sem et velit maximus gravida ac sit amet magna. Cras libero diam, consectetur ut fringilla quis, tempus tristique elit. Maecenas sem arcu, molestie viverra quam vitae, ",
       comboItens: [
@@ -201,7 +201,7 @@ const OffersMyOffers: React.FC = () => {
                           bgColor={"white"}
                           price={offer.price}
                           color={theme.colors.yellow.palete}
-                          label={offer.title}
+                          label={offer.label}
                           description={offer.descriptionText}
                           img={offer.banner}
                           comboItens={offer.comboItens}
@@ -213,7 +213,6 @@ const OffersMyOffers: React.FC = () => {
                           id={index.toString()}
                           value={switchStates[index].checked}
                           updateFunc={() => {
-                            console.log({offer});
                             localStorage.setItem(
                               "meuMenuEditOfferCombo",
                               JSON.stringify(offer)
