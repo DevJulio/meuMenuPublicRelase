@@ -450,4 +450,64 @@ export const renCategories: ICategory[] = [
     fontStyle: theme.fonts.hand,
   },
 ];
+
+export const offers = [
+  {
+    img: "https://www.comidaereceitas.com.br/wp-content/uploads/2008/09/Mimosa-freepik-780x521.jpg",
+    isEnable: true,
+    label: "Mimosa",
+    qtd: 1,
+    harmoziation:"A Mimosa, uma clássica mistura de champanhe e suco de laranja, é um excelente acompanhamento para brunches. ",
+    description:"Feito à base de espumante gelado e suco de laranja fresco, a Mimosa vai muito bem com queijos mais delicados, como a ricota. Saladas também são muito bem-vindas",
+    price: "30,00",
+    category: "Bebidas",
+    categoryIcon: "",
+    isDrink: true,
+    isDestaque: true,
+    isOffer: true,
+    offerPrice: "12,50",
+  },
+  {
+    isEnable: true,
+    banner:
+      "https://static.vecteezy.com/ti/vetor-gratis/p3/8770068-combo-refeicoes-instagram-posts-template-food-social-media-background-yellow-background-for-banner-advertising-vetor.jpg",
+    price: "45,00",
+    title: "Combo 1",
+    descriptionText:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut iaculis blandit magna, ac commodo tortor consectetur nec. Sed nec massa sapien. Proin eget sem et velit maximus gravida ac sit amet magna. Cras libero diam, consectetur ut fringilla quis, tempus tristique elit. Maecenas sem arcu, molestie viverra quam vitae, ",
+    comboItens: [
+      {
+        img: "https://www.comidaereceitas.com.br/wp-content/uploads/2008/09/Mimosa-freepik-780x521.jpg",
+        isEnable: true,
+        label: "Mimosa",
+        qtd: 1,
+        harmoziation:
+          "A Mimosa, uma clássica mistura de champanhe e suco de laranja, é um excelente acompanhamento para brunches. ",
+        description:
+          "Feito à base de espumante gelado e suco de laranja fresco, a Mimosa vai muito bem com queijos mais delicados, como a ricota. Saladas também são muito bem-vindas",
+        price: "30,00",
+        category: "Bebidas",
+        categoryIcon: "",
+        isDrink: true,
+        isDestaque: true,
+      },
+      {
+        img: "https://claudia.abril.com.br/wp-content/uploads/2020/02/receita-fritada-forno-abobrinha.jpg?quality=85",
+        isEnable: true,
+        label: "Frittata de abobrinha ao forno",
+        qtd: 1,
+        harmoziation:
+          "A Frittata de abobrinha ao forno é acompanhada por vinhos brancos com mais corpo, como um Viognier ou um Chenin Blanc.",
+        description:
+          "Uma omelete leve e fofa feita com abobrinhas, queijo e ervas. Perfeita para um café da manhã ou jantar saudável.",
+        price: "25,00",
+        category: "Prato Principal",
+        categoryIcon: "",
+        isOffer: true,
+        isDrink: false,
+        isDestaque: false,
+      },
+    ],
+  },
+];
 export default foods;

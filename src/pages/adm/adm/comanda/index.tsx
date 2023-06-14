@@ -34,13 +34,13 @@ const Comanda: React.FC = () => {
       custumerName: "Sophia",
       tableItens: [
         { lbl: "Mimosa", qtd: 3 },
-        { lbl: "Torta de limão", qtd: 1 },
+        { lbl: "Torta de limão", qtd: 10 },
       ],
     },
     {
       tableLbl: "2",
       custumerName: "Gabriel",
-      tableItens: [{ lbl: "Salada Caprese", qtd: 1 }],
+      tableItens: [{ lbl: "Salada Caprese", qtd: 10 }],
     },
     {
       tableLbl: "3",
@@ -77,9 +77,14 @@ const Comanda: React.FC = () => {
     },
   ];
   //const [tableData, setTableData] = useState();
+  const [reFetch, setReFetch] = useState<number>(); //Atribuir valor sempre q alguma atualização ou adicao
+
   const [modal, setModal] = useState<boolean>(false);
   const [modalTable, setModalTable] = useState<boolean>(false);
   const [foodCategory, setFoodCategory] = useState<string>("");
+
+  const [tableName, setTableName] = useState<string>();
+  const [tableNumber, setTableNumber] = useState<string>();
 
   const [modalTableAdd, setModalTableAdd] = useState<boolean>(false);
   const [modalTableAddItem, setModalTableAddItem] = useState<boolean>(false);
@@ -87,10 +92,24 @@ const Comanda: React.FC = () => {
 
   const [modalTableClose, setModalTableClose] = useState<boolean>(false);
   const [modalTableCheck, setModalTableCheck] = useState<boolean>(false);
+  const [modalTableUpdate, setModalTableUpdate] = useState<boolean>(false);
 
   const [currentTable, setCurrentTable] = useState<TTable>();
   const [conterStates, setCounterStates] = useState<TCounter[]>([]);
   const [comandaItem, setComandaItem] = useState<TComandaItem>();
+  const [isUpdateOrInsert, setIsUpdateOrInsert] = useState<string>("");
+
+  const [tablesToBeRender, setTablesToBeRender] = useState<JSX.Element[]>();
+
+  useEffect(() => {
+    // window.location.reload();
+    //tables chamada da api
+    console.log(reFetch);
+    
+    const arrayDividido = dividirArray(tables, 3);
+    setTablesToBeRender(arrayDividido);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reFetch]);
 
   useEffect(() => {
     const counter: TCounter[] = [];
@@ -106,6 +125,25 @@ const Comanda: React.FC = () => {
     setCounterStates(counter);
   }, [foodCategory]);
 
+  useEffect(() => {
+    if (currentTable) {
+      const counter: TCounter[] = [];
+      const selectedTable = tables.filter(
+        (table) => table.tableLbl === currentTable?.tableLbl
+      );
+
+      selectedTable[0].tableItens.map((foodItem, index) =>
+        counter.push({
+          id: index.toString(),
+          counter: 1,
+          label: foodItem.lbl,
+        })
+      );
+      setCounterStates(counter);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentTable]);
+
   const handleClose = () => {
     setModal(false);
   };
@@ -117,12 +155,22 @@ const Comanda: React.FC = () => {
   };
   const handleCloseTableAddItem = () => {
     setModalTableAddItem(false);
-    setModalTableAdd(true);
+    //setModalTableAdd(true);
   };
   const handleCloseTableConfirm = () => {
     setModalTableConfirm(false);
   };
-
+  const handleCloseTableClose = () => {
+    setModalTableClose(false);
+  };
+  const handleCloseTableCheck = () => {
+    setModalTableCheck(false);
+    setModalTable(true);
+  };
+  const handleCloseTableUpdate = () => {
+    setModalTableUpdate(false);
+    setModalTable(true);
+  };
   const dividirArray = (array: any[], tamanho: number) => {
     let arrayDividido = [];
     for (let i = 0; i < array.length; i += tamanho) {
@@ -140,6 +188,7 @@ const Comanda: React.FC = () => {
                   width: index + 1 === arrayDividido.length ? "34%" : "50%",
                 }}
                 onClick={() => {
+                  //tratar o fetch aqui
                   setCurrentTable(item);
                   setModalTable(true);
                 }}
@@ -155,7 +204,22 @@ const Comanda: React.FC = () => {
     });
   };
 
-  const arrayDividido = dividirArray(tables, 3);
+  const addNewTable = async () => {
+    if (tableName && tableNumber) {
+      const newTable: TTable = {
+        tableLbl: tableNumber,
+        custumerName: tableName,
+        tableItens: [{ lbl: "", qtd: 0 }],
+      };
+      //api.post(/addTable, newTable)
+      //fetch após adição
+      handleClose();
+      setReFetch(Math.random());
+      console.log(newTable);
+    } else {
+      message.error("Verifique os dados e tente novamente.");
+    }
+  };
 
   const addTable = async () => {
     setModalTable(false);
@@ -168,6 +232,10 @@ const Comanda: React.FC = () => {
   const closeTable = async () => {
     setModalTable(false);
     setModalTableClose(true);
+  };
+  const updateTable = async () => {
+    setModalTable(false);
+    setModalTableUpdate(true);
   };
 
   const renIndex = renCategories.findIndex(
@@ -196,11 +264,28 @@ const Comanda: React.FC = () => {
   };
 
   const addToComanda = async () => {
-    message.success("Item adicionado com sucesso.");
     handleCloseTableConfirm();
-    handleCloseTableAddItem();
+    if (isUpdateOrInsert === "Add") {
+      message.success("Item adicionado com sucesso.");
+      handleCloseTableAddItem();
+      console.log(currentTable, comandaItem, isUpdateOrInsert);
+    }
+    if (isUpdateOrInsert === "Update") {
+      message.success("Item adicionado com sucesso.");
+      console.log(currentTable, comandaItem, isUpdateOrInsert);
+    }
+    //atualizar a página após then do update ou do add.
+    setReFetch(Math.random());
+  };
+  const closeComanda = async () => {
+    message.success("Comanda fechada com sucesso.");
+    handleCloseTableConfirm();
+    handleCloseTableClose();
     console.log(currentTable, comandaItem);
   };
+
+  //REGRAS:
+  //1 - Ao abrir o menu das comandas, todas as mesas devem estar atualizadas.
 
   return (
     <>
@@ -216,12 +301,12 @@ const Comanda: React.FC = () => {
           <>
             <Styled.FormItemContainer>
               <Input
-                setValue={() => {}}
+                setValue={setTableName}
                 labelColor={theme.colors.blue.palete}
                 label="Nome para comanda: "
               />
               <Input
-                setValue={() => {}}
+                setValue={setTableNumber}
                 labelColor={theme.colors.blue.palete}
                 label="Número da mesa: "
               />
@@ -233,7 +318,7 @@ const Comanda: React.FC = () => {
               }}
             >
               <ButtonSecondary
-                action={addTable}
+                action={addNewTable}
                 Label={"finalizar"}
                 fontSize={theme.fontSize.md}
                 color={theme.colors.white.normal}
@@ -274,7 +359,7 @@ const Comanda: React.FC = () => {
               }}
             >
               <ButtonSecondary
-                action={consultTable}
+                action={updateTable}
                 Label={"Atualizar"}
                 fontSize={theme.fontSize.lg}
                 color={theme.colors.white.normal}
@@ -314,7 +399,6 @@ const Comanda: React.FC = () => {
           </>
         </Modal>
       )}
-
       {modalTableAdd && (
         <Modal
           customWidth={isMobile() ? 90 : 60}
@@ -328,8 +412,9 @@ const Comanda: React.FC = () => {
               {parsedRenCategories.map((cateItem, index) => (
                 <Styled.CategoriaLinha
                   onClick={() => {
-                    setFoodCategory(cateItem.label);
+                    //setCounterStates([]);
                     handleCloseTableAdd();
+                    setFoodCategory(cateItem.label);
                     setModalTableAddItem(true);
                   }}
                 >
@@ -364,7 +449,10 @@ const Comanda: React.FC = () => {
                       >
                         <Styled.CategoriaLinhaSpan
                           style={{
-                            fontSize: theme.fontSize.lg,
+                            fontSize:
+                              foodItem.label.length <= 25
+                                ? theme.fontSize.lg
+                                : theme.fontSize.md,
                             marginLeft: "0px",
                           }}
                         >
@@ -374,7 +462,7 @@ const Comanda: React.FC = () => {
                       <Styled.CounterRow>
                         <Styled.CounterBtn
                           onClick={() => {
-                            // handleConterChange(index.toString(), false);
+                            handleConterChange(index.toString(), false);
                           }}
                           style={{
                             marginRight: "4vh",
@@ -403,6 +491,7 @@ const Comanda: React.FC = () => {
                       <Styled.AddBtnContainer>
                         <ButtonSecondary
                           action={() => {
+                            setIsUpdateOrInsert("Add");
                             setComandaItem({
                               lbl: foodItem.label,
                               qtd: conterStates[index].counter,
@@ -421,7 +510,6 @@ const Comanda: React.FC = () => {
           </Styled.CategoriesContainer>
         </Modal>
       )}
-
       {modalTableConfirm && (
         <Modal
           bannerColor={theme.colors.blue.palete}
@@ -432,22 +520,8 @@ const Comanda: React.FC = () => {
         >
           <>
             <Styled.ConfirmationModal>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                }}
-              >
-                <p
-                  style={{
-                    textAlignLast: "center",
-                    fontSize: theme.fontSize.md,
-                  }}
-                >
-                  Deseja adicionar {comandaItem?.qtd} {comandaItem?.lbl} a
-                  comanda da mesa {currentTable?.tableLbl}?
-                </p>
-              </div>
+              Deseja adicionar {comandaItem?.qtd} {comandaItem?.lbl} a comanda
+              da mesa {currentTable?.tableLbl}?
             </Styled.ConfirmationModal>
             <Styled.BtnContainer
               style={{
@@ -487,7 +561,212 @@ const Comanda: React.FC = () => {
           </>
         </Modal>
       )}
-
+      {modalTableClose && (
+        <>
+          <Modal
+            bannerColor={theme.colors.red.normal}
+            title={"Atenção!"}
+            handleClose={handleCloseTableClose}
+            titleFont={theme.fonts.primary}
+            customWidth={isMobile() ? 90 : 60}
+          >
+            <>
+              <Styled.ConfirmationModal>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                  }}
+                >
+                  <p
+                    style={{
+                      textAlignLast: "center",
+                      fontSize: theme.fontSize.md,
+                    }}
+                  >
+                    Deseja fechar a comanda da mesa {currentTable?.tableLbl}?
+                  </p>
+                </div>
+              </Styled.ConfirmationModal>
+              <Styled.BtnContainer
+                style={{
+                  marginTop: "0px",
+                  paddingTop: "0px",
+                  justifyContent: "center",
+                  marginBottom: "2vh",
+                }}
+              >
+                <ButtonSecondary
+                  action={() => {
+                    closeComanda();
+                  }}
+                  Label={"Confirmar"}
+                  fontSize={theme.fontSize.md}
+                  color={theme.colors.white.normal}
+                  bgColor={theme.colors.green.normal}
+                />
+                <div
+                  style={{
+                    marginRight: isMobile() ? "0px" : "12vw",
+                    marginTop: isMobile() ? "2vh" : "0px",
+                  }}
+                >
+                  <ButtonSecondary
+                    action={() => {
+                      message.error("Ação cancelada.");
+                      handleCloseTableConfirm();
+                      handleCloseTableClose();
+                    }}
+                    Label="Cancelar"
+                    fontSize={theme.fontSize.md}
+                    color={theme.colors.white.normal}
+                    bgColor={theme.colors.red.normal}
+                  />
+                </div>
+              </Styled.BtnContainer>
+            </>
+          </Modal>
+        </>
+      )}
+      {modalTableCheck && (
+        <Modal
+          customWidth={isMobile() ? 90 : 60}
+          bannerColor={theme.colors.blue.palete}
+          title={
+            currentTable?.custumerName + ", mesa " + currentTable?.tableLbl
+          }
+          handleClose={handleCloseTableCheck}
+          titleFont={theme.fonts.primary}
+          footerLabel="Valor total: "
+          footerMaior="150,00"
+          money={true}
+        >
+          <Styled.CategoriesContainer>
+            <Styled.CategoriesContainerAux>
+              {tables
+                .filter((table) => table.tableLbl === currentTable?.tableLbl)[0]
+                .tableItens.map((tableItem, index) => (
+                  <Styled.CategoriaLinha
+                    onClick={() => {}}
+                    style={{
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <Styled.CategoriaLinhaSpan
+                      style={{
+                        fontSize: theme.fontSize.md2,
+                        marginLeft: "1vw",
+                        padding: "1vh",
+                      }}
+                    >
+                      Item: {tableItem.lbl}.
+                    </Styled.CategoriaLinhaSpan>
+                    <Styled.CategoriaLinhaSpan
+                      style={{
+                        fontSize: theme.fontSize.md2,
+                        marginLeft: "1vw",
+                        padding: "1vh",
+                      }}
+                    >
+                      QTD: {tableItem.qtd}
+                    </Styled.CategoriaLinhaSpan>
+                  </Styled.CategoriaLinha>
+                ))}
+            </Styled.CategoriesContainerAux>
+          </Styled.CategoriesContainer>
+        </Modal>
+      )}
+      {modalTableUpdate && (
+        <Modal
+          customWidth={isMobile() ? 90 : 60}
+          bannerColor={theme.colors.blue.palete}
+          title={
+            currentTable?.custumerName + ", mesa " + currentTable?.tableLbl
+          }
+          handleClose={handleCloseTableUpdate}
+          titleFont={theme.fonts.primary}
+        >
+          <Styled.CategoriesContainer>
+            <Styled.CategoriesContainerAux>
+              {tables
+                .filter((table) => table.tableLbl === currentTable?.tableLbl)[0]
+                .tableItens.map((tableItem, index) => (
+                  <>
+                    <Styled.FoodItem>
+                      <Styled.CategoriaLinha
+                        onClick={() => {}}
+                        style={{
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <Styled.CategoriaLinhaSpan
+                          style={{
+                            fontSize: theme.fontSize.md2,
+                            marginLeft: "1vw",
+                            padding: "1vh",
+                          }}
+                        >
+                          Item: {tableItem.lbl}.
+                        </Styled.CategoriaLinhaSpan>
+                        <Styled.CategoriaLinhaSpan
+                          style={{
+                            fontSize: theme.fontSize.md2,
+                            marginLeft: "1vw",
+                            padding: "1vh",
+                          }}
+                        >
+                          QTD: {tableItem.qtd}
+                        </Styled.CategoriaLinhaSpan>
+                      </Styled.CategoriaLinha>
+                      <Styled.CounterRow
+                        style={{
+                          marginTop: "1vh",
+                        }}
+                      >
+                        <Styled.CounterSpan>
+                          {conterStates &&
+                          conterStates[index] &&
+                          conterStates[index].counter
+                            ? conterStates[index].counter
+                            : 1}
+                        </Styled.CounterSpan>
+                        <Styled.CounterBtn
+                          onClick={() => {
+                            handleConterChange(index.toString(), true);
+                          }}
+                          style={{
+                            marginLeft: "4vh",
+                          }}
+                        >
+                          +
+                        </Styled.CounterBtn>
+                      </Styled.CounterRow>
+                      <Styled.AddBtnContainer>
+                        <ButtonSecondary
+                          action={() => {
+                            setIsUpdateOrInsert("Update");
+                            setModalTableUpdate(false);
+                            setComandaItem({
+                              lbl: tableItem.lbl,
+                              qtd: conterStates[index].counter,
+                            });
+                            setModalTableAddItem(false);
+                            setModalTableConfirm(true);
+                            handleCloseTableAdd();
+                          }}
+                          Label={"Adicionar"}
+                          fontSize={theme.fontSize.md}
+                          color={theme.colors.white.normal}
+                          bgColor={theme.colors.green.normal}
+                        />
+                      </Styled.AddBtnContainer>
+                    </Styled.FoodItem>
+                  </>
+                ))}
+            </Styled.CategoriesContainerAux>
+          </Styled.CategoriesContainer>
+        </Modal>
+      )}
       <Styled.MainDiv>
         <Styled.MainRowDiv>
           <Styled.PlusContainer
@@ -501,7 +780,7 @@ const Comanda: React.FC = () => {
           </Styled.PlusContainer>
           <Styled.TablesContainer>
             <Styled.TablesContainerAux>
-              {arrayDividido}
+              {tablesToBeRender}
             </Styled.TablesContainerAux>
           </Styled.TablesContainer>
         </Styled.MainRowDiv>

@@ -199,6 +199,5 @@ export const ConfirmationModal = styled.span`
  padding: 2vh;
  justify-content: center;
  font-family: ${({ theme }) => theme.fonts.secundary};
- font-size: ${({ theme }) => theme.fontSize.mm};
-
+ font-size: ${({ theme }) => theme.fontSize.md};
 `;

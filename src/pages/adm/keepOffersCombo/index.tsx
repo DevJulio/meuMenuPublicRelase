@@ -19,7 +19,7 @@ import { message } from "antd";
 export type TCounter = {
   id: string;
   counter: number;
-  label: string;
+  label?: string;
 };
 
 export type TCombo = {

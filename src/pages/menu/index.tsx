@@ -23,7 +23,7 @@ import renOffers from "../../assets/icons/renOffers.png";
 import renReservation from "../../assets/icons/renReservation.png";
 
 import { Carousel } from "react-responsive-carousel";
-import { useNavigate } from "react-router-dom";
+//import { useNavigate } from "react-router-dom";
 import instagram from "../../assets/icons/socialMedia/ios/instagram.png";
 import spotify from "../../assets/icons/socialMedia/ios/spotify.png";
 import youtube from "../../assets/icons/socialMedia/ios/youtube.png";
@@ -67,6 +67,43 @@ export type TProducts = {
   IBU?: string;
   grape?: string;
 };
+// export type TProductsOffers = {
+//   automation?: TAutomation;
+//   isEnable: boolean;
+//   img: string;
+//   description: string;
+//   category: string;
+//   categoryIcon: string;
+//   label: string;
+//   isDestaque: boolean;
+//   qtd: number;
+//   price: string;
+//   offerPrice?: string;
+//   isMainDestaque?: boolean;
+//   isDrink?: boolean;
+//   isOffer?: boolean;
+//   harmoziation?: string;
+//   images?: string[];
+//   country?: string;
+//   IBU?: string;
+//   grape?: string;
+
+
+//   img
+// isEnable
+// label
+// qtd
+// harmoziation
+// description
+// price
+// category
+// categoryIcon
+// isDrink
+// isDestaque
+// isOffer
+// offerPrice
+// };
+
 
 const Menu: React.FC = () => {
   const [modal, setModal] = useState<boolean>(false);
@@ -409,7 +446,7 @@ const Menu: React.FC = () => {
               ? foods
                   .filter((cate) => cate.isMainDestaque)
                   .map((foodItem, index) => (
-                    <a
+                    <div
                       style={{ textDecoration: "none" }}
                       onClick={() => {
                         setModal(true);
@@ -426,7 +463,7 @@ const Menu: React.FC = () => {
                         description={foodItem.description}
                         img={foodItem.img}
                       />
-                    </a>
+                    </div>
                   ))
               : foods
                   .filter(
@@ -434,7 +471,7 @@ const Menu: React.FC = () => {
                       cate.category === defaultCategory && cate.isDestaque
                   )
                   .map((foodItem, index) => (
-                    <a
+                    <div
                       style={{ textDecoration: "none" }}
                       onClick={() => {
                         setModal(true);
@@ -451,7 +488,7 @@ const Menu: React.FC = () => {
                         description={foodItem.description}
                         img={foodItem.img}
                       />
-                    </a>
+                    </div>
                   ))}
           </Styled.ContainerCategories>
         </Styled.CarouselContainer>
@@ -569,7 +606,7 @@ const Menu: React.FC = () => {
                     ? foods
                         .filter((cate) => cate.isMainDestaque)
                         .map((foodItem, index) => (
-                          <a
+                          <div
                             style={{ textDecoration: "none" }}
                             onClick={() => {
                               setModal(true);
@@ -586,12 +623,12 @@ const Menu: React.FC = () => {
                               description={foodItem.description}
                               img={foodItem.img}
                             />
-                          </a>
+                          </div>
                         ))
                     : foods
                         .filter((cate) => cate.category === defaultCategory)
                         .map((foodItem, index) => (
-                          <a
+                          <div
                             style={{ textDecoration: "none" }}
                             onClick={() => {
                               setModal(true);
@@ -608,7 +645,7 @@ const Menu: React.FC = () => {
                               description={foodItem.description}
                               img={foodItem.img}
                             />
-                          </a>
+                          </div>
                         ))}
                 </Styled.ContainerCategories>
               </div>
@@ -657,7 +694,7 @@ const Menu: React.FC = () => {
                     {foods
                       .filter((cate) => cate.isOffer)
                       .map((foodItem, index) => (
-                        <a
+                        <div
                           style={{ textDecoration: "none" }}
                           onClick={() => {
                             setModal(true);
@@ -674,7 +711,7 @@ const Menu: React.FC = () => {
                             description={foodItem.description}
                             img={foodItem.img}
                           />
-                        </a>
+                        </div>
                       ))}
                   </Styled.ContainerCategories>
                 </div>
