@@ -9,6 +9,13 @@ import isMobile from "is-mobile";
 import InputMasked from "../../../components/MaskedIpunt";
 import ButtonSecondary from "../../../components/buttons/secondary";
 import Modal from "../../../components/modal";
+import {
+  TamanhosGarrafasCerveja,
+  TamanhosGarrafasVinho,
+  TamanhosGarrafasWhisky,
+  TamanhosLatas,
+  cervejaRefriEmbalagens,
+} from "./embalagems";
 
 const CreateFood: React.FC = () => {
   const [name, setName] = useState<string>("Seu prato");
@@ -19,6 +26,7 @@ const CreateFood: React.FC = () => {
   const [IBU, setIBU] = useState<string>("");
   const [contry, setContry] = useState<string>("");
   const [grape, setGrape] = useState<string>("");
+  const [cervejaEmbalagem, setCervejaEmbalagem] = useState<string>("");
 
   const meuMenuFoodCategory = localStorage.getItem("meuMenuFoodCategory");
   const meuMenuFoodType = localStorage.getItem("meuMenuFoodType");
@@ -46,6 +54,7 @@ const CreateFood: React.FC = () => {
   const handleCloseFail = () => {
     setModalFail(false);
   };
+  console.log({ meuMenuFoodCategory });
   return (
     <>
       <Header />
@@ -214,6 +223,117 @@ const CreateFood: React.FC = () => {
                 <Styled.FormItemContainer>
                   <Input setValue={setIBU} label="IBU" />
                 </Styled.FormItemContainer>
+                <Styled.FormItemContainer>
+                  <Styled.ItemSpan>Qual é o tipo da embalagem?</Styled.ItemSpan>
+                  <Styled.Select
+                    name="select"
+                    onChange={(e) => {
+                      setCervejaEmbalagem(e.target.value);
+                    }}
+                  >
+                    <option selected disabled value="0">
+                      Escolha a categoria.
+                    </option>
+                    {cervejaRefriEmbalagens.map((emb: any) => (
+                      <option key={emb.value} value={emb.value}>
+                        {emb.label}
+                      </option>
+                    ))}
+                  </Styled.Select>
+                </Styled.FormItemContainer>
+              </Styled.MenusRow>
+              <Styled.MenusRow>
+                {cervejaEmbalagem && (
+                  <>
+                    <Styled.FormItemContainer>
+                      <Styled.ItemSpan>
+                        Qual é o tamanho da embalagem?
+                      </Styled.ItemSpan>
+                      {cervejaEmbalagem === "Lata" ? (
+                        <Styled.Select name="select" onChange={(e) => {}}>
+                          <option selected disabled value="0">
+                            Qual tamanho?
+                          </option>
+                          {TamanhosLatas.map((emb: any) => (
+                            <option key={emb.value} value={emb.value}>
+                              {emb.label}
+                            </option>
+                          ))}
+                        </Styled.Select>
+                      ) : (
+                        <Styled.Select name="select" onChange={(e) => {}}>
+                          <option selected disabled value="0">
+                            Qual tamanho?
+                          </option>
+                          {TamanhosGarrafasCerveja.map((emb: any) => (
+                            <option key={emb.value} value={emb.value}>
+                              {emb.label}
+                            </option>
+                          ))}
+                        </Styled.Select>
+                      )}
+                    </Styled.FormItemContainer>
+                  </>
+                )}
+              </Styled.MenusRow>
+            </>
+          )}
+
+          {(meuMenuFoodCategory === "Refrigerantes" ||
+            meuMenuFoodCategory === "Energético" ||
+            meuMenuFoodCategory === "Sucos") && (
+            <>
+              <Styled.MenusRow>
+                <Styled.FormItemContainer>
+                  <Styled.ItemSpan>Qual é o tipo da embalagem?</Styled.ItemSpan>
+                  <Styled.Select
+                    name="select"
+                    onChange={(e) => {
+                      setCervejaEmbalagem(e.target.value);
+                    }}
+                  >
+                    <option selected disabled value="0">
+                      Escolha a categoria.
+                    </option>
+                    {cervejaRefriEmbalagens.map((emb: any) => (
+                      <option key={emb.value} value={emb.value}>
+                        {emb.label}
+                      </option>
+                    ))}
+                  </Styled.Select>
+                </Styled.FormItemContainer>
+                {cervejaEmbalagem && (
+                  <>
+                    <Styled.FormItemContainer>
+                      <Styled.ItemSpan>
+                        Qual é o tamanho da embalagem?
+                      </Styled.ItemSpan>
+                      {cervejaEmbalagem === "Lata" ? (
+                        <Styled.Select name="select" onChange={(e) => {}}>
+                          <option selected disabled value="0">
+                            Qual tamanho?
+                          </option>
+                          {TamanhosLatas.map((emb: any) => (
+                            <option key={emb.value} value={emb.value}>
+                              {emb.label}
+                            </option>
+                          ))}
+                        </Styled.Select>
+                      ) : (
+                        <Styled.Select name="select" onChange={(e) => {}}>
+                          <option selected disabled value="0">
+                            Qual tamanho?
+                          </option>
+                          {TamanhosGarrafasCerveja.map((emb: any) => (
+                            <option key={emb.value} value={emb.value}>
+                              {emb.label}
+                            </option>
+                          ))}
+                        </Styled.Select>
+                      )}
+                    </Styled.FormItemContainer>
+                  </>
+                )}
               </Styled.MenusRow>
             </>
           )}
@@ -223,6 +343,93 @@ const CreateFood: React.FC = () => {
               <Styled.MenusRow>
                 <Styled.FormItemContainer>
                   <Input setValue={setGrape} label="Tipo da uva" />
+                </Styled.FormItemContainer>
+                <Styled.FormItemContainer>
+                  <Styled.ItemSpan>Qual é o tamaho da garrafa?</Styled.ItemSpan>
+                  <Styled.Select
+                    name="select"
+                    onChange={(e) => {
+                      setCervejaEmbalagem(e.target.value);
+                    }}
+                  >
+                    <option selected disabled value="0">
+                      informe o tamanho.
+                    </option>
+                    {TamanhosGarrafasVinho.map((emb: any) => (
+                      <option key={emb.value} value={emb.value}>
+                        {emb.label}
+                      </option>
+                    ))}
+                  </Styled.Select>
+                </Styled.FormItemContainer>
+              </Styled.MenusRow>
+            </>
+          )}
+          {meuMenuFoodCategory === "champagne/Espumantes" && (
+            <>
+              <Styled.MenusRow>
+                <Styled.FormItemContainer>
+                  <Styled.ItemSpan>Qual é o tamaho da garrafa?</Styled.ItemSpan>
+                  <Styled.Select
+                    name="select"
+                    onChange={(e) => {
+                      setCervejaEmbalagem(e.target.value);
+                    }}
+                  >
+                    <option selected disabled value="0">
+                      informe o tamanho.
+                    </option>
+                    {TamanhosGarrafasVinho.map((emb: any) => (
+                      <option key={emb.value} value={emb.value}>
+                        {emb.label}
+                      </option>
+                    ))}
+                  </Styled.Select>
+                </Styled.FormItemContainer>
+              </Styled.MenusRow>
+            </>
+          )}
+          {meuMenuFoodCategory === "Whiskey/Licor" && (
+            <>
+              <Styled.MenusRow>
+                <Styled.FormItemContainer>
+                  <Styled.ItemSpan>Qual é o tamaho da garrafa?</Styled.ItemSpan>
+                  <Styled.Select
+                    name="select"
+                    onChange={(e) => {
+                      setCervejaEmbalagem(e.target.value);
+                    }}
+                  >
+                    <option selected disabled value="0">
+                      informe o tamanho.
+                    </option>
+                    {TamanhosGarrafasWhisky.map((emb: any) => (
+                      <option key={emb.value} value={emb.value}>
+                        {emb.label}
+                      </option>
+                    ))}
+                  </Styled.Select>
+                </Styled.FormItemContainer>
+              </Styled.MenusRow>
+            </>
+          )}
+          {(meuMenuFoodCategory === "Cremes/Milkshakes" ||
+            meuMenuFoodCategory === "Água" ||
+            meuMenuFoodCategory === "Drinks") && (
+            <>
+              <Styled.MenusRow>
+                <Styled.FormItemContainer>
+                  <Styled.ItemSpan>Qual é o tamanho do item?</Styled.ItemSpan>
+                  <Styled.Select name="select" onChange={(e) => {}}>
+                    <option selected disabled value="0">
+                      Selecione...
+                    </option>
+                    {TamanhosGarrafasCerveja.map((emb: any) => (
+                      <option key={emb.value} value={emb.value}>
+                        {emb.label}
+                      </option>
+                    ))}
+                  </Styled.Select>
                 </Styled.FormItemContainer>
               </Styled.MenusRow>
             </>

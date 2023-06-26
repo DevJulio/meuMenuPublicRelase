@@ -151,7 +151,7 @@ const AdmMenu: React.FC = () => {
           <Styled.CardsContainer>
             <div
               style={{
-                width: "50%",
+                width: isMobile() ? "80%" : "50%",
               }}
               onClick={() => {
                 mainCategories[0].url && navigate(mainCategories[0].url);
@@ -161,7 +161,7 @@ const AdmMenu: React.FC = () => {
             </div>
             <div
               style={{
-                width: "50%",
+                width: isMobile() ? "80%" : "50%",
                 marginRight: "1vw",
               }}
               onClick={() => {

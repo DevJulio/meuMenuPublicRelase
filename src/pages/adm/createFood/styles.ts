@@ -137,3 +137,13 @@ export const PlansDetailModal = styled.span`
   font-size: ${({ theme }) => theme.fontSize.mm};
  
 `;
+export const Select = styled.select`
+border-radius: 15px;
+height: 46px;
+margin-top: -2vh;
+border-color:${({ theme }) => theme.colors.gray.normal};
+font-size: ${({ theme }) => theme.fontSize.md2};
+color:${({ theme }) => theme.colors.blue.palete};
+font-family: ${({ theme }) => theme.fonts.primary};
+padding: 7px;
+`

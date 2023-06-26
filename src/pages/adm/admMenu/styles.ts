@@ -92,6 +92,8 @@ export const CardsContainer = styled.div`
   padding-bottom: 2vh;
    @media ${({ theme }) => theme.devices.tablet} {
     width: 100%;
+    flex-direction: column;
+    align-items: center;
   }
 `;
 
