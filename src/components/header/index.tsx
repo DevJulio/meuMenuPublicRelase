@@ -56,9 +56,9 @@ const Header: React.FC = () => {
                 Preços e planos
               </Styled.MenuItem>
               <Styled.MenuItem
-                id="contact"
+                id="login"
                 style={{ color: theme.colors.red.normal }}
-                href="/contact"
+                href="/login"
               >
                 Acessar Meu Menu
               </Styled.MenuItem>
@@ -76,6 +76,7 @@ const Header: React.FC = () => {
               Preços e planos
             </Styled.MenuDesktopAnchor>
             <Styled.MenuDesktopAnchor
+              href="/login"
               style={{
                 color: theme.colors.red.normal,
               }}

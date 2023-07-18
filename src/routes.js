@@ -23,6 +23,7 @@ import Destaques from "./pages/adm/destaques";
 import UpdateData from "./pages/adm/updateData";
 import ContactAdm from "./pages/adm/adm/contact";
 import Comanda from "./pages/adm/adm/comanda";
+import Login from "./pages/account/login";
 
 function RoutesList() {
   return (
@@ -31,6 +32,7 @@ function RoutesList() {
         <Route path="/" element={<Home />} />
         <Route path="/sobre" element={<About />} />
         <Route path="/planos" element={<Plans />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/contato" element={<Contact />} />
         <Route path="/cardapio" element={<Menu />} />
         <Route path="/cardapios" element={<PreMenu />} />
@@ -38,7 +40,7 @@ function RoutesList() {
         <Route path="/cadastro-cardapio" element={<MenuMeuMenu />} />
         <Route path="/cadastro-item-cardapio" element={<CreateFood />} />
         {/* ADM */}
-        <Route path="/home" element={<RestaurantHome />} />
+        <Route path="/adm/home" element={<RestaurantHome />} />
         <Route path="/adm/cardapio" element={<AdmMenu />} />
         <Route path="/adm/ofertas" element={<OffersMenu />} />
         <Route path="/adm/ofertas/preco" element={<OffersMenuPrice />} />

@@ -232,7 +232,6 @@ const Menu: React.FC = () => {
 
   const socialFlexCount = checkFlexSize();
 
-
   return (
     <>
       {modal && modalIten && (

@@ -30,6 +30,7 @@ const CreateFood: React.FC = () => {
 
   const meuMenuFoodCategory = localStorage.getItem("meuMenuFoodCategory");
   const meuMenuFoodType = localStorage.getItem("meuMenuFoodType");
+console.log(meuMenuFoodType);
 
   const [modal, setModal] = useState<boolean>(false);
   const [modalFail, setModalFail] = useState<boolean>(false);
@@ -192,6 +193,38 @@ const CreateFood: React.FC = () => {
               />
             </Styled.IconCentralize>
           </Styled.MenusRow>
+
+
+
+          {meuMenuFoodType === "beber" && (
+            <>
+              <Styled.MenusRow>
+                <Styled.FormItemContainer>
+                  <Input setValue={setContry} label="País de origem" />
+                </Styled.FormItemContainer>
+                <Styled.FormItemContainer>
+                  <Styled.ItemSpan>
+                    Selecione a foto para o cardápio.
+                  </Styled.ItemSpan>
+                  <Styled.Centralize>
+                    <Styled.FileInput
+                      type="file"
+                      id="mainBanner"
+                      onChange={(e) => {
+                        changeInput(e);
+                      }}
+                    />
+                  </Styled.Centralize>
+                </Styled.FormItemContainer>
+              </Styled.MenusRow>
+            </>
+          )}
+
+
+
+
+
+
 
           {meuMenuFoodType === "beber" && (
             <>
