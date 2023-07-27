@@ -49,6 +49,38 @@ const UpdateData: React.FC = () => {
       setLogoUpdated(localFile);
     }
   };
+  const header = {
+    icon: "ren",
+    title: "Ren.",
+    mainColor: "#F2E8CF",
+    auxColor: "#BC4749",
+    textColor: "#386641",
+    fontStyle: theme.fonts.hand,
+    fontStyleAux: theme.fonts.primary,
+    wellcome: "Bem-vindo(a) ao Ren.",
+    banner: "food",
+    offers: true,
+    hasHappyHour: true,
+    reservation: true,
+    reservationTextDetail:
+      "Evite filas de espera, faça sua reserva no Ren, entre em contato com o número a baixo e verifique a disponibilidade!",
+    reservationContactNumber: "64996140938",
+    offersText: "Confira as promoções do Ren!",
+    happyHourText: "É dia de happy hour no Ren!",
+    happyHourTextDetail:
+      "O happy hour é oferecido de segunda a sexta-feira, das 17h às 20h, Durante o happy hour, nossos clientes podem desfrutar de bebidas com descontos especiais, como cervejas, vinhos e coquetéis.",
+    reservationText: "Reserve sua mesa!",
+    socialMedia: {
+      instagram: { icon: instagram, link: "//" },
+      spotify: {
+        icon: spotify,
+        link: "https://open.spotify.com/embed/playlist/0usD50UnpFtLPEMYsy3s62?utm_source=generator",
+      },
+      youtube: { icon: youtube, link: "" },
+      whatsapp: { icon: whatsapp, link: "//" },
+      address: { icon: marker, link: "//" },
+    },
+  };
 
   const createRequest = () => {
     if (

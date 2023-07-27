@@ -92,7 +92,7 @@ export const mainAdmCategories: TCardProps[] = [
         auxColor: theme.colors.red.normal,
         textColor: theme.colors.white.normal,
         customWidth: true,
-        url: "/adm/atualizar"
+        url: "/adm/time"
     },
     {
         icon: outro,

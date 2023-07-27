@@ -1,5 +1,4 @@
-import { log } from "console";
-import React, { useState } from "react";
+import React from "react";
 import * as Styled from "./styles";
 
 export interface ICategory {

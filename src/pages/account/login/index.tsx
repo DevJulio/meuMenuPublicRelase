@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import * as Styled from "./styles";
-import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import footerLogo from "../../../assets/logo/footerLogo.png";
+import { message } from "antd";
+import { loginHandler } from "../../../service/module/login";
 
-type TInputs = {
+export type TLogin = {
   email: string;
   password: string;
 };
@@ -12,26 +13,17 @@ type TInputs = {
 const Login: React.FC = () => {
   const [error, setError] = useState<boolean>(false);
 
-  const { register, handleSubmit } = useForm<TInputs>();
-  const navigate = useNavigate();
-
-  const onSubmit = async (user: TInputs) => {
-    try {
-      //const response = await api.post("/admin/loginAdmin/", user);
-      //const token = { ...response.data.data };
-      // setCookie("user", JSON.stringify(token), 30);
-      const profile = {
-        userType: "a",
-      };
-
-      if (profile.userType === "a") {
-        navigate("/adm/home");
-      } else {
-        navigate("/users");
+  const { register, handleSubmit } = useForm<TLogin>();
+  const onSubmit = async (user: TLogin) => {
+    if (user.email && user.password) {
+      try {
+        loginHandler(user);
+      } catch (error) {
+        setError(true);
+        message.error("Verifique os dados e tente novamente.");
       }
-    } catch (error) {
-      setError(true);
-      alert("check Email or Password and try again");
+    } else {
+      message.error("Preencha todos os campos!");
     }
   };
 

@@ -24,6 +24,8 @@ import UpdateData from "./pages/adm/updateData";
 import ContactAdm from "./pages/adm/adm/contact";
 import Comanda from "./pages/adm/adm/comanda";
 import Login from "./pages/account/login";
+import Staff from "./pages/adm/adm/staff";
+import StaffHome from "./pages/adm/staff";
 
 function RoutesList() {
   return (
@@ -39,6 +41,8 @@ function RoutesList() {
         <Route path="/cadastro" element={<SolicitationMeuMenu />} />
         <Route path="/cadastro-cardapio" element={<MenuMeuMenu />} />
         <Route path="/cadastro-item-cardapio" element={<CreateFood />} />
+        {/* STAFF */}
+        <Route path="/staff/home" element={<StaffHome />} />
         {/* ADM */}
         <Route path="/adm/home" element={<RestaurantHome />} />
         <Route path="/adm/cardapio" element={<AdmMenu />} />
@@ -58,6 +62,7 @@ function RoutesList() {
         <Route path="/adm/atualizar" element={<UpdateData />} />
         <Route path="/adm/suporte" element={<ContactAdm />} />
         <Route path="/adm/comanda" element={<Comanda />} />
+        <Route path="/adm/time" element={<Staff />} />
         {/* UPDATE */}
         <Route path="/adm/update/cardapio" element={<UpdateFood />} />
       </Routes>
