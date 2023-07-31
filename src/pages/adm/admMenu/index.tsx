@@ -18,8 +18,10 @@ import Modal from "../../../components/modal";
 import FoodModalDetail from "../../../components/foodModalDetail";
 import { TProducts } from "../../menu";
 import { ICategory } from "../../../components/category";
+import { message } from "antd";
+import isMobile from "is-mobile";
 
-type TSwitch = {
+export type TSwitch = {
   id: string;
   checked: boolean;
   label: string;
@@ -106,11 +108,12 @@ const AdmMenu: React.FC = () => {
     setSwitchStates(switches);
   }, [foodCategory]);
 
-  // useEffect(() => {
-  //   console.log(switchStates);
-  // }, [switchStates]);
-
   const handleSwitchChange = async (id: string) => {
+    if (switchStates[Number(id)].checked) {
+      message.error("Item desativado.");
+    } else {
+      message.success("Item ativado.");
+    }
     setSwitchStates((prevSwitchStates) =>
       prevSwitchStates.map((switchState) =>
         switchState.id === id
@@ -132,6 +135,7 @@ const AdmMenu: React.FC = () => {
       {modal && modalIten && (
         <Modal
           bannerColor={"#BC4749"} //AuxColor
+          customWidth={isMobile() ? 90 : 60}
           title={modalIten.label}
           handleClose={handleClose}
           titleFont={theme.fonts.hand}
@@ -147,7 +151,7 @@ const AdmMenu: React.FC = () => {
           <Styled.CardsContainer>
             <div
               style={{
-                width: "50%",
+                width: isMobile() ? "80%" : "50%",
               }}
               onClick={() => {
                 mainCategories[0].url && navigate(mainCategories[0].url);
@@ -157,7 +161,7 @@ const AdmMenu: React.FC = () => {
             </div>
             <div
               style={{
-                width: "50%",
+                width: isMobile() ? "80%" : "50%",
                 marginRight: "1vw",
               }}
               onClick={() => {

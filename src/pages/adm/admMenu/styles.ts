@@ -58,7 +58,8 @@ justify-content: center;
     font-family: ${({ theme }) => theme.fonts.primary};
     font-size: ${({ theme }) => theme.fontSize.md};
     margin-top: 1vh;
-    color: ${({ theme }) => theme.colors.yellow.palete};  }
+    color: ${({ theme }) => theme.colors.yellow.palete};  
+  }
 `
 
 export const CateIcon = styled.img`
@@ -91,6 +92,8 @@ export const CardsContainer = styled.div`
   padding-bottom: 2vh;
    @media ${({ theme }) => theme.devices.tablet} {
     width: 100%;
+    flex-direction: column;
+    align-items: center;
   }
 `;
 

@@ -9,6 +9,9 @@ interface Props {
   bannerColor: string;
   titleFont: string;
   customWidth?: number;
+  footerLabel?: string;
+  footerMaior?: string;
+  money?: boolean;
 }
 
 const Modal: React.FC<Props> = ({
@@ -18,6 +21,9 @@ const Modal: React.FC<Props> = ({
   bannerColor,
   titleFont,
   customWidth,
+  footerLabel,
+  footerMaior,
+  money = false,
 }) => {
   return (
     <>
@@ -38,6 +44,25 @@ const Modal: React.FC<Props> = ({
             </Styled.Close>
           </Styled.Header>
           {children}
+          {footerLabel && (
+            <Styled.Footer
+              style={{ backgroundColor: bannerColor, fontFamily: titleFont }}
+            >
+              <Styled.FooterContainer>
+                <Styled.FooterLbl>{footerLabel}</Styled.FooterLbl>
+                {money && (
+                  <Styled.FooterLbl
+                    style={{
+                      marginInline: "2vw",
+                    }}
+                  >
+                    R$
+                  </Styled.FooterLbl>
+                )}
+                <Styled.FooterMaior>{footerMaior}</Styled.FooterMaior>
+              </Styled.FooterContainer>
+            </Styled.Footer>
+          )}
         </Styled.Content>
       </Styled.Container>
     </>

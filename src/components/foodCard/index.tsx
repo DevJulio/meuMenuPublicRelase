@@ -13,7 +13,7 @@ export interface IFood {
   category?: string;
 }
 
-const FoodCardOffer: React.FC<IFood> = ({
+const FoodCard: React.FC<IFood> = ({
   fontStyle,
   color,
   label,
@@ -83,4 +83,4 @@ const FoodCardOffer: React.FC<IFood> = ({
   );
 };
 
-export default FoodCardOffer;
+export default FoodCard;

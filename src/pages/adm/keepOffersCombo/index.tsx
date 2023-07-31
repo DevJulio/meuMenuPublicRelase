@@ -9,14 +9,25 @@ import ButtonSecondary from "../../../components/buttons/secondary";
 import { theme } from "../../../theme/theme";
 import foods, { renCategories } from "../../menu/foods";
 import { ICategory } from "../../../components/category";
-import FoodCard from "../../../components/foodCardOffer";
+import FoodCard from "../../../components/foodCard";
 import { TProducts } from "../../menu";
 import Modal from "../../../components/modal";
+import Input from "../../../components/input";
+import isMobile from "is-mobile";
+import { message } from "antd";
 
-type TCounter = {
+export type TCounter = {
   id: string;
   counter: number;
-  label: string;
+  label?: string;
+};
+
+export type TCombo = {
+  banner: string;
+  price: string;
+  title: string;
+  descriptionText: string;
+  comboItens: TProducts[];
 };
 
 const OffersMenuCombo: React.FC = () => {
@@ -27,6 +38,10 @@ const OffersMenuCombo: React.FC = () => {
   const [modalIten, setmodalIten] = useState<TProducts>();
   const [comboState, setComboState] = useState<TProducts[]>();
   const [conterStates, setCounterStates] = useState<TCounter[]>([]);
+  const [banner, setBanner] = useState();
+  const [price, setPrice] = useState<string>("");
+  const [label, setLabel] = useState<string>("");
+  const [descriptionText, setDescriptionText] = useState<string>("");
 
   useEffect(() => {
     const mainContainer = document.getElementById("mainContainer");
@@ -67,9 +82,9 @@ const OffersMenuCombo: React.FC = () => {
           label: foodItem.label,
         })
       );
-    // console.log(counter);
-    setCounterStates(counter);
+     setCounterStates(counter);
   }, [foodCategory]);
+  useEffect(() => {}, [comboState]);
 
   const handleConterChange = async (id: string, add: boolean) => {
     setCounterStates((prevConterStates) =>
@@ -84,8 +99,6 @@ const OffersMenuCombo: React.FC = () => {
           : counterState
       )
     );
-    //Chamar Api.
-    //Alterar o elemento currentFoodItem[Number(id)] no banco de dados.
   };
 
   const navigate = useNavigate();
@@ -105,7 +118,34 @@ const OffersMenuCombo: React.FC = () => {
   };
 
   const parsedRenCategories = getArraysExceptIndex(renCategories, renIndex);
-  console.log(conterStates);
+
+  const getPrice = () => {
+    if (comboState) {
+      let formatedPrice = 0;
+
+      comboState.forEach((comboItem) => {
+        if (comboItem.qtd && comboItem.price) {
+          formatedPrice +=
+            Number(comboItem.price.replace(",", ".")) * comboItem.qtd;
+        }
+      });
+
+      return Number(formatedPrice).toFixed(2);
+    }
+  };
+
+  const changeInput = (e: any) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setBanner(e.target.files[0]);
+    }
+  };
+  const createCombo = () => {
+    if (banner && price && label && descriptionText && comboState?.length) {
+      console.log({ banner, price, label, descriptionText, comboState });
+    } else {
+      message.error("Verifique os campos e tente novamente.");
+    }
+  };
 
   return (
     <>
@@ -194,9 +234,44 @@ const OffersMenuCombo: React.FC = () => {
             <ButtonSecondary
               action={() => {
                 handleCloseAux();
-                const itensList: TProducts[] = comboState ? comboState : [];
-                itensList.push(modalIten);
-                setComboState(itensList);
+                if (comboState) {
+                  const currentComboItens: TProducts[] = comboState; //Itens atuais da lista de combos.
+                  const duplicated = comboState.findIndex(
+                    //Busca o index do item duplicado
+                    (combo) => combo.label === modalIten.label
+                  );
+
+                  if (duplicated >= 0) {
+                    const sumItens = comboState[duplicated].qtd + modalIten.qtd; //soma a qtd
+
+                    const parsedComboItem: TProducts = {
+                      isEnable: modalIten.isEnable,
+                      img: modalIten.img,
+                      description: modalIten.description,
+                      price: modalIten.price,
+                      category: modalIten.category,
+                      categoryIcon: modalIten.categoryIcon,
+                      label: modalIten.label,
+                      isDestaque: modalIten.isDestaque,
+                      harmoziation: modalIten.harmoziation,
+                      isDrink: modalIten.isDrink,
+                      qtd: sumItens, //cria um novo objeto para ser adicionado a lista
+                    };
+
+                    currentComboItens.push(parsedComboItem); //Adiciona a lista
+                    const finalFormatedComboItens = [...currentComboItens];
+                    finalFormatedComboItens.splice(duplicated, 1); //remove o item original com a qtd antiga.
+
+                    setComboState(finalFormatedComboItens); //Atualiza a lista.
+                  } else {
+                    currentComboItens.push(modalIten);
+                    setComboState(currentComboItens);
+                  }
+                } else {
+                  const itensList: TProducts[] = comboState ? comboState : [];
+                  itensList.push(modalIten);
+                  setComboState(itensList);
+                }
                 setModal(true);
               }}
               Label={"Adicionar"}
@@ -222,7 +297,7 @@ const OffersMenuCombo: React.FC = () => {
         <Styled.TitleSpan>Ofertas</Styled.TitleSpan>
         <Styled.MenuContainer id="mainContainer">
           <Styled.ItemSpan style={{ color: "white" }}>
-            Selecione a categoria do {comboState ? comboState.length : 0}º
+            Selecione a categoria do {comboState ? comboState.length : 1}º
             prato:
           </Styled.ItemSpan>
           <Styled.CateRow>
@@ -254,12 +329,13 @@ const OffersMenuCombo: React.FC = () => {
             />
           </Styled.BackBtnContainer>
         </Styled.MenuContainer>
+
         <Styled.MenuContainer
           style={{ display: "none" }}
           id="foodListContainer"
         >
           <Styled.ItemSpan style={{ color: "white" }}>
-            Selecione o {comboState ? comboState.length : 1}º prato:
+            Selecione o {comboState ? comboState.length + 1 : 1}º prato:
           </Styled.ItemSpan>
 
           <Styled.CategoryContainerAux style={{ width: "85%" }}>
@@ -415,8 +491,9 @@ const OffersMenuCombo: React.FC = () => {
                         />
                         <Styled.DeleteContainer
                           onClick={() => {
-                            // setComboState(comboState.splice(index, 1));
-                            //Remover do array nessa posição
+                            const newItems = [...comboState];
+                            newItems.splice(index, 1);
+                            setComboState(newItems);
                           }}
                         >
                           <Styled.DeleteSpan
@@ -449,8 +526,73 @@ const OffersMenuCombo: React.FC = () => {
               </Styled.FoodCategoryItem>
             </Styled.ContainerCategories>
           </div>
-
+          {comboState && (
+            <Styled.LblPriceDetail>
+              <Styled.PageSpan>
+                Valor total dos produtos R$ {getPrice()}
+              </Styled.PageSpan>
+            </Styled.LblPriceDetail>
+          )}
           {/* Criar formulário para receber título, descrição, banner, preço e tbm criar label grande somando todos os valores */}
+
+          <Styled.TitleSpan>Preencha todos os campos</Styled.TitleSpan>
+          <Styled.Menus>
+            <Styled.MenusRow>
+              <Styled.FormItemContainer>
+                <Input setValue={setLabel} value={label} label="Título" />
+              </Styled.FormItemContainer>
+
+              <Styled.FormItemContainer>
+                <Input setValue={setPrice} value={price} label="Preço" />
+              </Styled.FormItemContainer>
+              <Styled.FormItemContainer>
+                <Styled.ItemSpan
+                  style={{ color: "white", marginBottom: "-5vh" }}
+                >
+                  Selecione a foto para o cardápio.
+                </Styled.ItemSpan>
+                <Styled.Centralize>
+                  <Styled.FileInput
+                    type="file"
+                    id="mainBanner"
+                    accept="image/*"
+                    onChange={(e) => {
+                      changeInput(e);
+                    }}
+                  />
+                </Styled.Centralize>
+              </Styled.FormItemContainer>
+            </Styled.MenusRow>
+
+            <Styled.MenusRow>
+              <Styled.IconCentralize>
+                <Input
+                  labelColor={theme.colors.red.normal}
+                  setValue={setDescriptionText}
+                  value={descriptionText}
+                  label="Descrição e detalhes"
+                  isTextArea
+                  customWidth={isMobile() ? "250px" : "650px"}
+                />
+              </Styled.IconCentralize>
+            </Styled.MenusRow>
+            {banner && (
+              <Styled.MenusRow>
+                <Styled.MenuBanner
+                  src={URL.createObjectURL(banner)}
+                ></Styled.MenuBanner>
+              </Styled.MenusRow>
+            )}
+          </Styled.Menus>
+          <Styled.BackBtnContainer>
+            <ButtonSecondary
+              action={createCombo}
+              Label={"Salvar alterações"}
+              fontSize={theme.fontSize.md}
+              color={theme.colors.white.normal}
+              bgColor={theme.colors.red.normal}
+            />
+          </Styled.BackBtnContainer>
         </Styled.MenuContainer>
       </Styled.MainContainer>
       <Footer />

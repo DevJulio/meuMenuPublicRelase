@@ -9,7 +9,7 @@ import ButtonSecondary from "../../../components/buttons/secondary";
 import { theme } from "../../../theme/theme";
 import foods, { renCategories } from "../../menu/foods";
 import { ICategory } from "../../../components/category";
-import FoodCard from "../../../components/foodCardOffer";
+import FoodCard from "../../../components/foodCard";
 import { TProducts } from "../../menu";
 import Modal from "../../../components/modal";
 
@@ -94,12 +94,17 @@ const OffersMenuPriceBKP: React.FC = () => {
               </a>
             ))}
           </Styled.CateRow>
-          <Styled.BackBtnContainer>
+          <Styled.BackBtnContainer
+            style={{
+              marginTop: "5vw",
+              marginBottom: "4vh",
+            }}
+          >
             <ButtonSecondary
               action={() => {
-                navigate("/adm/ofertas");
+                navigate("/home");
               }}
-              Label={"← voltar ao menu de ofertas"}
+              Label={"← voltar ao menu"}
               fontSize={theme.fontSize.md}
               color={theme.colors.white.normal}
               bgColor={theme.colors.red.normal}

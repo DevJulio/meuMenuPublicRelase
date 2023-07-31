@@ -16,6 +16,16 @@ import Plans from "./pages/plans";
 import PreMenu from "./pages/preMenu";
 import OffersMenuPrice from "./pages/adm/keepOffersPrice";
 import OffersMenuCombo from "./pages/adm/keepOffersCombo";
+import OffersMenuAuto from "./pages/adm/keepOffersAuto";
+import OffersMyOffers from "./pages/adm/keepOffersMyOffers";
+import OffersEditCombo from "./pages/adm/keepOffersEditCombo";
+import Destaques from "./pages/adm/destaques";
+import UpdateData from "./pages/adm/updateData";
+import ContactAdm from "./pages/adm/adm/contact";
+import Comanda from "./pages/adm/adm/comanda";
+import Login from "./pages/account/login";
+import Staff from "./pages/adm/adm/staff";
+import StaffHome from "./pages/adm/staff";
 
 function RoutesList() {
   return (
@@ -24,22 +34,35 @@ function RoutesList() {
         <Route path="/" element={<Home />} />
         <Route path="/sobre" element={<About />} />
         <Route path="/planos" element={<Plans />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/contato" element={<Contact />} />
         <Route path="/cardapio" element={<Menu />} />
         <Route path="/cardapios" element={<PreMenu />} />
         <Route path="/cadastro" element={<SolicitationMeuMenu />} />
         <Route path="/cadastro-cardapio" element={<MenuMeuMenu />} />
         <Route path="/cadastro-item-cardapio" element={<CreateFood />} />
+        {/* STAFF */}
+        <Route path="/staff/home" element={<StaffHome />} />
         {/* ADM */}
-        <Route path="/home" element={<RestaurantHome />} />
+        <Route path="/adm/home" element={<RestaurantHome />} />
         <Route path="/adm/cardapio" element={<AdmMenu />} />
         <Route path="/adm/ofertas" element={<OffersMenu />} />
         <Route path="/adm/ofertas/preco" element={<OffersMenuPrice />} />
         <Route path="/adm/ofertas/combo" element={<OffersMenuCombo />} />
-        <Route path="/adm/destaques" element={<></>} />
-        <Route path="/adm/atualizar" element={<></>} />
-        <Route path="/adm/comanda" element={<></>} />
-        <Route path="/adm/suporte" element={<></>} />
+        <Route path="/adm/ofertas/automacao" element={<OffersMenuAuto />} />
+        <Route
+          path="/adm/ofertas/minhas-ofertas"
+          element={<OffersMyOffers />}
+        />
+        <Route
+          path="/adm/ofertas/minhas-ofertas/edicao"
+          element={<OffersEditCombo />}
+        />
+        <Route path="/adm/destaques" element={<Destaques />} />
+        <Route path="/adm/atualizar" element={<UpdateData />} />
+        <Route path="/adm/suporte" element={<ContactAdm />} />
+        <Route path="/adm/comanda" element={<Comanda />} />
+        <Route path="/adm/time" element={<Staff />} />
         {/* UPDATE */}
         <Route path="/adm/update/cardapio" element={<UpdateFood />} />
       </Routes>

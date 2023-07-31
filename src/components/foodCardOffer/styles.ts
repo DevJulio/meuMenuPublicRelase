@@ -9,8 +9,6 @@ export const Container = styled.div`
   height: fit-content;
 `;
 
-
-
 export const MainContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -29,49 +27,71 @@ export const Img = styled.img`
   border-top-right-radius: 25px;
   border-top-left-radius: 25px;
   margin-top: -1px;
-  max-width:250px;
-  max-height:150px;
-  min-width:250px;
-  min-height:150px;
+  max-width: 250px;
+  max-height: 150px;
+  min-width: 250px;
+  min-height: 150px;
   width: auto;
   height: auto;
 `;
 export const Title = styled.div`
-    text-align: center;
-    align-self: center;
-    margin-top: 1vh;
-    font-family: ${({ theme }) => theme.fonts.primary};
-    font-size: ${({ theme }) => theme.fontSize.md2};
-
-
+  text-align: center;
+  align-self: center;
+  margin-top: 1vh;
+  font-family: ${({ theme }) => theme.fonts.primary};
+  font-size: ${({ theme }) => theme.fontSize.lg};
 `;
 export const Description = styled.div`
-height: fit-content;
-margin-bottom: 3vh;
-margin-top: 1vh;
-width: 95%;
-align-self: center;
-max-height: 100px;
-min-height: 100px;
-font-size: ${({ theme }) => theme.fontSize.sm};
-
+  height: fit-content;
+  margin-bottom: 3vh;
+  margin-top: 1vh;
+  width: 95%;
+  align-self: center;
+  max-height: 100px;
+  min-height: 100px;
+  color: black;
+  font-size: ${({ theme }) => theme.fontSize.sm};
 `;
 export const Price = styled.div`
-border-bottom-left-radius: 25px;
-border-bottom-right-radius: 25px;
-display: flex;
-    justify-content: center;
-    height: 5vh;
-    align-items: center;
-span {
-  font-family: ${({ theme }) => theme.fonts.primary};
-  font-size: ${({ theme }) => theme.fontSize.md};
-}
+  border-bottom-left-radius: 25px;
+  border-bottom-right-radius: 25px;
+  display: flex;
+  justify-content: center;
+  height: 5vh;
+  align-items: center;
+  background-color: ${({ theme }) => theme.colors.blue.palete};
+  span {
+    font-family: ${({ theme }) => theme.fonts.primary};
+    font-size: ${({ theme }) => theme.fontSize.md};
+  }
 `;
-export const Anchor = styled.a`
-text-decoration: none;
 
-`
+export const PriceAux = styled.div`
+  border-top-left-radius: 25px;
+  border-top-right-radius: 25px;
+  display: flex;
+  justify-content: center;
+  height: 5vh;
+  align-items: center;
+  background-color: ${({ theme }) => theme.colors.red.normal};
+  span {
+    font-family: ${({ theme }) => theme.fonts.primary};
+    font-size: ${({ theme }) => theme.fontSize.md};
+  }
+`;
+export const OfferText = styled.span`
+  color: white;
+  margin-bottom: 1vh;
+  margin-top: 1vh;
+  text-align: center;
+  margin-left: 10px;
+  color: black;
+
+`;
+
+export const Anchor = styled.a`
+  text-decoration: none;
+`;
 export const TitleAndLogo = styled.div`
   display: flex;
   align-items: center;
@@ -89,4 +109,40 @@ export const LogoImg = styled.img`
   @media ${({ theme }) => theme.devices.tablet} {
     width: 45px;
   }
+`;
+export const ComboContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  background-color: ${({ theme }) => theme.colors.white.normal};
+  border-radius: 25px;
+  max-width: 550px;
+  min-width: 550px;
+`;
+export const ComboImg = styled.img`
+  border-top-right-radius: 25px;
+  border-top-left-radius: 25px;
+  max-width: 550px;
+  min-width: 550px;
+`;
+export const ComboPrice = styled.div`
+  border-bottom-left-radius: 25px;
+  border-bottom-right-radius: 25px;
+  display: flex;
+  justify-content: center;
+  height: 5vh;
+  align-items: center;
+  background-color: ${({ theme }) => theme.colors.yellow.palete};
+  span {
+    font-family: ${({ theme }) => theme.fonts.primary};
+    font-size: ${({ theme }) => theme.fontSize.md};
+  }
+`;
+
+export const ComboParagrah = styled.p`
+  color: white;
+  margin-top: 0vw;
+  margin-bottom: 1vh;
+  text-align: left;
+  margin-left: 10px;
+  color: black;
 `;

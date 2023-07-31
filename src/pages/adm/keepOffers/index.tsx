@@ -34,6 +34,7 @@ const OffersMenu: React.FC = () => {
           myOffers.style.display = "flex";
           offerType.style.display = "none";
           mainDiv.style.display = "none";
+          navigate("/adm/ofertas/minhas-ofertas")
           break;
         case "menu":
           mainDiv.style.display = "flex";
@@ -106,7 +107,7 @@ const OffersMenu: React.FC = () => {
     return cardRowsDone;
   };
 
-  const optionsRows = createRows(mainAdmCategories, 2);
+  const optionsRows = createRows(mainAdmCategories, 3);
   const offerRows = createRows(offerCategories, 3);
 
   return (
@@ -140,6 +141,7 @@ const OffersMenu: React.FC = () => {
         <Styled.CategoryContainer style={{ display: "none" }} id="offerType">
           <Styled.ItemSpan>Qual é o tipo da oferta?</Styled.ItemSpan>
           {offerRows}
+          {/* Para a automação: selecionar a oferta, depois definir para quais dias da semana, quais horários */}
         </Styled.CategoryContainer>
         {backOfferMenu && (
           <>

@@ -7,6 +7,9 @@ import ofertas from "../../../../assets/icons/admIcons/ofertas.png";
 import atualizar from "../../../../assets/icons/admIcons/atualizar.png";
 import comanda from "../../../../assets/icons/admIcons/comanda.png";
 import info from "../../../../assets/icons/admIcons/info.png";
+import estatisticas from "../../../../assets/icons/admIcons/estatisticas.png";
+import equipe from "../../../../assets/icons/admIcons/equipe.png";
+import outro from "../../../../assets/icons/categories/allCategories/outro.png";
 
 
 export const mainAdmCategories: TCardProps[] = [
@@ -71,6 +74,37 @@ export const mainAdmCategories: TCardProps[] = [
         customWidth: true,
         url: "/adm/suporte"
     },
+    {
+        icon: estatisticas,
+        title: "estatisticas",
+        text: "Acompanhe suas vendas.",
+        mainColor: theme.colors.yellow.palete,
+        auxColor: theme.colors.blue.palete,
+        textColor: "black",
+        customWidth: true,
+        url: "/adm/ofertas"
+    },
+    {
+        icon: equipe,
+        title: "Equipe",
+        text: "Atualize e gerencie sua equipe",
+        mainColor: theme.colors.blue.palete,
+        auxColor: theme.colors.red.normal,
+        textColor: theme.colors.white.normal,
+        customWidth: true,
+        url: "/adm/time"
+    },
+    {
+        icon: outro,
+        title: "Em desenvolvimento",
+        text: "Em breve, novidades!",
+        mainColor: theme.colors.white.normal,
+        auxColor: theme.colors.red.normal,
+        textColor: "black",
+        customWidth: true,
+        url: "/home"
+    },
+
 ];
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {

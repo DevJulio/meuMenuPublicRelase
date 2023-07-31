@@ -4,6 +4,7 @@ interface Props {
   setValue: Function;
   label: string;
   placeholder?: string;
+  value?: string;
   mask?: string;
 }
 const InputMasked: React.FC<Props> = ({
@@ -11,6 +12,7 @@ const InputMasked: React.FC<Props> = ({
   label,
   placeholder,
   mask = "",
+  value,
 }) => {
   return (
     <>
@@ -18,6 +20,7 @@ const InputMasked: React.FC<Props> = ({
         {label}
         <Styled.InputMaskHtml
           placeholder={placeholder}
+          value={value}
           onChange={(e) => {
             setValue(e.target.value);
           }}

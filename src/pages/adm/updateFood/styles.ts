@@ -86,8 +86,8 @@ place-items: center;
 text-align-last: center;
 margin-inline: 2vw;
 margin-bottom: 1vw;
-
 `;
+
 export const SocialMediaContainer = styled.div`
 justify-content: center;
 margin-top: 1vh;

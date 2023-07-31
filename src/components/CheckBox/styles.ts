@@ -6,6 +6,7 @@ export const MainContainer = styled.div`
   flex-direction: column;
   flex: auto;
   padding-top: 20px;
+  align-items: center;
 `;
 
 export const Input = styled.input.attrs(() => ({
@@ -17,4 +18,7 @@ export const Input = styled.input.attrs(() => ({
   border-radius: 5px;
   width: 32px;
   height: 32px;
- `;
+`;
+export const Label = styled.span`
+  margin-bottom: 1vh;
+`;

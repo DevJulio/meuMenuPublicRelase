@@ -16,6 +16,8 @@ import outro from "../../../assets/icons/categories/allCategories/outro.png";
 
 import cerveja from "../../../assets/icons/categories/allCategories/cerveja.png";
 import refrigerante from "../../../assets/icons/categories/allCategories/refrigerante.png";
+import energetico from "../../../assets/icons/categories/allCategories/energetico.png";
+import ice from "../../../assets/icons/categories/allCategories/ice.png";
 import drinkAux from "../../../assets/icons/categories/allCategories/drink.png";
 import vinho from "../../../assets/icons/categories/allCategories/vinho.png";
 import champanhe from "../../../assets/icons/categories/allCategories/champanhe.png";
@@ -218,12 +220,6 @@ export const foodCategories: TCardProps[] = [
     // },
 
 
-
-
-
-
-
-
     {
         icon: outro, //11 <===========
         title: "Outra..",
@@ -244,8 +240,6 @@ export const drinkCategories = [
         auxColor: "white",
         textColor: "white",
         customWidth: true,
-
-
     },
     {
         icon: refrigerante,
@@ -255,8 +249,6 @@ export const drinkCategories = [
         auxColor: "",
         textColor: "black",
         customWidth: true,
-
-
     },
     {
         icon: suco,
@@ -359,6 +351,33 @@ export const drinkCategories = [
         customWidth: true,
 
 
+    },
+    {
+        icon: energetico,
+        title: "Energético",
+        text: "Aquele up",
+        mainColor: theme.colors.blue.palete,
+        auxColor: theme.colors.white.normal,
+        textColor: theme.colors.white.normal,
+        customWidth: true,
+    },
+    {
+        icon: ice,
+        title: "Ice",
+        text: "Bem doces.",
+        mainColor: theme.colors.yellow.palete,
+        auxColor: "",
+        textColor: "black",
+        customWidth: true,
+    },
+    {
+        icon: outro, //11 <===========
+        title: "Outra..",
+        text: "Crie uma nova categoria",
+        mainColor: theme.colors.white.normal,
+        auxColor: theme.colors.blue.palete,
+        textColor: theme.colors.blue.palete,
+        customWidth: true,
     },
 ];
 // eslint-disable-next-line import/no-anonymous-default-export

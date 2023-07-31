@@ -23,7 +23,7 @@ import renOffers from "../../assets/icons/renOffers.png";
 import renReservation from "../../assets/icons/renReservation.png";
 
 import { Carousel } from "react-responsive-carousel";
-import { useNavigate } from "react-router-dom";
+//import { useNavigate } from "react-router-dom";
 import instagram from "../../assets/icons/socialMedia/ios/instagram.png";
 import spotify from "../../assets/icons/socialMedia/ios/spotify.png";
 import youtube from "../../assets/icons/socialMedia/ios/youtube.png";
@@ -32,20 +32,33 @@ import marker from "../../assets/icons/socialMedia/ios/marker.png";
 import BorderPage from "../../components/borderPage";
 import FoodCard from "../../components/foodCard";
 import HomeBanner from "../../components/homeBanner";
-import foods from "./foods";
+import foods, { offers as offersData } from "./foods";
 import ButtonSecondary from "../../components/buttons/secondary";
 import Modal from "../../components/modal";
 import FoodModalDetail from "../../components/foodModalDetail";
+import isMobile from "is-mobile";
+import FoodCardOffer from "../../components/foodCardOffer";
+
+export type TAutomation = {
+  daysWeek: [];
+  time: {
+    startAt: string;
+    endAt: string;
+  };
+};
 
 export type TProducts = {
+  automation?: TAutomation;
   isEnable: boolean;
   img: string;
   description: string;
-  price: string;
   category: string;
   categoryIcon: string;
   label: string;
   isDestaque: boolean;
+  qtd: number;
+  price: string;
+  offerPrice?: string;
   isMainDestaque?: boolean;
   isDrink?: boolean;
   isOffer?: boolean;
@@ -54,13 +67,31 @@ export type TProducts = {
   country?: string;
   IBU?: string;
   grape?: string;
+};
+export type TProductsOffers = {
+  img?: string;
+  isEnable?: boolean;
+  label?: string;
   qtd?: number;
+  harmoziation?: string;
+  description?: string;
+  price: string;
+  category?: string;
+  categoryIcon?: string;
+  isDrink?: boolean;
+  isDestaque?: boolean;
+  isOffer?: boolean;
+  offerPrice?: string;
+  banner?: string;
+  title?: string;
+  descriptionText?: string;
+  comboItens?: TProducts[];
 };
 
 const Menu: React.FC = () => {
   const [modal, setModal] = useState<boolean>(false);
   const [defaultCategory, setDefaultCategory] = useState<string>("Todas");
-  const [modalIten, setmodalIten] = useState<TProducts>();
+  const [modalIten, setmodalIten] = useState<TProducts | TProductsOffers>();
   const [modalHappy, setModalHappy] = useState<boolean>(false);
   const [modalReservation, setModalReservation] = useState<boolean>(false);
 
@@ -201,17 +232,13 @@ const Menu: React.FC = () => {
 
   const socialFlexCount = checkFlexSize();
 
-  useEffect(() => {
-    // setRecomendations(recomendationsRes[defaultCategory]);
-    // console.log(defaultCategory);
-  }, [defaultCategory]);
-
   return (
     <>
       {modal && modalIten && (
         <Modal
+          customWidth={isMobile() ? 90 : 60}
           bannerColor={header.auxColor}
-          title={modalIten.label}
+          title={modalIten.label ? modalIten.label : ""}
           handleClose={handleClose}
           titleFont={header.fontStyle}
         >
@@ -225,6 +252,7 @@ const Menu: React.FC = () => {
           title={header.happyHourText}
           handleClose={handleCloseHappy}
           titleFont={header.fontStyle}
+          customWidth={isMobile() ? 90 : 60}
         >
           <Styled.HappyContainer
             style={{
@@ -246,6 +274,7 @@ const Menu: React.FC = () => {
           title={"Reserva no " + header.title}
           handleClose={handleCloseReservation}
           titleFont={header.fontStyle}
+          customWidth={isMobile() ? 90 : 60}
         >
           <Styled.HappyContainer
             style={{
@@ -397,7 +426,7 @@ const Menu: React.FC = () => {
               ? foods
                   .filter((cate) => cate.isMainDestaque)
                   .map((foodItem, index) => (
-                    <a
+                    <div
                       style={{ textDecoration: "none" }}
                       onClick={() => {
                         setModal(true);
@@ -414,7 +443,7 @@ const Menu: React.FC = () => {
                         description={foodItem.description}
                         img={foodItem.img}
                       />
-                    </a>
+                    </div>
                   ))
               : foods
                   .filter(
@@ -422,7 +451,7 @@ const Menu: React.FC = () => {
                       cate.category === defaultCategory && cate.isDestaque
                   )
                   .map((foodItem, index) => (
-                    <a
+                    <div
                       style={{ textDecoration: "none" }}
                       onClick={() => {
                         setModal(true);
@@ -439,7 +468,7 @@ const Menu: React.FC = () => {
                         description={foodItem.description}
                         img={foodItem.img}
                       />
-                    </a>
+                    </div>
                   ))}
           </Styled.ContainerCategories>
         </Styled.CarouselContainer>
@@ -557,7 +586,7 @@ const Menu: React.FC = () => {
                     ? foods
                         .filter((cate) => cate.isMainDestaque)
                         .map((foodItem, index) => (
-                          <a
+                          <div
                             style={{ textDecoration: "none" }}
                             onClick={() => {
                               setModal(true);
@@ -574,12 +603,12 @@ const Menu: React.FC = () => {
                               description={foodItem.description}
                               img={foodItem.img}
                             />
-                          </a>
+                          </div>
                         ))
                     : foods
                         .filter((cate) => cate.category === defaultCategory)
                         .map((foodItem, index) => (
-                          <a
+                          <div
                             style={{ textDecoration: "none" }}
                             onClick={() => {
                               setModal(true);
@@ -596,7 +625,7 @@ const Menu: React.FC = () => {
                               description={foodItem.description}
                               img={foodItem.img}
                             />
-                          </a>
+                          </div>
                         ))}
                 </Styled.ContainerCategories>
               </div>
@@ -626,7 +655,7 @@ const Menu: React.FC = () => {
                       fontSize: theme.fontSize.xxlg,
                     }}
                   >
-                    Ofertas!
+                    Ofertas e Combos
                   </Styled.Title>
                 </Styled.TitleAndLogo>
 
@@ -642,27 +671,65 @@ const Menu: React.FC = () => {
                       height: "fit-content",
                     }}
                   >
-                    {foods
+                    {offersData
                       .filter((cate) => cate.isOffer)
-                      .map((foodItem, index) => (
-                        <a
-                          style={{ textDecoration: "none" }}
+                      .map((offerItem, index) => (
+                        <div
                           onClick={() => {
                             setModal(true);
-                            setmodalIten(foodItem);
+                            setmodalIten(offerItem);
                           }}
                         >
-                          <FoodCard
-                            category=""
-                            categoryIcon=""
-                            bgColor={header.auxColor}
-                            price={foodItem.price}
-                            color={header.textColor}
-                            label={foodItem.label}
-                            description={foodItem.description}
-                            img={foodItem.img}
-                          />
-                        </a>
+                          {offerItem && (
+                            <>
+                              {offerItem.comboItens ? (
+                                <>
+                                  <FoodCardOffer
+                                    isCombo={true}
+                                    bgColor={"white"}
+                                    price={offerItem.price}
+                                    color={theme.colors.yellow.palete}
+                                    label={
+                                      offerItem.title ? offerItem.title : ""
+                                    }
+                                    description={
+                                      offerItem.descriptionText
+                                        ? offerItem.descriptionText
+                                        : ""
+                                    }
+                                    img={
+                                      offerItem.banner ? offerItem.banner : ""
+                                    }
+                                    comboItens={offerItem.comboItens}
+                                  />
+                                </>
+                              ) : (
+                                <>
+                                  <FoodCardOffer
+                                    isCombo={false}
+                                    bgColor={theme.colors.blue.palete}
+                                    oldPrice={offerItem.price}
+                                    price={
+                                      offerItem.offerPrice
+                                        ? offerItem.offerPrice
+                                        : ""
+                                    }
+                                    color={"#386641"}
+                                    label={
+                                      offerItem.label ? offerItem.label : ""
+                                    }
+                                    description={
+                                      offerItem.description
+                                        ? offerItem.description
+                                        : ""
+                                    }
+                                    img={offerItem.img ? offerItem.img : ""}
+                                  />
+                                </>
+                              )}
+                            </>
+                          )}
+                        </div>
                       ))}
                   </Styled.ContainerCategories>
                 </div>

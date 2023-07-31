@@ -75,6 +75,22 @@ const SolicitationMeuMenu: React.FC = () => {
   const handleCloseFail = () => {
     setModalFail(false);
   };
+  const handleSwitch = (id: string) => {
+    for (var i = 1; i <= 12; i++) {
+      const checkbox = document.getElementById(
+        i.toString()
+      ) as HTMLInputElement | null;
+      if (checkbox != null) {
+        checkbox.checked = false;
+      }
+    }
+    const checkbox = document.getElementById(
+      id.toString()
+    ) as HTMLInputElement | null;
+    if (checkbox != null) {
+      checkbox.checked = true;
+    }
+  };
   return (
     <>
       <Header />
@@ -348,9 +364,11 @@ const SolicitationMeuMenu: React.FC = () => {
                 {brandName}
               </Styled.Fonts>
               <Checkbox
+                id="1"
                 label=""
                 setValue={() => {
                   setFontStyle("AlwaysSmile");
+                  handleSwitch("1");
                 }}
               />
             </Styled.IconCentralize>
@@ -364,9 +382,11 @@ const SolicitationMeuMenu: React.FC = () => {
                 {brandName}
               </Styled.Fonts>
               <Checkbox
+                id="2"
                 label=""
                 setValue={() => {
                   setFontStyle("Bachelorette");
+                  handleSwitch("2");
                 }}
               />
             </Styled.IconCentralize>
@@ -379,9 +399,11 @@ const SolicitationMeuMenu: React.FC = () => {
                 {brandName}
               </Styled.Fonts>
               <Checkbox
+                id="3"
                 label=""
                 setValue={() => {
                   setFontStyle("BeYou");
+                  handleSwitch("3");
                 }}
               />
             </Styled.IconCentralize>
@@ -394,9 +416,11 @@ const SolicitationMeuMenu: React.FC = () => {
                 {brandName}
               </Styled.Fonts>
               <Checkbox
+                id="4"
                 label=""
                 setValue={() => {
                   setFontStyle("Bravely");
+                  handleSwitch("4");
                 }}
               />
             </Styled.IconCentralize>
@@ -412,9 +436,11 @@ const SolicitationMeuMenu: React.FC = () => {
                 {brandName}
               </Styled.Fonts>
               <Checkbox
+                id="5"
                 label=""
                 setValue={() => {
                   setFontStyle("GlossySheen");
+                  handleSwitch("5");
                 }}
               />
             </Styled.IconCentralize>
@@ -427,9 +453,11 @@ const SolicitationMeuMenu: React.FC = () => {
                 {brandName}
               </Styled.Fonts>
               <Checkbox
+                id="6"
                 label=""
                 setValue={() => {
                   setFontStyle("LatoRegular");
+                  handleSwitch("6");
                 }}
               />
             </Styled.IconCentralize>
@@ -443,9 +471,11 @@ const SolicitationMeuMenu: React.FC = () => {
                 {brandName}
               </Styled.Fonts>
               <Checkbox
+                id="7"
                 label=""
                 setValue={() => {
                   setFontStyle("LEMONMILK");
+                  handleSwitch("7");
                 }}
               />
             </Styled.IconCentralize>
@@ -458,9 +488,11 @@ const SolicitationMeuMenu: React.FC = () => {
                 {brandName}
               </Styled.Fonts>
               <Checkbox
+                id="8"
                 label=""
                 setValue={() => {
                   setFontStyle("NiceSugar");
+                  handleSwitch("8");
                 }}
               />
             </Styled.IconCentralize>
@@ -476,9 +508,11 @@ const SolicitationMeuMenu: React.FC = () => {
                 {brandName}
               </Styled.Fonts>
               <Checkbox
+                id="9"
                 label=""
                 setValue={() => {
                   setFontStyle("RoughAnthem");
+                  handleSwitch("9");
                 }}
               />
             </Styled.IconCentralize>
@@ -491,9 +525,11 @@ const SolicitationMeuMenu: React.FC = () => {
                 {brandName}
               </Styled.Fonts>
               <Checkbox
+                id="10"
                 label=""
                 setValue={() => {
                   setFontStyle("primary");
+                  handleSwitch("10");
                 }}
               />
             </Styled.IconCentralize>
@@ -507,9 +543,11 @@ const SolicitationMeuMenu: React.FC = () => {
                 {brandName}
               </Styled.Fonts>
               <Checkbox
+                id="11"
                 label=""
                 setValue={() => {
                   setFontStyle("secundary");
+                  handleSwitch("11");
                 }}
               />
             </Styled.IconCentralize>
@@ -522,9 +560,11 @@ const SolicitationMeuMenu: React.FC = () => {
                 {brandName}
               </Styled.Fonts>
               <Checkbox
+                id="12"
                 label=""
                 setValue={() => {
                   setFontStyle("hand");
+                  handleSwitch("12");
                 }}
               />
             </Styled.IconCentralize>

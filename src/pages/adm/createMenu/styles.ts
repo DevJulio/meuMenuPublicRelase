@@ -20,6 +20,7 @@ align-self: center;
 justify-content: center;
 @media ${({ theme }) => theme.devices.tablet} {
   flex-direction: column;
+  width: 75%;
 }
 `;
 export const CardsContainer = styled.div`
@@ -33,6 +34,8 @@ export const CardsContainer = styled.div`
   padding-bottom: 2vh;
    @media ${({ theme }) => theme.devices.tablet} {
     width: 100%;
+    flex-direction: column;
+    align-items: center;
   }
 `;
 
@@ -138,3 +141,22 @@ export const BackBtnContainer = styled.div`
   display: flex;
    margin-bottom: 1vw;
  `;
+export const ModalContainer = styled.div`
+ display: flex;
+ margin-bottom: 5vh;
+ flex-direction: column;
+`;
+export const FormItemContainer = styled.div`
+  margin-left: 40px;
+  margin-right: 40px;
+  align-self: center;
+  width: 40%;
+  display: flex;
+  flex-direction: column;
+  @media ${({ theme }) => theme.devices.tablet} {
+    margin-left: 0px;
+    margin-right: 0px;
+    width: 95%;
+    align-self: center;
+  }
+`;

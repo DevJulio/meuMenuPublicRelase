@@ -70,3 +70,33 @@ export const Close = styled.span`
     cursor: pointer;
   }
 `;
+export const Footer = styled.div`
+  border-radius: 0 0 5px 5px;
+  background-color: ${({ theme }) => theme.colors.orange.normal};
+  font-size: ${({ theme }) => theme.fontSize.md2};
+  font-family: ${({ theme }) => theme.fonts.primary};
+  color: ${({ theme }) => theme.colors.white.normal};
+  display: flex;
+  flex-direction: row;
+  place-content: end;
+ `;
+export const FooterLbl = styled.span`
+  color: ${({ theme }) => theme.colors.black.normal};
+  float: right;
+  font-size: ${({ theme }) => theme.fontSize.sm};
+`;
+export const FooterMaior = styled.span`
+  color: ${({ theme }) => theme.colors.black.normal};
+  float: right;
+  font-size: ${({ theme }) => theme.fontSize.md};
+`;
+export const FooterContainer = styled.div`
+  display: flex;
+  justify-content: end;
+  background-color: ${({ theme }) => theme.colors.white.normal};
+  border-radius: 25px;
+  padding: 0.9vh;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-right: 10px;
+ `;
