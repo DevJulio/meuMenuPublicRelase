@@ -17,13 +17,18 @@ import Checkbox from "../../../components/CheckBox";
 import InputMasked from "../../../components/MaskedIpunt";
 import ButtonSecondary from "../../../components/buttons/secondary";
 import Modal from "../../../components/modal";
+import {
+  TCompany,
+  createSolicitation,
+  createUser,
+} from "../../../service/module/login";
 
 const SolicitationMeuMenu: React.FC = () => {
-  const [brandName, setBrandName] = useState<string>("Sua empresa");
-  const [email, setEmail] = useState<string>("");
-  const [contact, setContact] = useState<string>("");
+  const [title, setTitle] = useState<string>("Sua empresa");
+  const [contactEmail, setContactEmail] = useState<string>("");
+  const [contactNumber, setContactNumber] = useState<string>("");
   const [login, setLogin] = useState<string>("");
-  const [password, setPassword] = useState<string>();
+  const [password, setPassword] = useState<string>("");
 
   const [welcome, setWelcome] = useState<string>("");
   const [instagranLink, setInstagranLink] = useState<string>("");
@@ -34,7 +39,7 @@ const SolicitationMeuMenu: React.FC = () => {
   const [reservationText, setReservationText] = useState<string>("");
   const [happyHourText, setHappyHourText] = useState<string>("");
 
-  const [logo, setLogo] = useState();
+  const [icon, setIcon] = useState();
   const [banner, setBanner] = useState();
   const [fontStyle, setFontStyle] = useState<string>("");
 
@@ -46,17 +51,17 @@ const SolicitationMeuMenu: React.FC = () => {
     if (isBanner) {
       setBanner(localFile);
     } else {
-      setLogo(localFile);
+      setIcon(localFile);
     }
   };
 
-  const createRequest = () => {
+  const createRequest = async () => {
     if (
-      brandName &&
-      email &&
-      contact &&
+      title &&
+      contactEmail &&
+      contactNumber &&
       welcome &&
-      logo &&
+      icon &&
       banner &&
       fontStyle &&
       login &&
@@ -64,11 +69,36 @@ const SolicitationMeuMenu: React.FC = () => {
     ) {
       setModal(true);
       setModalFail(false);
+      try {
+        const credenciais = {
+          email: contactEmail,
+          password,
+        };
+        //const company: TCompany = {};
+        const res = await createSolicitation(credenciais);
+      } catch (error) {}
+      //Chamar api aqui.
     } else {
       setModal(false);
       setModalFail(true);
     }
   };
+
+  const teste = async () => {
+    const credenciais = {
+      email: login,
+      password,
+    };
+    try {
+      const kkkk = await createUser(credenciais);
+      if (kkkk?.status) {
+        console.log("sim ", kkkk);
+      } else {
+        console.log("não");
+      }
+    } catch (error) {}
+  };
+
   const handleClose = () => {
     setModal(false);
   };
@@ -198,7 +228,7 @@ const SolicitationMeuMenu: React.FC = () => {
         <Styled.Menus>
           <Styled.MenusRow>
             <Styled.FormItemContainer>
-              <Input setValue={setBrandName} label="Nome do estabelecimento" />
+              <Input setValue={setTitle} label="Nome do estabelecimento" />
             </Styled.FormItemContainer>
             <Styled.FormItemContainer>
               <Styled.ItemSpan>
@@ -361,7 +391,7 @@ const SolicitationMeuMenu: React.FC = () => {
                   fontFamily: theme.fonts.AlwaysSmile,
                 }}
               >
-                {brandName}
+                {title}
               </Styled.Fonts>
               <Checkbox
                 id="1"
@@ -379,7 +409,7 @@ const SolicitationMeuMenu: React.FC = () => {
                   fontFamily: theme.fonts.Bachelorette,
                 }}
               >
-                {brandName}
+                {title}
               </Styled.Fonts>
               <Checkbox
                 id="2"
@@ -396,7 +426,7 @@ const SolicitationMeuMenu: React.FC = () => {
                   fontFamily: theme.fonts.BeYou,
                 }}
               >
-                {brandName}
+                {title}
               </Styled.Fonts>
               <Checkbox
                 id="3"
@@ -413,7 +443,7 @@ const SolicitationMeuMenu: React.FC = () => {
                   fontFamily: theme.fonts.Bravely,
                 }}
               >
-                {brandName}
+                {title}
               </Styled.Fonts>
               <Checkbox
                 id="4"
@@ -433,7 +463,7 @@ const SolicitationMeuMenu: React.FC = () => {
                   fontFamily: theme.fonts.GlossySheen,
                 }}
               >
-                {brandName}
+                {title}
               </Styled.Fonts>
               <Checkbox
                 id="5"
@@ -450,7 +480,7 @@ const SolicitationMeuMenu: React.FC = () => {
                   fontFamily: theme.fonts.LatoRegular,
                 }}
               >
-                {brandName}
+                {title}
               </Styled.Fonts>
               <Checkbox
                 id="6"
@@ -468,7 +498,7 @@ const SolicitationMeuMenu: React.FC = () => {
                   fontFamily: theme.fonts.LEMONMILK,
                 }}
               >
-                {brandName}
+                {title}
               </Styled.Fonts>
               <Checkbox
                 id="7"
@@ -485,7 +515,7 @@ const SolicitationMeuMenu: React.FC = () => {
                   fontFamily: theme.fonts.NiceSugar,
                 }}
               >
-                {brandName}
+                {title}
               </Styled.Fonts>
               <Checkbox
                 id="8"
@@ -505,7 +535,7 @@ const SolicitationMeuMenu: React.FC = () => {
                   fontFamily: theme.fonts.RoughAnthem,
                 }}
               >
-                {brandName}
+                {title}
               </Styled.Fonts>
               <Checkbox
                 id="9"
@@ -522,7 +552,7 @@ const SolicitationMeuMenu: React.FC = () => {
                   fontFamily: theme.fonts.primary,
                 }}
               >
-                {brandName}
+                {title}
               </Styled.Fonts>
               <Checkbox
                 id="10"
@@ -540,7 +570,7 @@ const SolicitationMeuMenu: React.FC = () => {
                   fontFamily: theme.fonts.secundary,
                 }}
               >
-                {brandName}
+                {title}
               </Styled.Fonts>
               <Checkbox
                 id="11"
@@ -557,7 +587,7 @@ const SolicitationMeuMenu: React.FC = () => {
                   fontFamily: theme.fonts.hand,
                 }}
               >
-                {brandName}
+                {title}
               </Styled.Fonts>
               <Checkbox
                 id="12"
@@ -604,19 +634,20 @@ const SolicitationMeuMenu: React.FC = () => {
             <Styled.FormItemContainer>
               <InputMasked
                 mask="(99) 9 9999-9999"
-                setValue={setContact}
+                setValue={setContactNumber}
                 label="Número para contato"
               />
             </Styled.FormItemContainer>
             <Styled.FormItemContainer>
-              <Input setValue={setEmail} label="E-mail para contato" />
+              <Input setValue={setContactEmail} label="E-mail para contato" />
             </Styled.FormItemContainer>
           </Styled.MenusRow>
         </Styled.Menus>
         <Styled.BtnContainer>
           <ButtonSecondary
             action={() => {
-              createRequest();
+              //createRequest();
+              teste();
             }}
             Label="Finalizar solicitação"
             color={theme.colors.red.normal}

@@ -108,7 +108,7 @@ const PlansPage: React.FC = () => {
             mainColor={theme.colors.white.normal}
             auxColor={theme.colors.red.normal}
             textColor={theme.colors.yellow.palete}
-            price={!checked ? 80.0 : 768.0}
+            price={!checked ? 150.0 : (150 * 12) - ((150 * 12) * 0.2)}
             priceText={!checked ? "Por mês" : "por ano"}
             includeText={"Lite inclui:"}
             list={liteDetails}
@@ -130,7 +130,6 @@ const PlansPage: React.FC = () => {
               })}
             </Styled.List>
           </Styled.Detail>
-          
         </Styled.PlanCardAux>
         <Styled.PlanCardAux>
           <PlansCard
@@ -140,7 +139,7 @@ const PlansPage: React.FC = () => {
             mainColor={theme.colors.white.normal}
             auxColor={theme.colors.red.normal}
             textColor={theme.colors.yellow.palete}
-            price={!checked ? 120.0 : 1152.0}
+            price={!checked ? 180.0 : (180 * 12) - ((180 * 12) * 0.2)}
             priceText={!checked ? "Por mês" : "por ano"}
             includeText={"Tudo do lite, mais:"}
             list={proDetails}
@@ -171,7 +170,7 @@ const PlansPage: React.FC = () => {
             mainColor={theme.colors.blue.palete}
             auxColor={theme.colors.red.normal}
             textColor={theme.colors.yellow.palete}
-            price={!checked ? 160.0 : 1536.0}
+            price={!checked ? 220.0 : (220 * 12) - ((220 * 12) * 0.2)}
             priceText={!checked ? "Por mês" : "por ano"}
             includeText={"Tudo do pro, mais:"}
             isLast={true}

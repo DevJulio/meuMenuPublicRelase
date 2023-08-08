@@ -2,7 +2,7 @@ import axios from "axios";
 
 export const api = axios.create({
     //baseURL: process.env.REACT_APP_API_DEFAULT_BASEURL!,
-    baseURL: "http://localhost:8443/api",
+    baseURL: "http://localhost:3333/api",
     headers: {
         "Content-Type": "application/json;charset=UTF-8",
         'Access-Control-Allow-Credentials': 'true',
@@ -12,14 +12,14 @@ export const api = axios.create({
     },
 });
 
-api.interceptors.response.use(response => {
-    return response;
-}, error => {
-    if (error.response.status === 401) {
-        if (window.localStorage.getItem('@slwc/genericToken')) {
-            window.localStorage.removeItem('@slwc/genericToken');
-            window.location.reload();
-        }
-    }
-    return error;
-});
+// api.interceptors.response.use(response => {
+//     return response;
+// }, error => {
+//     if (error.response.status === 401) {
+//         if (window.localStorage.getItem('@slwc/genericToken')) {
+//             window.localStorage.removeItem('@slwc/genericToken');
+//             window.location.reload();
+//         }
+//     }
+//     return error;
+// });
