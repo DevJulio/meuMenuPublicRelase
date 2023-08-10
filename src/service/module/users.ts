@@ -1,8 +1,8 @@
 import { AxiosError } from "axios";
 import { api } from "../api";
 import { message } from "antd";
-import { genericToken } from "../../utils/utils";
-import { getMainToken } from "./login";
+//import { genericToken } from "../../utils/utils";
+//import { getMainToken } from "./login";
 
 export class UserService {
     //constructor() { }
@@ -28,11 +28,7 @@ export class UserService {
 
     static async setUser(data: any) {
         try {
-            const res = await api.post('/users/user/', data, {
-                headers: {
-                    Authorization: `Bearer ${await genericToken()}`,
-                },
-            });
+            const res = await api.post('/users/create', data, {});
             return res;
         } catch (error) {
             console.log(error, (error as AxiosError).message);

@@ -82,6 +82,7 @@ export type TCategory = {
 
 export type TCompany = {
     title: string;
+    statusCadastro: boolean;
     icon: string;
     address: string;
     adminsUids: [{ uid: string }];
@@ -238,6 +239,8 @@ export const createUser = async (credencials: TLogin) => {
         const errAux = (error as AxiosError).response;
         if (errAux && errAux.data === "Firebase: Error (auth/email-already-in-use).") {
             message.error("Email já em uso");
+        } else if (errAux && errAux.data === 'Firebase: Password should be at least 6 characters (auth/weak-password).') {
+            message.error("Senha fraca! reviste e tente novamente!");
         } else {
             message.error('Tente novamente mais tarde');
         }

@@ -10,6 +10,7 @@ import whatsapp from "../../../assets/icons/socialMedia/gif/whatsapp.gif";
 import youtube from "../../../assets/icons/socialMedia/gif/youtube.gif";
 import happy from "../../../assets/icons/socialMedia/gif/happy.gif";
 import resevation from "../../../assets/icons/socialMedia/gif/resevation.png";
+import loadingGif from "../../../assets/icons/loading.gif";
 
 import { theme } from "../../../theme/theme";
 import isMobile from "is-mobile";
@@ -17,21 +18,15 @@ import Checkbox from "../../../components/CheckBox";
 import InputMasked from "../../../components/MaskedIpunt";
 import ButtonSecondary from "../../../components/buttons/secondary";
 import Modal from "../../../components/modal";
-import {
-  TCompany,
-  TUser,
-  createSolicitation,
-  createUser,
-} from "../../../service/module/login";
+import { TCompany, TUser, createUser } from "../../../service/module/login";
 import { useNavigate } from "react-router-dom";
-import { Map, GoogleApiWrapper, Marker } from "google-maps-react";
+import { Map } from "google-maps-react";
+import { fileUpload } from "../../../service/module/fileUpload";
+import { message } from "antd";
 //import { GoogleMap, Marker } from "react-google-maps";
 //import { Map } from "google-maps-react";
-
-type TLocation = {
-  lat: number;
-  lng: number;
-};
+import { CompanyService } from "../../../service/module/company";
+import { UserService } from "../../../service/module/users";
 
 const SolicitationMeuMenu: React.FC = () => {
   const [title, setTitle] = useState<string>("Sua empresa");
@@ -60,16 +55,11 @@ const SolicitationMeuMenu: React.FC = () => {
   const [fontStyle, setFontStyle] = useState<string>("");
 
   const [modal, setModal] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [modalAux, setModalAux] = useState<boolean>(false);
   const [modalFail, setModalFail] = useState<boolean>(false);
-  const [selectedLocation, setSelectedLocation] = useState<TLocation>({
-    lat: 0,
-    lng: 0,
-  });
 
   const handleMapClick = (clickEvent: any) => {
-    console.log(clickEvent);
-
     // const { latLng } = clickEvent;
     // setSelectedLocation({
     // lat: latLng.lat(),
@@ -79,10 +69,19 @@ const SolicitationMeuMenu: React.FC = () => {
 
   const changeInput = (e: any, isBanner: boolean = false) => {
     const localFile = e.target.files[0];
-    if (isBanner) {
-      setBanner(localFile);
-    } else {
-      setIcon(localFile);
+
+    if (localFile) {
+      if (localFile.size > 5 * 1024 * 1024) {
+        message.error(
+          "A imagem é muito grande. Por favor, escolha uma imagem menor que 5 mb."
+        );
+      } else {
+        if (isBanner) {
+          setBanner(localFile);
+        } else {
+          setIcon(localFile);
+        }
+      }
     }
   };
 
@@ -92,75 +91,131 @@ const SolicitationMeuMenu: React.FC = () => {
       contactEmail &&
       contactNumber &&
       welcome &&
-      icon && //link da img upada
-      banner && //link da img upada
+      icon &&
+      banner &&
       fontStyle &&
       login &&
       nome &&
       password
     ) {
+      const path = "/companies/imgs/";
       const userUid = await createLogin(); //False ou o uid do usuario recém criado.
+      setLoading(true);
       if (userUid) {
-        try {
-          const company: TCompany = {
-            title: title,
-            icon: "mudar aqui",
-            address: localizacao,
-            adminsUids: [{ uid: userUid }],
-            stafsUids: [{ uid: "" }],
-            details: {
-              icon: "mudar aqui",
+        const imgUploadResult = await Promise.all([
+          fileUpload(icon, path + "icon" + icon.name),
+          fileUpload(banner, path + "banner" + banner.name),
+        ])
+          .then((results) => {
+            return results;
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+
+        const checkUploadAux = imgUploadResult as Array<any>;
+        const checkUpload = checkUploadAux.every(
+          (data: any) => data.status === 200
+        );
+        if (checkUpload) {
+          const iconUrl = checkUploadAux[0].data;
+          const bannerUrl = checkUploadAux[1].data;
+          try {
+            const company: TCompany = {
               title: title,
-              mainColor: "",
-              auxColor: "",
-              textColor: "",
-              fontStyle,
-              fontStyleAux: "",
-              welcome,
-              banner: "mudar aqui",
-              offers: true,
-              hasHappyHour: happyHourText ? true : false,
-              reservation: reservationText ? true : false,
-              reservationTextDetail: reservationText,
-              reservationContactNumber: contactReservationNumber,
-              offersText: "Confira as nossas promoções!",
-              happyHourText: "É dia de happy hour",
-              happyHourTextDetail: happyHourText,
-              reservationText: "Reserve sua mesa!",
-              contactEmail,
-              contactNumber,
-              city: cidade,
-              socialMedia: {
-                instagram: instagramLink,
-                youtube: youtubeLink,
-                whatsapp: whatsAppLink,
-                address: localizacao,
-                spotify: spotifyLink,
+              statusCadastro: false,
+              icon: iconUrl,
+              address: localizacao,
+              adminsUids: [{ uid: userUid }],
+              stafsUids: [{ uid: "" }],
+              details: {
+                icon: iconUrl,
+                title: title,
+                mainColor: "",
+                auxColor: "",
+                textColor: "",
+                fontStyle,
+                fontStyleAux: "",
+                welcome,
+                banner: bannerUrl,
+                offers: true,
+                hasHappyHour: happyHourText ? true : false,
+                reservation: reservationText ? true : false,
+                reservationTextDetail: reservationText,
+                reservationContactNumber: contactReservationNumber,
+                offersText: "Confira as nossas promoções!",
+                happyHourText: "É dia de happy hour",
+                happyHourTextDetail: happyHourText,
+                reservationText: "Reserve sua mesa!",
+                contactEmail,
+                contactNumber,
+                city: cidade,
+                socialMedia: {
+                  instagram: instagramLink,
+                  youtube: youtubeLink,
+                  whatsapp: whatsAppLink,
+                  address: localizacao,
+                  spotify: spotifyLink,
+                },
               },
-            },
-            categories: [],
-            menu: [],
-            offers: [],
-            tables: [],
-            staff: [],
-          };
-          //Cadastrar empresa na tabela de solicitação, e pegar código.
-          const user: TUser = {
-            name: nome,
-            statusCadastro: false,
-            uid: userUid,
-            userType: "admin",
-            codCompany: "", //alterar com o código do documento criado da empresa
-          };
-          console.log(company, user);
-          //Cadastrar usuario na tabela de usuários com o código gerado.
-          //se der tudo certo, modal.
-          setModal(true);
-          setModalFail(false);
-        } catch (error) {}
+              categories: [],
+              menu: [],
+              offers: [],
+              tables: [],
+              staff: [],
+            };
+
+            //Cadastrar empresa na tabela de solicitação, e pegar código.
+            const resCompany: any = await CompanyService.setCompany(company);
+            if (resCompany.status === 200) {
+              const companyDocId = resCompany.data;
+              console.log(
+                "ID DO DOC DA REMPRESA RECÉM CRIADA ==> ",
+                companyDocId
+              );
+              const user: TUser = {
+                name: nome,
+                statusCadastro: false,
+                uid: userUid,
+                userType: "admin",
+                codCompany: companyDocId, //alterar com o código do documento criado da empresa
+              };
+              console.log("USUÁRIO QUE SERÁ CRIADO ==> ", user);
+              const resUser: any = await UserService.setUser(user);
+              if (resUser.status === 200) {
+                setLoading(false);
+                setModal(true);
+                setModalFail(false);
+              } else {
+                setLoading(false);
+                setModalFail(true);
+                console.log(resUser);
+                message.error(
+                  "Verifique os dados de usuário e tente novamente"
+                );
+              }
+            } else {
+              setLoading(false);
+              setModalFail(true);
+              console.log(resCompany);
+              message.error("Verifique os campos e tente novamente");
+            }
+          } catch (error) {
+            console.log(error);
+            message.error("Verifique todos os campos e tente novamente");
+          }
+        } else {
+          setLoading(false);
+          setModalFail(true);
+          message.error("Verifique o formato e tamanho das imagens");
+        }
       } else {
-        //Fazer algo
+        setLoading(false);
+        setModalFail(true);
+        message.warning("Atenção!");
       }
+    } else {
+      message.error("Preencha os campos e tente novamente!");
     }
   };
 
@@ -170,10 +225,11 @@ const SolicitationMeuMenu: React.FC = () => {
       password,
     };
     try {
-      const user = await createUser(credenciais);
-      console.log(user);
-      if (user && user.status === 200) {
-        return user.data.userCredencial.user.uid;
+      const userResponse = await createUser(credenciais);
+      if (userResponse && userResponse.status === 200) {
+        if (userResponse.data) {
+          return userResponse.data.userCredential.user.uid;
+        }
       } else {
         return false;
       }
@@ -191,6 +247,9 @@ const SolicitationMeuMenu: React.FC = () => {
   };
   const handleCloseFail = () => {
     setModalFail(false);
+  };
+  const handleCloseLoading = () => {
+    setLoading(false);
   };
   const handleSwitch = (id: string) => {
     for (var i = 1; i <= 12; i++) {
@@ -210,11 +269,7 @@ const SolicitationMeuMenu: React.FC = () => {
   };
 
   const navigate = useNavigate();
-  const width = window.screen.width;
-
-
-
-  
+  //const width = window.screen.width;
 
   return (
     <>
@@ -264,7 +319,10 @@ const SolicitationMeuMenu: React.FC = () => {
               >
                 <ButtonSecondary
                   //TODO: COLOCAR NUMERO DO ZAP
-                  action={() => {}}
+                  action={() => {
+                    window.location.href =
+                      "https://api.whatsapp.com/send?phone=5564996140938&text=Meu menu!";
+                  }}
                   Label={"Entrar em contato com o Meu Menu!"}
                   fontSize={theme.fontSize.md}
                   color={theme.colors.white.normal}
@@ -354,6 +412,32 @@ const SolicitationMeuMenu: React.FC = () => {
             </>
           </Modal>
         )}
+        {loading && (
+          <Modal
+            bannerColor={theme.colors.yellow.palete}
+            title={"Carregando..."}
+            handleClose={handleCloseLoading}
+            titleFont={theme.fonts.primary}
+          >
+            <div
+              style={{
+                display: "flex",
+                placeItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <img
+                src={loadingGif}
+                alt=""
+                style={{
+                  width: "4vw",
+                  padding: "3vh",
+                }}
+              />
+            </div>
+          </Modal>
+        )}
+
         <Styled.TitleSpan>Preencha todos os campos</Styled.TitleSpan>
         <Styled.Menus>
           <Styled.MenusRow>
