@@ -26,6 +26,8 @@ import Comanda from "./pages/adm/adm/comanda";
 import Login from "./pages/account/login";
 import Staff from "./pages/adm/adm/staff";
 import StaffHome from "./pages/adm/staff";
+import JHome from "./pages/jAdm";
+import JSolicitations from "./pages/jAdm/pages/solicitations";
 
 function RoutesList() {
   return (
@@ -65,6 +67,9 @@ function RoutesList() {
         <Route path="/adm/time" element={<Staff />} />
         {/* UPDATE */}
         <Route path="/adm/update/cardapio" element={<UpdateFood />} />
+        {/* J-ADM */}
+        <Route path="/j/adm/home" element={<JHome />} />
+        <Route path="/j/adm/solicitations" element={<JSolicitations />} />
       </Routes>
     </BrowserRouter>
   );

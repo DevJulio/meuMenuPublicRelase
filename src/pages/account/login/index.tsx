@@ -3,7 +3,8 @@ import * as Styled from "./styles";
 import { useForm } from "react-hook-form";
 import footerLogo from "../../../assets/logo/footerLogo.png";
 import { message } from "antd";
-import { login, loginHandler } from "../../../service/module/login";
+import { login } from "../../../service/module/login";
+import { encryptToAuth } from "../../../utils/security/isAuth";
 
 export type TLogin = {
   email: string;
@@ -17,7 +18,13 @@ const Login: React.FC = () => {
   const onSubmit = async (user: TLogin) => {
     if (user.email && user.password) {
       try {
-        login(user);
+        const res = await login(user);
+        if (!res) {
+          //Tratar erro
+        } else {
+          //Chamar api
+          console.log(res);
+        }
       } catch (error) {
         setError(true);
         message.error("Verifique os dados e tente novamente.");

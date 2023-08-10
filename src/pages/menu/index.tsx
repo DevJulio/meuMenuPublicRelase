@@ -113,7 +113,7 @@ const Menu: React.FC = () => {
     textColor: "#386641",
     fontStyle: theme.fonts.hand,
     fontStyleAux: theme.fonts.primary,
-    wellcome: "Bem-vindo(a) ao Ren.",
+    welcome: "Bem-vindo(a) ao Ren.",
     banner: food,
     offers: true,
     hasHappyHour: true,
@@ -121,20 +121,18 @@ const Menu: React.FC = () => {
     reservationTextDetail:
       "Evite filas de espera, faça sua reserva no Ren, entre em contato com o número a baixo e verifique a disponibilidade!",
     reservationContactNumber: "64996140938",
-    offersText: "Confira as promoções do Ren!",
+    offersText: "Confira as nossas promoções!",
     happyHourText: "É dia de happy hour no Ren!",
     happyHourTextDetail:
       "O happy hour é oferecido de segunda a sexta-feira, das 17h às 20h, Durante o happy hour, nossos clientes podem desfrutar de bebidas com descontos especiais, como cervejas, vinhos e coquetéis.",
     reservationText: "Reserve sua mesa!",
     socialMedia: {
-      instagram: { icon: instagram, link: "//" },
-      spotify: {
-        icon: spotify,
-        link: "https://open.spotify.com/embed/playlist/0usD50UnpFtLPEMYsy3s62?utm_source=generator",
-      },
-      youtube: { icon: youtube, link: "" },
-      whatsapp: { icon: whatsapp, link: "//" },
-      address: { icon: marker, link: "//" },
+      instagram: "//",
+      spotify:
+        "https://open.spotify.com/embed/playlist/0usD50UnpFtLPEMYsy3s62?utm_source=generator",
+      youtube: "",
+      whatsapp: "//",
+      address: "//",
     },
   };
 
@@ -212,19 +210,19 @@ const Menu: React.FC = () => {
 
   const checkFlexSize = () => {
     let count = 0;
-    if (header.socialMedia.address.link) {
+    if (header.socialMedia.address) {
       count = count++;
     }
-    if (header.socialMedia.instagram.link) {
+    if (header.socialMedia.instagram) {
       count = count++;
     }
-    if (header.socialMedia.spotify.link) {
+    if (header.socialMedia.spotify) {
       count = count++;
     }
-    if (header.socialMedia.whatsapp.link) {
+    if (header.socialMedia.whatsapp) {
       count = count++;
     }
-    if (header.socialMedia.youtube.link) {
+    if (header.socialMedia.youtube) {
       count = count++;
     }
     return count;
@@ -311,7 +309,7 @@ const Menu: React.FC = () => {
         <Styled.Span
           style={{ color: header.textColor, fontFamily: header.fontStyle }}
         >
-          {header.wellcome}
+          {header.welcome}
         </Styled.Span>
         <Styled.BannerContainer>
           <Styled.Banner src={header.banner} />
@@ -475,10 +473,10 @@ const Menu: React.FC = () => {
         <Styled.SocialMediaContainer
           style={{ backgroundColor: header.textColor, flex: socialFlexCount }}
         >
-          {header.socialMedia.address.link && (
+          {header.socialMedia.address && (
             <>
               <Styled.Icon
-                src={header.socialMedia.address.icon}
+                src={marker}
                 onClick={() => {
                   const whereWeAre = document.getElementById("offers");
                   if (whereWeAre) {
@@ -488,20 +486,20 @@ const Menu: React.FC = () => {
               />
             </>
           )}
-          {header.socialMedia.instagram.link && (
+          {header.socialMedia.instagram && (
             <>
               <Styled.Icon
-                src={header.socialMedia.instagram.icon}
+                src={instagram}
                 onClick={() => {
-                  window.location.href = header.socialMedia.instagram.link;
+                  window.location.href = header.socialMedia.instagram;
                 }}
               />
             </>
           )}
-          {header.socialMedia.spotify.link && (
+          {header.socialMedia.spotify && (
             <>
               <Styled.Icon
-                src={header.socialMedia.spotify.icon}
+                src={spotify}
                 onClick={() => {
                   const sound = document.getElementById("sound");
                   if (sound) {
@@ -511,22 +509,22 @@ const Menu: React.FC = () => {
               />
             </>
           )}
-          {header.socialMedia.whatsapp.link && (
+          {header.socialMedia.whatsapp && (
             <>
               <Styled.Icon
-                src={header.socialMedia.whatsapp.icon}
+                src={whatsapp}
                 onClick={() => {
                   window.location.href = `https://api.whatsapp.com/send?phone=55${header.reservationContactNumber}&text=Olá, quero conhecer melhor o ${header.title}!`;
                 }}
               />
             </>
           )}
-          {header.socialMedia.youtube.link && (
+          {header.socialMedia.youtube && (
             <>
               <Styled.Icon
-                src={header.socialMedia.youtube.icon}
+                src={youtube}
                 onClick={() => {
-                  window.location.href = header.socialMedia.youtube.link;
+                  window.location.href = header.socialMedia.youtube;
                 }}
               />
             </>
@@ -779,7 +777,7 @@ const Menu: React.FC = () => {
           }
         ></BorderPage>
 
-        {header.socialMedia.spotify.link && (
+        {header.socialMedia.spotify && (
           <BorderPage
             outsideColor={header.mainColor}
             insideColor={header.auxColor}

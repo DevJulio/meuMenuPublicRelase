@@ -19,19 +19,35 @@ import ButtonSecondary from "../../../components/buttons/secondary";
 import Modal from "../../../components/modal";
 import {
   TCompany,
+  TUser,
   createSolicitation,
   createUser,
 } from "../../../service/module/login";
+import { useNavigate } from "react-router-dom";
+import { Map, GoogleApiWrapper, Marker } from "google-maps-react";
+//import { GoogleMap, Marker } from "react-google-maps";
+//import { Map } from "google-maps-react";
+
+type TLocation = {
+  lat: number;
+  lng: number;
+};
 
 const SolicitationMeuMenu: React.FC = () => {
   const [title, setTitle] = useState<string>("Sua empresa");
   const [contactEmail, setContactEmail] = useState<string>("");
+
+  const [nome, setNome] = useState<string>("");
+  const [cidade, setCidade] = useState<string>("");
+
   const [contactNumber, setContactNumber] = useState<string>("");
+  const [contactReservationNumber, setContactReservationNumber] =
+    useState<string>("");
   const [login, setLogin] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
   const [welcome, setWelcome] = useState<string>("");
-  const [instagranLink, setInstagranLink] = useState<string>("");
+  const [instagramLink, setinstagramLink] = useState<string>("");
   const [localizacao, setLocalizacao] = useState<string>("");
   const [spotifyLink, setSpotifyLink] = useState<string>("");
   const [whatsAppLink, setWhatsAppLink] = useState<string>("");
@@ -39,12 +55,27 @@ const SolicitationMeuMenu: React.FC = () => {
   const [reservationText, setReservationText] = useState<string>("");
   const [happyHourText, setHappyHourText] = useState<string>("");
 
-  const [icon, setIcon] = useState();
-  const [banner, setBanner] = useState();
+  const [icon, setIcon] = useState<File>();
+  const [banner, setBanner] = useState<File>();
   const [fontStyle, setFontStyle] = useState<string>("");
 
   const [modal, setModal] = useState<boolean>(false);
+  const [modalAux, setModalAux] = useState<boolean>(false);
   const [modalFail, setModalFail] = useState<boolean>(false);
+  const [selectedLocation, setSelectedLocation] = useState<TLocation>({
+    lat: 0,
+    lng: 0,
+  });
+
+  const handleMapClick = (clickEvent: any) => {
+    console.log(clickEvent);
+
+    // const { latLng } = clickEvent;
+    // setSelectedLocation({
+    // lat: latLng.lat(),
+    // lng: latLng.lng(),
+    // });
+  };
 
   const changeInput = (e: any, isBanner: boolean = false) => {
     const localFile = e.target.files[0];
@@ -61,46 +92,102 @@ const SolicitationMeuMenu: React.FC = () => {
       contactEmail &&
       contactNumber &&
       welcome &&
-      icon &&
-      banner &&
+      icon && //link da img upada
+      banner && //link da img upada
       fontStyle &&
       login &&
+      nome &&
       password
     ) {
-      setModal(true);
-      setModalFail(false);
-      try {
-        const credenciais = {
-          email: contactEmail,
-          password,
-        };
-        //const company: TCompany = {};
-        const res = await createSolicitation(credenciais);
-      } catch (error) {}
-      //Chamar api aqui.
-    } else {
-      setModal(false);
-      setModalFail(true);
+      const userUid = await createLogin(); //False ou o uid do usuario recém criado.
+      if (userUid) {
+        try {
+          const company: TCompany = {
+            title: title,
+            icon: "mudar aqui",
+            address: localizacao,
+            adminsUids: [{ uid: userUid }],
+            stafsUids: [{ uid: "" }],
+            details: {
+              icon: "mudar aqui",
+              title: title,
+              mainColor: "",
+              auxColor: "",
+              textColor: "",
+              fontStyle,
+              fontStyleAux: "",
+              welcome,
+              banner: "mudar aqui",
+              offers: true,
+              hasHappyHour: happyHourText ? true : false,
+              reservation: reservationText ? true : false,
+              reservationTextDetail: reservationText,
+              reservationContactNumber: contactReservationNumber,
+              offersText: "Confira as nossas promoções!",
+              happyHourText: "É dia de happy hour",
+              happyHourTextDetail: happyHourText,
+              reservationText: "Reserve sua mesa!",
+              contactEmail,
+              contactNumber,
+              city: cidade,
+              socialMedia: {
+                instagram: instagramLink,
+                youtube: youtubeLink,
+                whatsapp: whatsAppLink,
+                address: localizacao,
+                spotify: spotifyLink,
+              },
+            },
+            categories: [],
+            menu: [],
+            offers: [],
+            tables: [],
+            staff: [],
+          };
+          //Cadastrar empresa na tabela de solicitação, e pegar código.
+          const user: TUser = {
+            name: nome,
+            statusCadastro: false,
+            uid: userUid,
+            userType: "admin",
+            codCompany: "", //alterar com o código do documento criado da empresa
+          };
+          console.log(company, user);
+          //Cadastrar usuario na tabela de usuários com o código gerado.
+          //se der tudo certo, modal.
+          setModal(true);
+          setModalFail(false);
+        } catch (error) {}
+      } else {
+        //Fazer algo
+      }
     }
   };
 
-  const teste = async () => {
+  const createLogin = async () => {
     const credenciais = {
       email: login,
       password,
     };
     try {
-      const kkkk = await createUser(credenciais);
-      if (kkkk?.status) {
-        console.log("sim ", kkkk);
+      const user = await createUser(credenciais);
+      console.log(user);
+      if (user && user.status === 200) {
+        return user.data.userCredencial.user.uid;
       } else {
-        console.log("não");
+        return false;
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
   };
 
   const handleClose = () => {
     setModal(false);
+  };
+  const handleCloseAux = () => {
+    setModalAux(false);
   };
   const handleCloseFail = () => {
     setModalFail(false);
@@ -121,6 +208,14 @@ const SolicitationMeuMenu: React.FC = () => {
       checkbox.checked = true;
     }
   };
+
+  const navigate = useNavigate();
+  const width = window.screen.width;
+
+
+
+  
+
   return (
     <>
       <Header />
@@ -223,9 +318,59 @@ const SolicitationMeuMenu: React.FC = () => {
             </>
           </Modal>
         )}
+        {modalAux && (
+          <Modal
+            bannerColor={theme.colors.green.normal}
+            title={"Onde fica seu estabelecimento?"}
+            handleClose={handleCloseAux}
+            titleFont={theme.fonts.primary}
+          >
+            <>
+              <div>
+                <Map
+                  google={process.env.REACT_APP_MAP_API_KEY}
+                  center={{ lat: 0, lng: 0 }}
+                  onClick={handleMapClick}
 
+                  // zoom={14}
+                ></Map>
+              </div>
+              {/* <Styled.BtnContainer
+                style={{
+                  marginTop: "0px",
+                  justifyContent: "center",
+                  marginBottom: "2vh",
+                }}
+              >
+                <ButtonSecondary
+                  //TODO: COLOCAR NUMERO DO ZAP
+                  action={() => {}}
+                  Label={"Entrar em contato com o Meu Menu!"}
+                  fontSize={theme.fontSize.md}
+                  color={theme.colors.white.normal}
+                  bgColor={theme.colors.green.normal}
+                />
+              </Styled.BtnContainer> */}
+            </>
+          </Modal>
+        )}
         <Styled.TitleSpan>Preencha todos os campos</Styled.TitleSpan>
         <Styled.Menus>
+          <Styled.MenusRow>
+            <span
+              style={{
+                color: theme.colors.white.normal,
+                cursor: "pointer",
+                fontFamily: theme.fonts.primary,
+                fontSize: theme.fontSize.md2,
+              }}
+              onClick={() => {
+                navigate("/cardapio");
+              }}
+            >
+              Clique aqui e veja um exemplo de cardápio
+            </span>
+          </Styled.MenusRow>
           <Styled.MenusRow>
             <Styled.FormItemContainer>
               <Input setValue={setTitle} label="Nome do estabelecimento" />
@@ -247,7 +392,11 @@ const SolicitationMeuMenu: React.FC = () => {
           </Styled.MenusRow>
           <Styled.MenusRow>
             <Styled.FormItemContainer>
-              <Input setValue={setWelcome} label="Frase de boas vindas" />
+              <Input
+                placeholder="Primeiro contato do seu cliente com o cardápio"
+                setValue={setWelcome}
+                label="Frase de boas vindas"
+              />
             </Styled.FormItemContainer>
             <Styled.FormItemContainer>
               <Styled.ItemSpan>
@@ -263,6 +412,18 @@ const SolicitationMeuMenu: React.FC = () => {
                 />
               </Styled.Centralize>
             </Styled.FormItemContainer>
+          </Styled.MenusRow>
+          <Styled.MenusRow>
+            <Styled.FormItemContainer>
+              <InputMasked
+                mask="(99) 9 9999-9999"
+                setValue={setContactReservationNumber}
+                label="Número para contato dos clientes e reservas."
+              />
+            </Styled.FormItemContainer>
+            {/* <Styled.FormItemContainer>
+              <Input setValue={setCidade} label="Cidade" />
+            </Styled.FormItemContainer> */}
           </Styled.MenusRow>
           <Styled.TitleSpan
             style={{
@@ -285,7 +446,7 @@ const SolicitationMeuMenu: React.FC = () => {
                 <Styled.Icon src={instagram} onClick={() => {}} />
                 <Input
                   labelColor={theme.colors.red.normal}
-                  setValue={setInstagranLink}
+                  setValue={setinstagramLink}
                   label="Instagram"
                   customWidth={isMobile() ? "250px" : "170px"}
                 />
@@ -329,7 +490,41 @@ const SolicitationMeuMenu: React.FC = () => {
               </Styled.IconCentralize>
             </Styled.SocialMediaContainer>
           </Styled.MenusRow>
-
+          {/* <Styled.MenusRow style={{ flexDirection: "column" }}>
+            <Styled.TitleSpan
+              style={{
+                marginTop: "5vh",
+              }}
+            >
+              Localização:
+            </Styled.TitleSpan>
+            <Styled.BtnContainer>
+              {!modalAux ? (
+                <>
+                  <ButtonSecondary
+                    action={() => {
+                      setModalAux(true);
+                    }}
+                    Label="Clique para abrir mapa"
+                    color={theme.colors.red.normal}
+                    bgColor={theme.colors.white.normal}
+                  />
+                </>
+              ) : (
+                <>
+                  <iframe
+                    title="Map"
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d30571.286431759458!2d-49.280785039213846!3d-16.70634218493767!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x935ef12544136db3%3A0x1b20c322bbad1d83!2sGoi%C3%A2nia%20Shopping!5e0!3m2!1spt-BR!2sbr!4v1677269482432!5m2!1spt-BR!2sbr"
+                    width={width - 25}
+                    height="400"
+                    style={{ border: "0", borderRadius: "25px" }}
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                  ></iframe>
+                </>
+              )}
+            </Styled.BtnContainer>
+          </Styled.MenusRow> */}
           <Styled.TitleSpan
             style={{
               marginTop: "5vh",
@@ -628,8 +823,17 @@ const SolicitationMeuMenu: React.FC = () => {
               fontFamily: theme.fonts.secundary,
             }}
           >
-            Informações para a equipe do Meu Menu entrar em contato.
+            Informações para seu perfil na plataforma e para a equipe do Meu
+            Menu entrar em contato.
           </Styled.ItemSpan>
+          <Styled.MenusRow>
+            <Styled.FormItemContainer>
+              <Input setValue={setNome} label="Nome" />
+            </Styled.FormItemContainer>
+            <Styled.FormItemContainer>
+              <Input setValue={setCidade} label="Cidade" />
+            </Styled.FormItemContainer>
+          </Styled.MenusRow>
           <Styled.MenusRow>
             <Styled.FormItemContainer>
               <InputMasked
@@ -646,8 +850,7 @@ const SolicitationMeuMenu: React.FC = () => {
         <Styled.BtnContainer>
           <ButtonSecondary
             action={() => {
-              //createRequest();
-              teste();
+              createRequest();
             }}
             Label="Finalizar solicitação"
             color={theme.colors.red.normal}

@@ -21,7 +21,6 @@ const app = firebase.initializeApp(firebaseConfig);
 const auth = firebaseAuth.getAuth(app);
 
 type TSocialMedia = {
-    icon: string,
     link: string
 }
 
@@ -34,7 +33,7 @@ export type TCompanyDetail = {
     textColor: string;
     fontStyle: string;
     fontStyleAux: string;
-    wellcome: string;
+    welcome: string;
     banner: string;
     offers: boolean;
     hasHappyHour: boolean;
@@ -47,12 +46,13 @@ export type TCompanyDetail = {
     reservationText: string;
     contactEmail: string;
     contactNumber: string;
+    city: string;
     socialMedia: {
-        instagram: TSocialMedia,
-        youtube: TSocialMedia,
-        whatsapp: TSocialMedia,
-        address: TSocialMedia,
-        spotify: TSocialMedia,
+        instagram: string,
+        youtube: string,
+        whatsapp: string,
+        address: string,
+        spotify: string,
     }
 }
 export type TUser = {
@@ -84,8 +84,8 @@ export type TCompany = {
     title: string;
     icon: string;
     address: string;
-    adminsUids: [{ uid: string, userDocId: string }];
-    stafsUids: [{ uid: string, userDocId: string }];
+    adminsUids: [{ uid: string }];
+    stafsUids: [{ uid: string }];
     details: TCompanyDetail;
     categories: TCategory[];
     menu: TProducts[];
@@ -95,58 +95,9 @@ export type TCompany = {
     //sales: 
 }
 
-export const loginHandler = async (credencials: TLogin, keepsigned: boolean = false) => {
-
-    try {
-        let user: any = {};
-        let isLogged = false;
-        try {
-            await firebaseAuth.signInWithEmailAndPassword(auth, credencials.email, credencials.password).then((userCredential: any) => {
-                //console.log(userCredential);
-                isLogged = true
-                user = userCredential.user;
-                setMainToken(userCredential.accessToken)
-            })
-
-        } catch (error: any) {
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            console.log(errorCode, errorMessage);
-        }
-
-        if (isLogged) {
-            console.log(user);
-            const resemp: TUser = await UserService.GetUser(user.uid);
-            console.log(resemp);
-            const profile = {
-                userType: "company",
-                displayName: "REM",
-                statusCadastro: true
-            };
-            if (profile.statusCadastro) {
-                //sessionHandler({ ...resemp });
-            } else {
-                if (!profile.statusCadastro) {
-                    message.error('Cadastro ainda não aprovado');
-                }
-            }
-        } else {
-            console.log("1");
-            message.error('Credenciais incorretas');
-        }
-
-    } catch (error) {
-        if ((error as AxiosError).response && (error as AxiosError).response?.status === 401) {
-            console.log("2");
-            message.error('Credenciais incorretas');
-        } else {
-            console.error(error);
-            message.error('Houve um erro ao completar a solicitação');
-        }
-    }
-};
 
 export const sessionHandler = async (user: TUser) => {
+    console.log(user);
     message.success("Bem vindo, " + user.name)
     if (user.userType === "admin") {
         const company = await CompanyService.GetCompany(user.codCompany!)
@@ -155,7 +106,10 @@ export const sessionHandler = async (user: TUser) => {
             ...company
         }
         localStorage.setItem('@meumenu/user', encryptToAuth(JSON.stringify(adminUser)));
-        window.location.replace('/adm//home')
+        window.location.replace('/adm/home')
+    } else if (user.userType === "admin-j") {
+        localStorage.setItem('@meumenu/j', encryptToAuth(JSON.stringify(user)));
+        window.location.replace('/j/adm/home')
     } else {
         const staff = await CompanyService.GetStaff(user.codCompany!)
         const staffUser = {
@@ -247,15 +201,31 @@ export const createSolicitation = async (credencials: TLogin) => {
 };
 export const login = async (data: any) => {
     try {
-        const res = await api.post('/login', data, {
-            headers: {
-                Authorization: `Bearer ${await genericToken()}`,
-            },
-        });
-        return res;
+        const res = await api.post('/login', data, {});
+        if (res.status === 200) {
+            //setar token: res.data.stsTokenManager.accessToken ou .refreshToken
+            //.expirationTime: 1691593084602
+            const uid = res.data.user.uid
+            localStorage.setItem("@meumenu/userId", encryptToAuth(uid));
+            const profile: TUser = await UserService.GetUser(uid);
+            if (profile.statusCadastro) {
+                sessionHandler(profile);
+            } else {
+                message.error('Cadastro ainda não aprovado');
+            }
+            console.log(profile);
+            return true
+        } else {
+            return false
+        }
     } catch (error) {
         console.log(error);
-        message.error((error as AxiosError).message + "kkkkkkkkkkkkkk");
+        const errAux = (error as AxiosError).response;
+        if (errAux && errAux.data === "Firebase: Error (auth/user-not-found).") {
+            message.error("Usuário não encontrado");
+        } else if (errAux && errAux.data === "Firebase: Error (auth/wrong-password).") {
+            message.error('Credenciais incorretas');
+        }
     }
 }
 
@@ -264,8 +234,13 @@ export const createUser = async (credencials: TLogin) => {
         const res = await api.post('/create-login', credencials);
         return res;
     } catch (error) {
-        console.log(error);
-        message.error((error as AxiosError).message + "kkkkkkkkkkkkkk");
+        console.log(error, (error as AxiosError));
+        const errAux = (error as AxiosError).response;
+        if (errAux && errAux.data === "Firebase: Error (auth/email-already-in-use).") {
+            message.error("Email já em uso");
+        } else {
+            message.error('Tente novamente mais tarde');
+        }
     }
 }
 

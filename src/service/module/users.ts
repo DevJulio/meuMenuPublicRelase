@@ -13,16 +13,16 @@ export class UserService {
                 params: {
                     uid
                 },
-                headers: {
-                    "Authorization": `Bearer ${getMainToken()}`
-                },
+                //headers: {
+                //    "Authorization": `Bearer ${getMainToken()}`
+                //},
             });
             if (res) {
                 return res.data
             }
         } catch (error) {
-            console.log(error);
-            message.error((error as AxiosError).message + "kkkkkkkkkkkkkk");
+            console.log(error, (error as AxiosError).message);
+            message.error("Não autorizado");
         }
     }
 
@@ -35,8 +35,8 @@ export class UserService {
             });
             return res;
         } catch (error) {
-            console.log(error);
-            message.error((error as AxiosError).message + "kkkkkkkkkkkkkk");
+            console.log(error, (error as AxiosError).message);
+            message.error("Não autorizado");
         }
     }
 }
