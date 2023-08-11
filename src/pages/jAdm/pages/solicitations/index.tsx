@@ -10,6 +10,7 @@ import * as Styled from "./styles";
 
 const JSolicitations: React.FC = () => {
   const [user, setUser] = useState<TUser>();
+  const [solicitation, setSolicitation] = useState([]);
 
   useEffect(() => {
     const usr = isAuth(true);
@@ -23,19 +24,13 @@ const JSolicitations: React.FC = () => {
 
   const navigate = useNavigate();
 
-  const solicitacoes = [
-    
-  ]
-
   return (
     <>
       <Header />
       <Styled.MainContainer>
         <Styled.CategoryContainer>
-        <Styled.Span>Solicitações</Styled.Span>
-        <Styled.SolicitationsContainer>
-          kkkkkkk
-        </Styled.SolicitationsContainer>
+          <Styled.Span>Solicitações</Styled.Span>
+          <Styled.SolicitationsContainer>kkkkkkk</Styled.SolicitationsContainer>
         </Styled.CategoryContainer>
       </Styled.MainContainer>
       <Footer />

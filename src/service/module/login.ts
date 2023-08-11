@@ -247,17 +247,3 @@ export const createUser = async (credencials: TLogin) => {
     }
 }
 
-
-// static async setUser(data: any) {
-//     try {
-//         const res = await api.post('/users/user/', data, {
-//             headers: {
-//                 Authorization: `Bearer ${await genericToken()}`,
-//             },
-//         });
-//         return res;
-//     } catch (error) {
-//         console.log(error);
-//         message.error((error as AxiosError).message + "kkkkkkkkkkkkkk");
-//     }
-// }

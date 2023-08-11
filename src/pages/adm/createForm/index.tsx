@@ -20,11 +20,9 @@ import ButtonSecondary from "../../../components/buttons/secondary";
 import Modal from "../../../components/modal";
 import { TCompany, TUser, createUser } from "../../../service/module/login";
 import { useNavigate } from "react-router-dom";
-import { Map } from "google-maps-react";
 import { fileUpload } from "../../../service/module/fileUpload";
 import { message } from "antd";
 //import { GoogleMap, Marker } from "react-google-maps";
-//import { Map } from "google-maps-react";
 import { CompanyService } from "../../../service/module/company";
 import { UserService } from "../../../service/module/users";
 
@@ -384,15 +382,7 @@ const SolicitationMeuMenu: React.FC = () => {
             titleFont={theme.fonts.primary}
           >
             <>
-              <div>
-                <Map
-                  google={process.env.REACT_APP_MAP_API_KEY}
-                  center={{ lat: 0, lng: 0 }}
-                  onClick={handleMapClick}
-
-                  // zoom={14}
-                ></Map>
-              </div>
+              <div></div>
               {/* <Styled.BtnContainer
                 style={{
                   marginTop: "0px",
