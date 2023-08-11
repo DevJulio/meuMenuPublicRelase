@@ -22,7 +22,6 @@ import { TCompany, TUser, createUser } from "../../../service/module/login";
 import { useNavigate } from "react-router-dom";
 import { fileUpload } from "../../../service/module/fileUpload";
 import { message } from "antd";
-//import { GoogleMap, Marker } from "react-google-maps";
 import { CompanyService } from "../../../service/module/company";
 import { UserService } from "../../../service/module/users";
 
@@ -457,7 +456,7 @@ const SolicitationMeuMenu: React.FC = () => {
                 <Styled.FileInput
                   type="file"
                   id="mainBanner"
-                  onChange={(e) => {
+                  onChange={(e: any) => {
                     changeInput(e);
                   }}
                 />
@@ -480,7 +479,7 @@ const SolicitationMeuMenu: React.FC = () => {
                 <Styled.FileInput
                   type="file"
                   id="mainBanner"
-                  onChange={(e) => {
+                  onChange={(e: any) => {
                     changeInput(e, true);
                   }}
                 />
