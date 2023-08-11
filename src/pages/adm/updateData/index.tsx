@@ -24,7 +24,7 @@ const UpdateData: React.FC = () => {
   const [contact, setContact] = useState<string>("");
 
   const [welcome, setWelcome] = useState<string>("");
-  const [instagranLink, setInstagranLink] = useState<string>("");
+  const [instagramLink, setinstagramLink] = useState<string>("");
   const [localizacao, setLocalizacao] = useState<string>("");
   const [spotifyLink, setSpotifyLink] = useState<string>("");
   const [whatsAppLink, setWhatsAppLink] = useState<string>("");
@@ -57,7 +57,7 @@ const UpdateData: React.FC = () => {
     textColor: "#386641",
     fontStyle: theme.fonts.hand,
     fontStyleAux: theme.fonts.primary,
-    wellcome: "Bem-vindo(a) ao Ren.",
+    welcome: "Bem-vindo(a) ao Ren.",
     banner: "food",
     offers: true,
     hasHappyHour: true,
@@ -120,7 +120,7 @@ const UpdateData: React.FC = () => {
       "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFsAAABbCAYAAAAcNvmZAAAACXBIWXMAAAsTAAALEwEAmpwYAAALIUlEQVR4nO1deWxcRxmfcN9FqIizAgQSAgEChT8AAaudeWvvzrxdx8c3b+317fXtxEdsx81hu7mci1zO1TZNRa4mhZJASxOgOdtUolQUqBKatgilXOUIqggiaYEMmt3Yfm/e213vrs327fonzR/Zjd8389vZb37zfd/MIlSg8AThU5jBw5jBZS+F/lz3J2+hBcJfxoz/mTAuJpqXQSjX/co7eAOACeXXzETLhhk/keu+5RVwMPwFzPgrKtExsin8t6jEuCPXfcwLeP3GJwmFl52Inprd0J3rfroeHk/d2zDjzyQj+pYreSTXfXU9MOX3qMT6yiIi1NqmuBL+KgC8Jdf9dS0wM0AlWguFRcP4GsGXDtpmt0bLea777Ep4SkreSxj/k0po1cqlou3wuCiGGhvZXgZ35brfrgShfLdK5oL2DtHx4E4Bg4udfTeFTbnut+vgZTBfyjkzkUVlEdG6f6tovHuD0IJGIkXycK777joQCj9SiaweWyE6ju4Qen00mfz7Wa777ip4Kf+mSqLeEI0RXbNhNLn8o/xKrvvvKmAKZ1QSG3asFe1HdohAZZ2Tvjb9G67nuv+uAfGHv6SSWdLWFlsUI2tX2IgOROptryG3w+PxvAlTvgtT/jfC4LQvCJ+YDTuE8fvts3osRnYg0mAjFpbYVQlCaB5yMwiDFcqgntM0uG0mbXj0ytulG7D46sbmGNE1G+2+uqSlTVStXmZ7XU4M5FZgBh/BDP7psPIfn8lZRChfqNqQC6Ik20mBNOxcJypHh9TXb46MjLwBuRWE8f0JFQDlHTNnBy5YdHV5RHQcGRdNu9fb7IZa4n7cWLZEXSxfQW6Fp9j4OGH830nI/sdMxJHlGiBnpfnZFQOLY4SW9XTb7NZvWx17r2KgT3kPfovcCkJhSzJdS+Jb5B/MgJ0B9bmNu8ZE28FtQiuptLzur6yPaW5JdmlXlzqzn0FuhAfgXXLmmgdT2RQRvD5iI1zTwZONLczgJxZCjdoYoU5yr3L0zhjRsgWbmvNju64FoEod6PYD7WL/IwsdNhbwRKZ2dF1/h6pCKvr74mRGW6y2gmHRemDrJNl+rkT+KN+K3AhC+ffNA6FlYXH2Ur+48OKg6ByybyY0xoszsYMDRkB9Vu2WVaLl21sE0a0Bp5K2eNRPNhlmVd+Xiga5DX5/5D2Y8RvmgfSONMaIlu2hcz1C01X/DY9mYotQvkadvW2Ht8fchfohVK+PS0HZGnfZVYqXcYrcBtlpdSB7j3VNki3bwjuts1uGRGViNlt/zeqjcW3daHUhvhL5IYxPkl21ymFDQ+GDyG0gFNZbBho0xOmLcRcy0Q6dXOSkTjamaWoeZvyq1V/3ilapQpSY9YLOzkmiY5Kw22ofU3gJuRGE8p9adG1njYXoiVYZtSmT36Wzq4yVKKiuYt2wqF4/YvsgI2PDFrIDVfVOO1p3QcYWVHUwsrnZkewNd7faZ7cOX83GXTXtWS8WLFQUj25YVEjz/ZudFNES5DZo1PiMOpA9D3Y6kn3i6cX2hTKNPCChsEglte3QdlFUUW15pt4QD0hNNCf9LcOzyG3ADCrUgRy/0OtItmx1nVatiyn/9XRtSV1s/luZMY/eu9FGpIyBmMmWiV/lA37ZlaFVzGCpeSBakIvzlwcSkr1mh7LxYPzmdFUBoXBMVSKRNcttZDeMr53S14e2CV8orP6fA8iNIJSPmwdSVl2VkGjZjp6yB4qIDsa0bDE4p25ayhYttBXltD8wJfmcFk+NGmXIjcAMvmseSOMiZyUy0Z54flAESm0zbcf0bPFfWT7Y3p5YXCSZvw41t9rCqrIeELkRMs5hHkzXUH1SsmVr6q7NKFZCKP+9+e8qeu3fEhjqn1Ih+75l/xZR2IfcCkLhl+bBDKyc2qYnaqNbW5yC+CkXLMz4X8x/V9plD3LVblo5SbZTzlHTDYLcCplfNA9m+YZoSrJ3Hemwxylo2cdS2lJqrkPNtsU2NptjC+PBbcJXWqW+f9GVKmQCMtthHtCKjc4bGnP7zpnujKKAmMIfzH9Dq60ZdN+CyslEQXjYmgKLfYN0aENuhupHE+0eL5jamUv9diIoNKWyJSuY1Lyj0+IoZ7Ws9VNc1VWfr/qdyM0gDF40D2p4U2o3IhursCoSTPlIKluYwc+t/tf6gZX39dzy1Q4fJoOlyO1Q5djQ2iZlFg+I88/ZNznhJmXmUX5PSlsUTtrUhalVrVwmovdtsm1i5MIq03bI7cCUP2keWO9IwyShcpbLcCstN8TuI9Z4SbTHKv8I5d9LZUvu/JKRXbd5lQhGHYNdfSgfoM62tv66+CJ4tscyYOk2zl+eIrtj0JZMOJnaFh9JRraxfMDJfVzKm7MzcpNgHlykORIjc/sBu7yTC+ME2T0r1Fo8OJfSVoCXJyNbK7HtTG/KkmKUL8AMVpkHGORhx4CTfuv1ida/slEl5ulUtrzF8OmEZKvJ3Pg6cB/KJ0jtqg7y1LP9MX+t1pCYye4bsZKNKTyVyhYAvFFNiyVqmPLnvxYKvRvlE7y6UaQO9Ohj3WJwdZNIliqT2XeFnMczCXw5N7juo/BFlG8oLi79kDrY8YMdonu51Se39tWmyrY/luk3yYHsRpSvUANEQ2NR0b3MSqYk1xL5W1SbUSmYFgp/GFP+n8TuA4ZRPoMwfso84OrWatvMVkOvVc3WvCFhfO+07VH4oSPRDHaifIeqSHxBQ/QMW8luH7SSLdWJQtbq6dojATAcXMdpV0f0pgvCuKYOvl3ZtEi3MUG0LODJplAe4+AHbLM6wKOoECArS+UtB+bB17ZXJ5R+svZPJUujwNIshldciAGoUCC/xubB03KrmwiFKyfJ3vlAZsmDZJVRmEEpKhTgAHQmk2OaLrfr8eifzOYoLuRatmVoWOcLUKFA6m31sD5R2rHHexMV6jyZjq2CJ1sCU342Gdl7H+qKLY5SrSjvrUv3nr6CntmJjnoQUxvd0iz2HbdnxAkFf7ZkE2qUoEKC3+9/q3phITG1lr7aWKmDoo9fSzeLMkf2LcjNCUlAtkwg6BDO+riHs/QrIDViOVNOrUf0kjeoy8iGTTpCDSpEEMbvmibR1zO5QGD+/JY3O8zsLlSI0DS4jVD4a0qys6i7I5T/K+9KFTKFl0JNKrLlfamZPt92rRyF9aiQgRk/kcSFPJrds+Gy8rw9qJBRVGLcoSYWJlsouzMtMmepPPMwKnRoOnydOGVWAoaezXMJ4z+eyW9K3gAz6LL56zTjIfZn8kN5cZ3FbMBLYdymjQOAM30eZnxMIfvqzPbYxfDolberd0fJO/kyfZ7M7KgfXt7ViWQDopxjzCaAJH2+zTX54bMz32t3q5Mbiu++kkmRuhaAz2cbPcx7EPW+kAzi2RN3nDho95bZ6bW7k8NXFJJey+QsufprHbKkYnZ67WJgh/PuhPIX0g1KqaceXH3GcTaBHY5syKLJdBK/mMLBufjIdBPEDlmddH4/Jv6bYfw3E5saV15D9P+CNwBYLZKU/06n4Ebeperxl350dnuaJ8AU1jps5V+dk3Gzd9f2WYcF81o6VxrNIZ3fmKHwCwfd/Pc5wmcBfj+8X7104NbCd0PWo8yGzYJGkdzOU3jJYYd5kzAYzXX/8g4+xj+X+OcF4V5ZCJTrPuYVfLIIh/IXEuQvL7rymjgXVMU+5US4lIbyEkRX/17B6w1fAXi7TOQmmOEyFnI+nSL6OaTGPEKhVz1GYlIrfywqgvdN4zlzSOcnvdWLZNK9F3AOaUBmdOSljeoJB/kThek8Zw5o+sDM+IY8644pPCvP8rweyfsfNNRgh1jzl/0AAAAASUVORK5CYII="
     );
 
-    setInstagranLink("teste");
+    setinstagramLink("teste");
     setLocalizacao("teste");
     setSpotifyLink("teste");
     setWhatsAppLink("teste");
@@ -362,9 +362,9 @@ const UpdateData: React.FC = () => {
                 <Styled.Icon src={instagram} onClick={() => {}} />
                 <Input
                   labelColor={theme.colors.red.normal}
-                  setValue={setInstagranLink}
+                  setValue={setinstagramLink}
                   label="Instagram"
-                  value={instagranLink}
+                  value={instagramLink}
                   customWidth={isMobile() ? "250px" : "170px"}
                 />
               </Styled.IconCentralize>

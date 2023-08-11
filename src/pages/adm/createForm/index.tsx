@@ -10,6 +10,7 @@ import whatsapp from "../../../assets/icons/socialMedia/gif/whatsapp.gif";
 import youtube from "../../../assets/icons/socialMedia/gif/youtube.gif";
 import happy from "../../../assets/icons/socialMedia/gif/happy.gif";
 import resevation from "../../../assets/icons/socialMedia/gif/resevation.png";
+import loadingGif from "../../../assets/icons/loading.gif";
 
 import { theme } from "../../../theme/theme";
 import isMobile from "is-mobile";
@@ -17,16 +18,28 @@ import Checkbox from "../../../components/CheckBox";
 import InputMasked from "../../../components/MaskedIpunt";
 import ButtonSecondary from "../../../components/buttons/secondary";
 import Modal from "../../../components/modal";
+import { TCompany, TUser, createUser } from "../../../service/module/login";
+import { useNavigate } from "react-router-dom";
+import { fileUpload } from "../../../service/module/fileUpload";
+import { message } from "antd";
+import { CompanyService } from "../../../service/module/company";
+import { UserService } from "../../../service/module/users";
 
 const SolicitationMeuMenu: React.FC = () => {
-  const [brandName, setBrandName] = useState<string>("Sua empresa");
-  const [email, setEmail] = useState<string>("");
-  const [contact, setContact] = useState<string>("");
+  const [title, setTitle] = useState<string>("Sua empresa");
+  const [contactEmail, setContactEmail] = useState<string>("");
+
+  const [nome, setNome] = useState<string>("");
+  const [cidade, setCidade] = useState<string>("");
+
+  const [contactNumber, setContactNumber] = useState<string>("");
+  const [contactReservationNumber, setContactReservationNumber] =
+    useState<string>("");
   const [login, setLogin] = useState<string>("");
-  const [password, setPassword] = useState<string>();
+  const [password, setPassword] = useState<string>("");
 
   const [welcome, setWelcome] = useState<string>("");
-  const [instagranLink, setInstagranLink] = useState<string>("");
+  const [instagramLink, setinstagramLink] = useState<string>("");
   const [localizacao, setLocalizacao] = useState<string>("");
   const [spotifyLink, setSpotifyLink] = useState<string>("");
   const [whatsAppLink, setWhatsAppLink] = useState<string>("");
@@ -34,46 +47,206 @@ const SolicitationMeuMenu: React.FC = () => {
   const [reservationText, setReservationText] = useState<string>("");
   const [happyHourText, setHappyHourText] = useState<string>("");
 
-  const [logo, setLogo] = useState();
-  const [banner, setBanner] = useState();
+  const [icon, setIcon] = useState<File>();
+  const [banner, setBanner] = useState<File>();
   const [fontStyle, setFontStyle] = useState<string>("");
 
   const [modal, setModal] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [modalAux, setModalAux] = useState<boolean>(false);
   const [modalFail, setModalFail] = useState<boolean>(false);
+
+  const handleMapClick = (clickEvent: any) => {
+    // const { latLng } = clickEvent;
+    // setSelectedLocation({
+    // lat: latLng.lat(),
+    // lng: latLng.lng(),
+    // });
+  };
 
   const changeInput = (e: any, isBanner: boolean = false) => {
     const localFile = e.target.files[0];
-    if (isBanner) {
-      setBanner(localFile);
-    } else {
-      setLogo(localFile);
+
+    if (localFile) {
+      if (localFile.size > 5 * 1024 * 1024) {
+        message.error(
+          "A imagem é muito grande. Por favor, escolha uma imagem menor que 5 mb."
+        );
+      } else {
+        if (isBanner) {
+          setBanner(localFile);
+        } else {
+          setIcon(localFile);
+        }
+      }
     }
   };
 
-  const createRequest = () => {
+  const createRequest = async () => {
     if (
-      brandName &&
-      email &&
-      contact &&
+      title &&
+      contactEmail &&
+      contactNumber &&
       welcome &&
-      logo &&
+      icon &&
       banner &&
       fontStyle &&
       login &&
+      nome &&
       password
     ) {
-      setModal(true);
-      setModalFail(false);
+      const path = "/companies/imgs/";
+      const userUid = await createLogin(); //False ou o uid do usuario recém criado.
+      setLoading(true);
+      if (userUid) {
+        const imgUploadResult = await Promise.all([
+          fileUpload(icon, path + "icon" + icon.name),
+          fileUpload(banner, path + "banner" + banner.name),
+        ])
+          .then((results) => {
+            return results;
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+
+        const checkUploadAux = imgUploadResult as Array<any>;
+        const checkUpload = checkUploadAux.every(
+          (data: any) => data.status === 200
+        );
+        if (checkUpload) {
+          const iconUrl = checkUploadAux[0].data;
+          const bannerUrl = checkUploadAux[1].data;
+          try {
+            const company: TCompany = {
+              title: title,
+              statusCadastro: false,
+              icon: iconUrl,
+              address: localizacao,
+              adminsUids: [{ uid: userUid }],
+              stafsUids: [{ uid: "" }],
+              details: {
+                icon: iconUrl,
+                title: title,
+                mainColor: "",
+                auxColor: "",
+                textColor: "",
+                fontStyle,
+                fontStyleAux: "",
+                welcome,
+                banner: bannerUrl,
+                offers: true,
+                hasHappyHour: happyHourText ? true : false,
+                reservation: reservationText ? true : false,
+                reservationTextDetail: reservationText,
+                reservationContactNumber: contactReservationNumber,
+                offersText: "Confira as nossas promoções!",
+                happyHourText: "É dia de happy hour",
+                happyHourTextDetail: happyHourText,
+                reservationText: "Reserve sua mesa!",
+                contactEmail,
+                contactNumber,
+                city: cidade,
+                socialMedia: {
+                  instagram: instagramLink,
+                  youtube: youtubeLink,
+                  whatsapp: whatsAppLink,
+                  address: localizacao,
+                  spotify: spotifyLink,
+                },
+              },
+              categories: [],
+              menu: [],
+              offers: [],
+              tables: [],
+              staff: [],
+            };
+
+            //Cadastrar empresa na tabela de solicitação, e pegar código.
+            const resCompany: any = await CompanyService.setCompany(company);
+            if (resCompany.status === 200) {
+              const companyDocId = resCompany.data;
+              console.log(
+                "ID DO DOC DA REMPRESA RECÉM CRIADA ==> ",
+                companyDocId
+              );
+              const user: TUser = {
+                name: nome,
+                statusCadastro: false,
+                uid: userUid,
+                userType: "admin",
+                codCompany: companyDocId, //alterar com o código do documento criado da empresa
+              };
+              console.log("USUÁRIO QUE SERÁ CRIADO ==> ", user);
+              const resUser: any = await UserService.setUser(user);
+              if (resUser.status === 200) {
+                setLoading(false);
+                setModal(true);
+                setModalFail(false);
+              } else {
+                setLoading(false);
+                setModalFail(true);
+                console.log(resUser);
+                message.error(
+                  "Verifique os dados de usuário e tente novamente"
+                );
+              }
+            } else {
+              setLoading(false);
+              setModalFail(true);
+              console.log(resCompany);
+              message.error("Verifique os campos e tente novamente");
+            }
+          } catch (error) {
+            console.log(error);
+            message.error("Verifique todos os campos e tente novamente");
+          }
+        } else {
+          setLoading(false);
+          setModalFail(true);
+          message.error("Verifique o formato e tamanho das imagens");
+        }
+      } else {
+        setLoading(false);
+        setModalFail(true);
+        message.warning("Atenção!");
+      }
     } else {
-      setModal(false);
-      setModalFail(true);
+      message.error("Preencha os campos e tente novamente!");
     }
   };
+
+  const createLogin = async () => {
+    const credenciais = {
+      email: login,
+      password,
+    };
+    try {
+      const userResponse = await createUser(credenciais);
+      if (userResponse && userResponse.status === 200) {
+        if (userResponse.data) {
+          return userResponse.data.userCredential.user.uid;
+        }
+      } else {
+        return false;
+      }
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  };
+
   const handleClose = () => {
     setModal(false);
   };
+  const handleCloseAux = () => {
+    setModalAux(false);
+  };
   const handleCloseFail = () => {
     setModalFail(false);
+  };
+  const handleCloseLoading = () => {
+    setLoading(false);
   };
   const handleSwitch = (id: string) => {
     for (var i = 1; i <= 12; i++) {
@@ -91,6 +264,10 @@ const SolicitationMeuMenu: React.FC = () => {
       checkbox.checked = true;
     }
   };
+
+  const navigate = useNavigate();
+  //const width = window.screen.width;
+
   return (
     <>
       <Header />
@@ -139,7 +316,10 @@ const SolicitationMeuMenu: React.FC = () => {
               >
                 <ButtonSecondary
                   //TODO: COLOCAR NUMERO DO ZAP
-                  action={() => {}}
+                  action={() => {
+                    window.location.href =
+                      "https://api.whatsapp.com/send?phone=5564996140938&text=Meu menu!";
+                  }}
                   Label={"Entrar em contato com o Meu Menu!"}
                   fontSize={theme.fontSize.md}
                   color={theme.colors.white.normal}
@@ -193,12 +373,80 @@ const SolicitationMeuMenu: React.FC = () => {
             </>
           </Modal>
         )}
+        {modalAux && (
+          <Modal
+            bannerColor={theme.colors.green.normal}
+            title={"Onde fica seu estabelecimento?"}
+            handleClose={handleCloseAux}
+            titleFont={theme.fonts.primary}
+          >
+            <>
+              <div></div>
+              {/* <Styled.BtnContainer
+                style={{
+                  marginTop: "0px",
+                  justifyContent: "center",
+                  marginBottom: "2vh",
+                }}
+              >
+                <ButtonSecondary
+                  //TODO: COLOCAR NUMERO DO ZAP
+                  action={() => {}}
+                  Label={"Entrar em contato com o Meu Menu!"}
+                  fontSize={theme.fontSize.md}
+                  color={theme.colors.white.normal}
+                  bgColor={theme.colors.green.normal}
+                />
+              </Styled.BtnContainer> */}
+            </>
+          </Modal>
+        )}
+        {loading && (
+          <Modal
+            bannerColor={theme.colors.yellow.palete}
+            title={"Carregando..."}
+            handleClose={handleCloseLoading}
+            titleFont={theme.fonts.primary}
+          >
+            <div
+              style={{
+                display: "flex",
+                placeItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <img
+                src={loadingGif}
+                alt=""
+                style={{
+                  width: "4vw",
+                  padding: "3vh",
+                }}
+              />
+            </div>
+          </Modal>
+        )}
 
         <Styled.TitleSpan>Preencha todos os campos</Styled.TitleSpan>
         <Styled.Menus>
           <Styled.MenusRow>
+            <span
+              style={{
+                color: theme.colors.white.normal,
+                cursor: "pointer",
+                fontFamily: theme.fonts.primary,
+                fontSize: theme.fontSize.md2,
+              }}
+              onClick={() => {
+                navigate("/cardapio");
+              }}
+            >
+              Clique aqui e veja um exemplo de cardápio
+            </span>
+          </Styled.MenusRow>
+          <Styled.MenusRow>
             <Styled.FormItemContainer>
-              <Input setValue={setBrandName} label="Nome do estabelecimento" />
+              <Input setValue={setTitle} label="Nome do estabelecimento" />
             </Styled.FormItemContainer>
             <Styled.FormItemContainer>
               <Styled.ItemSpan>
@@ -208,7 +456,7 @@ const SolicitationMeuMenu: React.FC = () => {
                 <Styled.FileInput
                   type="file"
                   id="mainBanner"
-                  onChange={(e) => {
+                  onChange={(e: any) => {
                     changeInput(e);
                   }}
                 />
@@ -217,7 +465,11 @@ const SolicitationMeuMenu: React.FC = () => {
           </Styled.MenusRow>
           <Styled.MenusRow>
             <Styled.FormItemContainer>
-              <Input setValue={setWelcome} label="Frase de boas vindas" />
+              <Input
+                placeholder="Primeiro contato do seu cliente com o cardápio"
+                setValue={setWelcome}
+                label="Frase de boas vindas"
+              />
             </Styled.FormItemContainer>
             <Styled.FormItemContainer>
               <Styled.ItemSpan>
@@ -227,12 +479,24 @@ const SolicitationMeuMenu: React.FC = () => {
                 <Styled.FileInput
                   type="file"
                   id="mainBanner"
-                  onChange={(e) => {
+                  onChange={(e: any) => {
                     changeInput(e, true);
                   }}
                 />
               </Styled.Centralize>
             </Styled.FormItemContainer>
+          </Styled.MenusRow>
+          <Styled.MenusRow>
+            <Styled.FormItemContainer>
+              <InputMasked
+                mask="(99) 9 9999-9999"
+                setValue={setContactReservationNumber}
+                label="Número para contato dos clientes e reservas."
+              />
+            </Styled.FormItemContainer>
+            {/* <Styled.FormItemContainer>
+              <Input setValue={setCidade} label="Cidade" />
+            </Styled.FormItemContainer> */}
           </Styled.MenusRow>
           <Styled.TitleSpan
             style={{
@@ -255,7 +519,7 @@ const SolicitationMeuMenu: React.FC = () => {
                 <Styled.Icon src={instagram} onClick={() => {}} />
                 <Input
                   labelColor={theme.colors.red.normal}
-                  setValue={setInstagranLink}
+                  setValue={setinstagramLink}
                   label="Instagram"
                   customWidth={isMobile() ? "250px" : "170px"}
                 />
@@ -299,7 +563,41 @@ const SolicitationMeuMenu: React.FC = () => {
               </Styled.IconCentralize>
             </Styled.SocialMediaContainer>
           </Styled.MenusRow>
-
+          {/* <Styled.MenusRow style={{ flexDirection: "column" }}>
+            <Styled.TitleSpan
+              style={{
+                marginTop: "5vh",
+              }}
+            >
+              Localização:
+            </Styled.TitleSpan>
+            <Styled.BtnContainer>
+              {!modalAux ? (
+                <>
+                  <ButtonSecondary
+                    action={() => {
+                      setModalAux(true);
+                    }}
+                    Label="Clique para abrir mapa"
+                    color={theme.colors.red.normal}
+                    bgColor={theme.colors.white.normal}
+                  />
+                </>
+              ) : (
+                <>
+                  <iframe
+                    title="Map"
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d30571.286431759458!2d-49.280785039213846!3d-16.70634218493767!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x935ef12544136db3%3A0x1b20c322bbad1d83!2sGoi%C3%A2nia%20Shopping!5e0!3m2!1spt-BR!2sbr!4v1677269482432!5m2!1spt-BR!2sbr"
+                    width={width - 25}
+                    height="400"
+                    style={{ border: "0", borderRadius: "25px" }}
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                  ></iframe>
+                </>
+              )}
+            </Styled.BtnContainer>
+          </Styled.MenusRow> */}
           <Styled.TitleSpan
             style={{
               marginTop: "5vh",
@@ -361,7 +659,7 @@ const SolicitationMeuMenu: React.FC = () => {
                   fontFamily: theme.fonts.AlwaysSmile,
                 }}
               >
-                {brandName}
+                {title}
               </Styled.Fonts>
               <Checkbox
                 id="1"
@@ -379,7 +677,7 @@ const SolicitationMeuMenu: React.FC = () => {
                   fontFamily: theme.fonts.Bachelorette,
                 }}
               >
-                {brandName}
+                {title}
               </Styled.Fonts>
               <Checkbox
                 id="2"
@@ -396,7 +694,7 @@ const SolicitationMeuMenu: React.FC = () => {
                   fontFamily: theme.fonts.BeYou,
                 }}
               >
-                {brandName}
+                {title}
               </Styled.Fonts>
               <Checkbox
                 id="3"
@@ -413,7 +711,7 @@ const SolicitationMeuMenu: React.FC = () => {
                   fontFamily: theme.fonts.Bravely,
                 }}
               >
-                {brandName}
+                {title}
               </Styled.Fonts>
               <Checkbox
                 id="4"
@@ -433,7 +731,7 @@ const SolicitationMeuMenu: React.FC = () => {
                   fontFamily: theme.fonts.GlossySheen,
                 }}
               >
-                {brandName}
+                {title}
               </Styled.Fonts>
               <Checkbox
                 id="5"
@@ -450,7 +748,7 @@ const SolicitationMeuMenu: React.FC = () => {
                   fontFamily: theme.fonts.LatoRegular,
                 }}
               >
-                {brandName}
+                {title}
               </Styled.Fonts>
               <Checkbox
                 id="6"
@@ -468,7 +766,7 @@ const SolicitationMeuMenu: React.FC = () => {
                   fontFamily: theme.fonts.LEMONMILK,
                 }}
               >
-                {brandName}
+                {title}
               </Styled.Fonts>
               <Checkbox
                 id="7"
@@ -485,7 +783,7 @@ const SolicitationMeuMenu: React.FC = () => {
                   fontFamily: theme.fonts.NiceSugar,
                 }}
               >
-                {brandName}
+                {title}
               </Styled.Fonts>
               <Checkbox
                 id="8"
@@ -505,7 +803,7 @@ const SolicitationMeuMenu: React.FC = () => {
                   fontFamily: theme.fonts.RoughAnthem,
                 }}
               >
-                {brandName}
+                {title}
               </Styled.Fonts>
               <Checkbox
                 id="9"
@@ -522,7 +820,7 @@ const SolicitationMeuMenu: React.FC = () => {
                   fontFamily: theme.fonts.primary,
                 }}
               >
-                {brandName}
+                {title}
               </Styled.Fonts>
               <Checkbox
                 id="10"
@@ -540,7 +838,7 @@ const SolicitationMeuMenu: React.FC = () => {
                   fontFamily: theme.fonts.secundary,
                 }}
               >
-                {brandName}
+                {title}
               </Styled.Fonts>
               <Checkbox
                 id="11"
@@ -557,7 +855,7 @@ const SolicitationMeuMenu: React.FC = () => {
                   fontFamily: theme.fonts.hand,
                 }}
               >
-                {brandName}
+                {title}
               </Styled.Fonts>
               <Checkbox
                 id="12"
@@ -598,18 +896,27 @@ const SolicitationMeuMenu: React.FC = () => {
               fontFamily: theme.fonts.secundary,
             }}
           >
-            Informações para a equipe do Meu Menu entrar em contato.
+            Informações para seu perfil na plataforma e para a equipe do Meu
+            Menu entrar em contato.
           </Styled.ItemSpan>
+          <Styled.MenusRow>
+            <Styled.FormItemContainer>
+              <Input setValue={setNome} label="Nome" />
+            </Styled.FormItemContainer>
+            <Styled.FormItemContainer>
+              <Input setValue={setCidade} label="Cidade" />
+            </Styled.FormItemContainer>
+          </Styled.MenusRow>
           <Styled.MenusRow>
             <Styled.FormItemContainer>
               <InputMasked
                 mask="(99) 9 9999-9999"
-                setValue={setContact}
+                setValue={setContactNumber}
                 label="Número para contato"
               />
             </Styled.FormItemContainer>
             <Styled.FormItemContainer>
-              <Input setValue={setEmail} label="E-mail para contato" />
+              <Input setValue={setContactEmail} label="E-mail para contato" />
             </Styled.FormItemContainer>
           </Styled.MenusRow>
         </Styled.Menus>

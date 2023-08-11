@@ -20,33 +20,43 @@ export type authPayload = {
 }
 
 export type TStafPayload = {
-    
+
 }
 
-export function isAuth() {
-    if (localStorage.getItem('@meumenu/user') === null) {
-        return null;
-    } else {
-        let usrData = localStorage.getItem('@meumenu/user')!;
+export function isAuth(isJ: boolean = false) {
+    if (isJ) {
+        let usrData = localStorage.getItem('@meumenu/j')!;
         let stringjson = decryptToAuth(usrData);
-        let obj = JSON.parse(stringjson) as authPayload;
-        let d = new Date();
-        // if (!obj.keepSigned) {
-        //     // if ((obj.dateToken! !== parseInt(format(d, 'dd'))) || parseInt(format(d, 'HHmm')) > obj.hourExpiration!) {
-        //     //     logoutForce();
-        //     // }
-        // } else {
-        //     if (obj.dateToken! !== parseInt(format(d, 'dd'))) {
-        //         logoutForce();
-        //     }
-        // }
-        // console.log((obj.hourExpiration !== (parseInt(format(d, 'HHmm')) + 60)))
-        // if (obj.hourExpiration !== (parseInt(format(d, 'HHmm')) + 60)) {
-        //     obj.hourExpiration = parseInt(format(d, 'HHmm')) + 60;
-        //     localStorage.setItem('@slwc/user', encryptToAuth(JSON.stringify(obj)));
-        // }
-        return obj;
+        return JSON.parse(stringjson);
+    } else {
+        if (localStorage.getItem('@meumenu/user') === null) {
+            console.log("if auth");
+            return null;
+        } else {
+            console.log("else auth");
+            let usrData = localStorage.getItem('@meumenu/user')!;
+            let stringjson = decryptToAuth(usrData);
+            let obj = JSON.parse(stringjson);
+            //let d = new Date();
+            // if (!obj.keepSigned) {
+            //     // if ((obj.dateToken! !== parseInt(format(d, 'dd'))) || parseInt(format(d, 'HHmm')) > obj.hourExpiration!) {
+            //     //     logoutForce();
+            //     // }
+            // } else {
+            //     if (obj.dateToken! !== parseInt(format(d, 'dd'))) {
+            //         logoutForce();
+            //     }
+            // }
+            // console.log((obj.hourExpiration !== (parseInt(format(d, 'HHmm')) + 60)))
+            // if (obj.hourExpiration !== (parseInt(format(d, 'HHmm')) + 60)) {
+            //     obj.hourExpiration = parseInt(format(d, 'HHmm')) + 60;
+            //     localStorage.setItem('@slwc/user', encryptToAuth(JSON.stringify(obj)));
+            // }
+            return obj;
+        }
     }
+
+
 }
 
 export const isStaff = () => {
