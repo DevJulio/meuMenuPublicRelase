@@ -210,7 +210,7 @@ console.log(meuMenuFoodType);
                     <Styled.FileInput
                       type="file"
                       id="mainBanner"
-                      onChange={(e) => {
+                      onChange={(e: any) => {
                         changeInput(e);
                       }}
                     />
@@ -240,7 +240,7 @@ console.log(meuMenuFoodType);
                     <Styled.FileInput
                       type="file"
                       id="mainBanner"
-                      onChange={(e) => {
+                      onChange={(e: any) => {
                         changeInput(e);
                       }}
                     />
@@ -260,7 +260,7 @@ console.log(meuMenuFoodType);
                   <Styled.ItemSpan>Qual é o tipo da embalagem?</Styled.ItemSpan>
                   <Styled.Select
                     name="select"
-                    onChange={(e) => {
+                    onChange={(e: any) => {
                       setCervejaEmbalagem(e.target.value);
                     }}
                   >
@@ -283,7 +283,7 @@ console.log(meuMenuFoodType);
                         Qual é o tamanho da embalagem?
                       </Styled.ItemSpan>
                       {cervejaEmbalagem === "Lata" ? (
-                        <Styled.Select name="select" onChange={(e) => {}}>
+                        <Styled.Select name="select" onChange={(e: any) => {}}>
                           <option selected disabled value="0">
                             Qual tamanho?
                           </option>
@@ -294,7 +294,7 @@ console.log(meuMenuFoodType);
                           ))}
                         </Styled.Select>
                       ) : (
-                        <Styled.Select name="select" onChange={(e) => {}}>
+                        <Styled.Select name="select" onChange={(e: any) => {}}>
                           <option selected disabled value="0">
                             Qual tamanho?
                           </option>
@@ -321,7 +321,7 @@ console.log(meuMenuFoodType);
                   <Styled.ItemSpan>Qual é o tipo da embalagem?</Styled.ItemSpan>
                   <Styled.Select
                     name="select"
-                    onChange={(e) => {
+                    onChange={(e: any) => {
                       setCervejaEmbalagem(e.target.value);
                     }}
                   >
@@ -342,7 +342,7 @@ console.log(meuMenuFoodType);
                         Qual é o tamanho da embalagem?
                       </Styled.ItemSpan>
                       {cervejaEmbalagem === "Lata" ? (
-                        <Styled.Select name="select" onChange={(e) => {}}>
+                        <Styled.Select name="select" onChange={(e: any) => {}}>
                           <option selected disabled value="0">
                             Qual tamanho?
                           </option>
@@ -353,7 +353,7 @@ console.log(meuMenuFoodType);
                           ))}
                         </Styled.Select>
                       ) : (
-                        <Styled.Select name="select" onChange={(e) => {}}>
+                        <Styled.Select name="select" onChange={(e: any) => {}}>
                           <option selected disabled value="0">
                             Qual tamanho?
                           </option>
@@ -381,7 +381,7 @@ console.log(meuMenuFoodType);
                   <Styled.ItemSpan>Qual é o tamaho da garrafa?</Styled.ItemSpan>
                   <Styled.Select
                     name="select"
-                    onChange={(e) => {
+                    onChange={(e: any) => {
                       setCervejaEmbalagem(e.target.value);
                     }}
                   >
@@ -405,7 +405,7 @@ console.log(meuMenuFoodType);
                   <Styled.ItemSpan>Qual é o tamaho da garrafa?</Styled.ItemSpan>
                   <Styled.Select
                     name="select"
-                    onChange={(e) => {
+                    onChange={(e: any) => {
                       setCervejaEmbalagem(e.target.value);
                     }}
                   >
@@ -429,7 +429,7 @@ console.log(meuMenuFoodType);
                   <Styled.ItemSpan>Qual é o tamaho da garrafa?</Styled.ItemSpan>
                   <Styled.Select
                     name="select"
-                    onChange={(e) => {
+                    onChange={(e: any) => {
                       setCervejaEmbalagem(e.target.value);
                     }}
                   >
@@ -453,7 +453,7 @@ console.log(meuMenuFoodType);
               <Styled.MenusRow>
                 <Styled.FormItemContainer>
                   <Styled.ItemSpan>Qual é o tamanho do item?</Styled.ItemSpan>
-                  <Styled.Select name="select" onChange={(e) => {}}>
+                  <Styled.Select name="select" onChange={(e: any) => {}}>
                     <option selected disabled value="0">
                       Selecione...
                     </option>
@@ -478,7 +478,7 @@ console.log(meuMenuFoodType);
                   <Styled.FileInput
                     type="file"
                     id="mainBanner"
-                    onChange={(e) => {
+                    onChange={(e: any) => {
                       changeInput(e);
                     }}
                   />

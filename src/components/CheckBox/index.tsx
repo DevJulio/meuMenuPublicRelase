@@ -26,7 +26,7 @@ const Checkbox: React.FC<Props> = ({
           id={id}
           checked={value}
           placeholder={placeholder}
-          onChange={(e) => {
+          onChange={(e: any) => {
             setValue(e.target.value);
           }}
         />

@@ -237,7 +237,7 @@ const UpdateFood: React.FC = () => {
                     <Styled.FileInput
                       type="file"
                       id="mainBanner"
-                      onChange={(e) => {
+                      onChange={(e: any) => {
                         changeInput(e);
                       }}
                     />
@@ -277,7 +277,7 @@ const UpdateFood: React.FC = () => {
                   <Styled.FileInput
                     type="file"
                     id="mainBanner"
-                    onChange={(e) => {
+                    onChange={(e: any) => {
                       changeInput(e);
                     }}
                   />

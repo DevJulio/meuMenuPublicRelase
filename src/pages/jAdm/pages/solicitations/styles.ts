@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { theme } from "../../../../theme/theme";
 
 export const Span = styled.span`
   color: ${({ theme }) => theme.colors.blue.palete};
@@ -39,7 +40,56 @@ export const SolicitationsContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  heigh: 100%;
+  height: 100%;
+  margin-bottom: 5vh;
   overflow-y: scroll;
+  .solicitation-card {
+    width: 95%;
+    height: 25vh;
+    place-self: center;
+    border-style: solid;
+    border-width: 2px;
+    margin-bottom: 2vh;
+    display: flex;
+    border-radius: 25px;
+    .solicitation-row {
+      display: flex;
+      flex-direction: row;  
+      align-items: center;
+      width: 100%;
+
+      .solicitation-img {
+        max-width: 10vw;
+        min-width: 10vw;
+        padding: 1vw;
+      }
+
+    }
+    .solicitation-detail {
+      display: flex;
+      flex-direction: column;
+      text-align-last: left;
+      margin-left: 2vw;
+      width: 100%;
+      
+      .title {
+        font-size: ${theme.fontSize.lg};
+      }
+      .address {
+        font-size: ${theme.fontSize.md};
+        font-family: ${theme.fonts.secundary};
+      }
+      .solicitation-btns-container {
+        margin-top: 3vh;
+        display: flex;
+        flex-direction: row;
+        text-align-last: center;
+        margin-right: auto;
+        .btn-item {
+          margin-right: 1vw;
+        }
+      }  
+    }
+  }
 
 `

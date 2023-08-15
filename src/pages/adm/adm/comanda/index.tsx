@@ -19,6 +19,7 @@ export type TTable = {
   tableLbl: string;
   custumerName: string;
   tableItens: TComandaItem[];
+  isOpen: boolean; //só exibir as que possuem true
 };
 
 export type TComandaItem = {
@@ -31,6 +32,7 @@ const Comanda: React.FC = () => {
   const tables: TTable[] = [
     {
       tableLbl: "1",
+      isOpen: true,
       custumerName: "Sophia",
       tableItens: [
         { lbl: "Mimosa", qtd: 3 },
@@ -39,11 +41,13 @@ const Comanda: React.FC = () => {
     },
     {
       tableLbl: "2",
+      isOpen: true,
       custumerName: "Gabriel",
       tableItens: [{ lbl: "Salada Caprese", qtd: 10 }],
     },
     {
       tableLbl: "3",
+      isOpen: true,
       custumerName: "Isabella",
       tableItens: [
         { lbl: "Croque monsieur", qtd: 2 },
@@ -52,26 +56,31 @@ const Comanda: React.FC = () => {
     },
     {
       tableLbl: "4",
+      isOpen: true,
       custumerName: "Lucas",
       tableItens: [{ lbl: "Dadinhos de tapioca", qtd: 4 }],
     },
     {
       tableLbl: "5",
+      isOpen: true,
       custumerName: "Olivia",
       tableItens: [{ lbl: "Ceviche", qtd: 1 }],
     },
     {
       tableLbl: "6",
+      isOpen: true,
       custumerName: "Miguel",
       tableItens: [{ lbl: "Antepasto de tomate", qtd: 2 }],
     },
     {
       tableLbl: "7",
+      isOpen: true,
       custumerName: "Emma",
       tableItens: [{ lbl: "Pate de ricota com ervas", qtd: 1 }],
     },
     {
       tableLbl: "8",
+      isOpen: true,
       custumerName: "Enzo",
       tableItens: [{ lbl: "Café preto", qtd: 15 }],
     },
@@ -105,7 +114,7 @@ const Comanda: React.FC = () => {
     // window.location.reload();
     //tables chamada da api
     console.log(reFetch);
-    
+
     const arrayDividido = dividirArray(tables, 3);
     setTablesToBeRender(arrayDividido);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -208,6 +217,7 @@ const Comanda: React.FC = () => {
     if (tableName && tableNumber) {
       const newTable: TTable = {
         tableLbl: tableNumber,
+        isOpen: true,
         custumerName: tableName,
         tableItens: [{ lbl: "", qtd: 0 }],
       };
@@ -220,7 +230,7 @@ const Comanda: React.FC = () => {
       message.error("Verifique os dados e tente novamente.");
     }
   };
-
+  //Antes de fazer qualquer atualização verificar se status está disponível
   const addTable = async () => {
     setModalTable(false);
     setModalTableAdd(true);

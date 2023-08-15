@@ -161,7 +161,7 @@ const Destaques: React.FC = () => {
                             img={foodItem.img}
                           />
                           <Styled.DeleteContainer
-                            onClick={(foodItem) => {
+                            onClick={() => {
                               if (plus) {
                                 //Tornar destaque
                                 setPlus(false);

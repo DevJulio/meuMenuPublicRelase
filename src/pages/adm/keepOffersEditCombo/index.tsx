@@ -451,7 +451,7 @@ const OffersEditCombo: React.FC = () => {
                       type="file"
                       id="mainBanner"
                       accept="image/*"
-                      onChange={(e) => {
+                      onChange={(e: any) => {
                         changeInput(e);
                       }}
                     />

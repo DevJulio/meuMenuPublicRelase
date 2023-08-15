@@ -46,6 +46,7 @@ export type TCompanyDetail = {
     reservationText: string;
     contactEmail: string;
     contactNumber: string;
+    contactName: string;
     city: string;
     socialMedia: {
         instagram: string,
@@ -210,6 +211,7 @@ export const login = async (data: any) => {
             localStorage.setItem("@meumenu/userId", encryptToAuth(uid));
             const profile: TUser = await UserService.GetUser(uid);
             if (profile.statusCadastro) {
+                message.success('Bem vindo!');
                 sessionHandler(profile);
             } else {
                 message.error('Cadastro ainda não aprovado');

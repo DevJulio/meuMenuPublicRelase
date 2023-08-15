@@ -35,7 +35,7 @@ const Input: React.FC<Props> = ({
             rows={5}
             placeholder={placeholder ? placeholder : ""}
             defaultValue={value ? value : ""}
-            onChange={(e) => {
+            onChange={(e: any) => {
               setValue(e.target.value);
             }}
           />
@@ -46,13 +46,13 @@ const Input: React.FC<Props> = ({
             }}
             placeholder={placeholder ? placeholder : ""}
             defaultValue={value ? value : ""}
-            onChange={(e) => {
+            onChange={(e: any) => {
               setValue(e.target.value);
             }}
           />
         ) : (
           <Styled.InputPw
-            onChange={(e) => {
+            onChange={(e: any) => {
               setValue(e.target.value);
             }}
           />

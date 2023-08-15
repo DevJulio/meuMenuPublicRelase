@@ -13,5 +13,13 @@ export class SolicitationService {
             return false
         }
     }
+    static async getSolicitations() {
+        try {
+            return await api.get('/ademiro/getSolicitations');
+        } catch (error) {
+            console.log(error, (error as AxiosError).message);
+            message.error("Não autorizado");
+        }
+    }
 
 }

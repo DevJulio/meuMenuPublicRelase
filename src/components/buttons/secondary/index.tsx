@@ -8,6 +8,7 @@ interface Props {
   color?: string;
   bgColor?: string;
   fontSize?: string;
+  minWidth?: string;
 }
 const ButtonSecondary: React.FC<Props> = ({
   action,
@@ -15,6 +16,7 @@ const ButtonSecondary: React.FC<Props> = ({
   color,
   bgColor,
   fontSize,
+  minWidth,
 }) => {
   return (
     <>
@@ -24,6 +26,7 @@ const ButtonSecondary: React.FC<Props> = ({
             color: color ? color : theme.colors.white.normal,
             backgroundColor: bgColor ? bgColor : theme.colors.red.normal,
             fontSize: fontSize ? fontSize : theme.fontSize.md2,
+            minWidth: minWidth ? minWidth : "275px",
           }}
           onClick={() => {
             action();

@@ -146,6 +146,7 @@ const SolicitationMeuMenu: React.FC = () => {
                 reservationText: "Reserve sua mesa!",
                 contactEmail,
                 contactNumber,
+                contactName: nome,
                 city: cidade,
                 socialMedia: {
                   instagram: instagramLink,
