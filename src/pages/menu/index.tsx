@@ -23,7 +23,6 @@ import renOffers from "../../assets/icons/renOffers.png";
 import renReservation from "../../assets/icons/renReservation.png";
 
 import { Carousel } from "react-responsive-carousel";
-//import { useNavigate } from "react-router-dom";
 import instagram from "../../assets/icons/socialMedia/ios/instagram.png";
 import spotify from "../../assets/icons/socialMedia/ios/spotify.png";
 import youtube from "../../assets/icons/socialMedia/ios/youtube.png";
@@ -129,10 +128,12 @@ const Menu: React.FC = () => {
     socialMedia: {
       instagram: "//",
       spotify:
-        "https://open.spotify.com/embed/playlist/0usD50UnpFtLPEMYsy3s62?utm_source=generator",
+        "https://open.spotify.com/playlist/4ZlE96y3xaHLbycBFe4pWW?si=f759da23f8f84108",
       youtube: "",
       whatsapp: "//",
-      address: "//",
+      address:
+        "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d0!2d0!3d0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zM4wNTInNTcuNyJOIDDCsDI3JzE0LjUiVw!5e0!3m2!1spt-BR!2sbr!4v1628942353270!5m2!1spt-BR!2sbr",
+      //"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d30571.286431759458!2d-49.280785039213846!3d-16.70634218493767!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x935ef12544136db3%3A0x1b20c322bbad1d83!2sGoi%C3%A2nia%20Shopping!5e0!3m2!1spt-BR!2sbr!4v1677269482432!5m2!1spt-BR!2sbr",
     },
   };
 
@@ -229,6 +230,37 @@ const Menu: React.FC = () => {
   };
 
   const socialFlexCount = checkFlexSize();
+
+  const generateSpotify = (url: string) => {
+    const playlistSrc =
+      "https://open.spotify.com/embed/playlist/" +
+      url.split("/playlist/")[1].split("?")[0];
+    return (
+      <iframe
+        title="Spotify"
+        style={{ borderRadius: "12px" }}
+        src={playlistSrc}
+        width={width - 25}
+        height="352"
+        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+        loading="lazy"
+      ></iframe>
+    );
+  };
+
+  const generateGoogleMaps = (link: string) => {
+    return (
+      <iframe
+        title="Map"
+        src={link}
+        width={width - 25}
+        height="400"
+        style={{ border: "0", borderRadius: "25px" }}
+        loading="lazy"
+        referrerPolicy="no-referrer-when-downgrade"
+      ></iframe>
+    );
+  };
 
   return (
     <>
@@ -738,44 +770,39 @@ const Menu: React.FC = () => {
             hasZeroPadding
           ></BorderPage>
         )}
-        <BorderPage
-          outsideColor={header.textColor}
-          insideColor={header.mainColor}
-          destop={<></>}
-          mobile={
-            <>
-              <Styled.TitleAndLogo
-                id="whereWeAre"
-                style={{
-                  marginTop: "2vh",
-                }}
-              >
-                <Styled.LogoImg src={renMarker} alt="icone" />
-                <Styled.Title
+
+        {header.socialMedia.address !== "" && (
+          <BorderPage
+            outsideColor={header.textColor}
+            insideColor={header.mainColor}
+            destop={<></>}
+            mobile={
+              <>
+                <Styled.TitleAndLogo
+                  id="whereWeAre"
                   style={{
-                    color: header.textColor,
-                    fontFamily: header.fontStyleAux,
-                    marginLeft: "0vw",
-                    fontSize: theme.fontSize.xxlg,
+                    marginTop: "2vh",
                   }}
                 >
-                  Onde estamos:
-                </Styled.Title>
-              </Styled.TitleAndLogo>
-              <Styled.MapContainer>
-                <iframe
-                  title="Map"
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d30571.286431759458!2d-49.280785039213846!3d-16.70634218493767!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x935ef12544136db3%3A0x1b20c322bbad1d83!2sGoi%C3%A2nia%20Shopping!5e0!3m2!1spt-BR!2sbr!4v1677269482432!5m2!1spt-BR!2sbr"
-                  width={width - 25}
-                  height="400"
-                  style={{ border: "0", borderRadius: "25px" }}
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                ></iframe>
-              </Styled.MapContainer>
-            </>
-          }
-        ></BorderPage>
+                  <Styled.LogoImg src={renMarker} alt="icone" />
+                  <Styled.Title
+                    style={{
+                      color: header.textColor,
+                      fontFamily: header.fontStyleAux,
+                      marginLeft: "0vw",
+                      fontSize: theme.fontSize.xxlg,
+                    }}
+                  >
+                    Onde estamos:
+                  </Styled.Title>
+                </Styled.TitleAndLogo>
+                <Styled.MapContainer>
+                  {generateGoogleMaps(header.socialMedia.address)}
+                </Styled.MapContainer>
+              </>
+            }
+          ></BorderPage>
+        )}
 
         {header.socialMedia.spotify && (
           <BorderPage
@@ -803,15 +830,7 @@ const Menu: React.FC = () => {
                   </Styled.Title>
                 </Styled.TitleAndLogo>
                 <Styled.MapContainer>
-                  <iframe
-                    title="Spotify"
-                    style={{ borderRadius: "12px" }}
-                    src="https://open.spotify.com/embed/playlist/0usD50UnpFtLPEMYsy3s62?utm_source=generator"
-                    width={width - 25}
-                    height="352"
-                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-                    loading="lazy"
-                  ></iframe>
+                  {generateSpotify(header.socialMedia.spotify)}
                 </Styled.MapContainer>
               </>
             }
@@ -846,7 +865,6 @@ const Menu: React.FC = () => {
                   <ButtonSecondary
                     action={() => {
                       setModalReservation(true);
-                      // navigate("/cardapio");
                     }}
                     Label="clique e saiba mais."
                     color={header.textColor}

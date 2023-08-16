@@ -10,6 +10,7 @@ interface Props {
   isTextArea?: boolean;
   value?: string;
   placeholder?: string;
+  isRequired?: boolean;
 }
 const Input: React.FC<Props> = ({
   setValue,
@@ -20,6 +21,7 @@ const Input: React.FC<Props> = ({
   placeholder,
   isTextArea,
   customWidth,
+  isRequired,
 }) => {
   return (
     <>

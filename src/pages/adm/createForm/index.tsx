@@ -24,6 +24,7 @@ import { fileUpload } from "../../../service/module/fileUpload";
 import { message } from "antd";
 import { CompanyService } from "../../../service/module/company";
 import { UserService } from "../../../service/module/users";
+import { decryptToAuth } from "../../../utils/security/isAuth";
 
 const SolicitationMeuMenu: React.FC = () => {
   const [title, setTitle] = useState<string>("Sua empresa");
@@ -31,6 +32,7 @@ const SolicitationMeuMenu: React.FC = () => {
 
   const [nome, setNome] = useState<string>("");
   const [cidade, setCidade] = useState<string>("");
+  const [URL, setURL] = useState<string>("");
 
   const [contactNumber, setContactNumber] = useState<string>("");
   const [contactReservationNumber, setContactReservationNumber] =
@@ -56,14 +58,6 @@ const SolicitationMeuMenu: React.FC = () => {
   const [modalAux, setModalAux] = useState<boolean>(false);
   const [modalFail, setModalFail] = useState<boolean>(false);
 
-  const handleMapClick = (clickEvent: any) => {
-    // const { latLng } = clickEvent;
-    // setSelectedLocation({
-    // lat: latLng.lat(),
-    // lng: latLng.lng(),
-    // });
-  };
-
   const changeInput = (e: any, isBanner: boolean = false) => {
     const localFile = e.target.files[0];
 
@@ -82,7 +76,18 @@ const SolicitationMeuMenu: React.FC = () => {
     }
   };
 
+  const getUrlFromLink = () => {
+    if (localizacao) {
+      console.log(localizacao);
+      return localizacao;
+    } else {
+      console.log("???");
+      return "";
+    }
+  };
+
   const createRequest = async () => {
+    getUrlFromLink();
     if (
       title &&
       contactEmail &&
@@ -93,6 +98,7 @@ const SolicitationMeuMenu: React.FC = () => {
       fontStyle &&
       login &&
       nome &&
+      URL &&
       password
     ) {
       const path = "/companies/imgs/";
@@ -109,7 +115,6 @@ const SolicitationMeuMenu: React.FC = () => {
           .catch((error) => {
             console.error(error);
           });
-
         const checkUploadAux = imgUploadResult as Array<any>;
         const checkUpload = checkUploadAux.every(
           (data: any) => data.status === 200
@@ -118,10 +123,13 @@ const SolicitationMeuMenu: React.FC = () => {
           const iconUrl = checkUploadAux[0].data;
           const bannerUrl = checkUploadAux[1].data;
           try {
+            const newDate = new Date();
             const company: TCompany = {
               title: title,
+              plan: decryptToAuth(localStorage.getItem("@meumenu/planType")),
               statusCadastro: false,
               icon: iconUrl,
+              URL,
               address: localizacao,
               adminsUids: [{ uid: userUid }],
               stafsUids: [{ uid: "" }],
@@ -149,11 +157,11 @@ const SolicitationMeuMenu: React.FC = () => {
                 contactName: nome,
                 city: cidade,
                 socialMedia: {
+                  address: getUrlFromLink(), //TRATA ISSO LOGO.
+                  spotify: spotifyLink,
                   instagram: instagramLink,
                   youtube: youtubeLink,
                   whatsapp: whatsAppLink,
-                  address: localizacao,
-                  spotify: spotifyLink,
                 },
               },
               categories: [],
@@ -161,24 +169,34 @@ const SolicitationMeuMenu: React.FC = () => {
               offers: [],
               tables: [],
               staff: [],
+              createdAt: {
+                seconds: newDate.getTime() / 1000,
+                nanoseconds: newDate.getMilliseconds(),
+              },
+              updatedAt: {
+                seconds: 0,
+                nanoseconds: 0,
+              },
             };
-
-            //Cadastrar empresa na tabela de solicitação, e pegar código.
             const resCompany: any = await CompanyService.setCompany(company);
             if (resCompany.status === 200) {
               const companyDocId = resCompany.data;
-              console.log(
-                "ID DO DOC DA REMPRESA RECÉM CRIADA ==> ",
-                companyDocId
-              );
+              const newDate = new Date();
               const user: TUser = {
                 name: nome,
                 statusCadastro: false,
                 uid: userUid,
                 userType: "admin",
-                codCompany: companyDocId, //alterar com o código do documento criado da empresa
+                codCompany: companyDocId,
+                createdAt: {
+                  seconds: newDate.getTime() / 1000,
+                  nanoseconds: newDate.getMilliseconds(),
+                },
+                updatedAt: {
+                  seconds: 0,
+                  nanoseconds: 0,
+                },
               };
-              console.log("USUÁRIO QUE SERÁ CRIADO ==> ", user);
               const resUser: any = await UserService.setUser(user);
               if (resUser.status === 200) {
                 setLoading(false);
@@ -495,9 +513,13 @@ const SolicitationMeuMenu: React.FC = () => {
                 label="Número para contato dos clientes e reservas."
               />
             </Styled.FormItemContainer>
-            {/* <Styled.FormItemContainer>
-              <Input setValue={setCidade} label="Cidade" />
-            </Styled.FormItemContainer> */}
+            <Styled.FormItemContainer>
+              <Input
+                setValue={setURL}
+                placeholder="www.meu-menu.com/sua-empresa"
+                label="Link personalizado"
+              />
+            </Styled.FormItemContainer>
           </Styled.MenusRow>
           <Styled.TitleSpan
             style={{

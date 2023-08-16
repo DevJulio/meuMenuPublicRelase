@@ -53,4 +53,15 @@ export class CompanyService {
             message.error((error as AxiosError).message);
         }
     }
+    static async updateCompany(docId: string, data: any) {
+        try {
+            const res = await api.put(`/companies/put/${docId}`, data);
+            console.log(res);
+            if (res) {
+                return res.data
+            }
+        } catch (error) {
+            message.error((error as AxiosError).message);
+        }
+    }
 }

@@ -27,8 +27,10 @@ const JSolicitations: React.FC = () => {
       const fetchData = async () => {
         const resSolicitations: any =
           await SolicitationService.getSolicitations();
-        if (resSolicitations.status === 200) {
+        if (resSolicitations && resSolicitations.status === 200) {
           setSolicitations(resSolicitations.data);
+        } else {
+          setSolicitations([]);
         }
       };
       fetchData();
@@ -43,29 +45,43 @@ const JSolicitations: React.FC = () => {
   const handleClose = () => {
     setModal(false);
   };
-
+  let solicitationsCounter = 0;
   const aprove = async (i: number) => {
+    const newDate = new Date();
+    const cardRef = "card" + i;
+    const company = solicitations[i];
 
-    //Abrir modal igual o de detalhes, mas pedindo as informações abaixo: 
-    const ownerUid = solicitations[i].adminsUids[0];
-    const iconUrl = solicitations[i].icon;
+    const data = {
+      statusCadastro: true,
+      updatedAt: {
+        seconds: newDate.getTime() / 1000,
+        nanoseconds: newDate.getMilliseconds(),
+      },
+      details: {
+        fontStyleAux: theme.fonts.secundary,
+        auxColor: theme.colors.yellow.palete,
+        mainColor: "#fff",
+        textColor: "#000",
+      },
+    };
+    //Atualizar status do cadastro do usuário.
+    await SolicitationService.updateSolicitations(company.docId!, data).then(
+      (companyRes: any) => {
+        if (companyRes.status) {
+          solicitationsCounter++;
+          const card = document.getElementById(cardRef);
+          card!.style.display = "none";
+          message.success("Sucesso ao aprovar " + company.title);
 
-    //Ao cadastrar, adicionar data e hora de quando foi cadastrado
-
-    //Atualizar status de empresa que tem icon == iconUrl e usuário uid ==  ownerUid
-    //Chaves para serem atualizadas:
-    //statusCadastro = true;
-    //details.fontStyleAux
-    //details.auxColor //secundária, contraste
-    //details.mainColor //fundo
-    //details.textColor //texto
-
-    //details.socialMedia.address //colocar mapa incorporado
-    //details.socialMedia.spotify //colocar playlist incorporada
-
-    //Ao aprovar: colocar data de quando foi aprovado.
-
-    console.log(solicitations[i]);
+          if (solicitationsCounter === solicitations.length) {
+            setSolicitations([]);
+          }
+        } else {
+          console.log(companyRes);
+          message.error("Erro ao aprovar.");
+        }
+      }
+    );
   };
   const refuse = async (i: number) => {
     message.error("não implementou pq? não precisava excluir na mão? kkkkkk");
@@ -143,9 +159,9 @@ const JSolicitations: React.FC = () => {
         <Styled.CategoryContainer>
           <Styled.Span>Solicitações</Styled.Span>
           <Styled.SolicitationsContainer>
-            {solicitations &&
+            {solicitations.length > 0 ? (
               solicitations.map((solicitation, index) => (
-                <div className="solicitation-card">
+                <div className="solicitation-card" id={"card" + index}>
                   <div className="solicitation-row">
                     <img
                       className="solicitation-img"
@@ -168,67 +184,91 @@ const JSolicitations: React.FC = () => {
                         Cidade: {solicitation.details.city}
                       </span>
                       <div className="solicitation-btns-container">
-                        <div className="btn-item">
-                          <ButtonSecondary
-                            minWidth="10vw"
-                            action={() => {
-                              aprove(index);
-                            }}
-                            Label={"Aprovar"}
-                            fontSize={theme.fontSize.md}
-                            color={theme.colors.white.normal}
-                            bgColor={theme.colors.green.normal}
-                          />
+                        <div className="btn-row">
+                          <div className="btn-item">
+                            <ButtonSecondary
+                              minWidth="10vw"
+                              action={() => {
+                                aprove(index);
+                              }}
+                              Label={"Aprovar"}
+                              fontSize={theme.fontSize.md}
+                              color={theme.colors.white.normal}
+                              bgColor={theme.colors.green.normal}
+                            />
+                          </div>
+                          <div className="btn-item">
+                            <ButtonSecondary
+                              minWidth="10vw"
+                              action={() => {
+                                setIndex(index);
+                                setModal(true);
+                              }}
+                              Label={"Visualizar dados"}
+                              fontSize={theme.fontSize.md}
+                              color={theme.colors.white.normal}
+                              bgColor={theme.colors.blue.palete}
+                            />
+                          </div>
                         </div>
-                        <div className="btn-item">
-                          <ButtonSecondary
-                            minWidth="10vw"
-                            action={() => {
-                              setIndex(index);
-                              setModal(true);
-                            }}
-                            Label={"Visualizar dados"}
-                            fontSize={theme.fontSize.md}
-                            color={theme.colors.white.normal}
-                            bgColor={theme.colors.blue.palete}
-                          />
-                        </div>
-                        <div className="btn-item">
-                          <ButtonSecondary
-                            minWidth="10vw"
-                            action={() => {
-                              window.location.href = `https://api.whatsapp.com/send?phone=55${solicitation.details.contactNumber.replace(
-                                /\D/g,
-                                ""
-                              )}&text=Olá, ${
-                                solicitation.details.contactName
-                              }, meu nome é ${
-                                user?.name
-                              } e eu gostaria de falar sobre seu cadastro no Meu Menu!`;
-                            }}
-                            Label={"Entrar em contato"}
-                            fontSize={theme.fontSize.md}
-                            color={theme.colors.white.normal}
-                            bgColor={theme.colors.yellow.palete}
-                          />
-                        </div>
-                        <div className="btn-item">
-                          <ButtonSecondary
-                            minWidth="10vw"
-                            action={() => {
-                              refuse(index);
-                            }}
-                            Label={"Recusar"}
-                            fontSize={theme.fontSize.md}
-                            color={theme.colors.white.normal}
-                            bgColor={theme.colors.red.normal}
-                          />
+                        <div className="btn-row">
+                          <div className="btn-item">
+                            <ButtonSecondary
+                              minWidth="10vw"
+                              action={() => {
+                                window.location.href = `https://api.whatsapp.com/send?phone=55${solicitation.details.contactNumber.replace(
+                                  /\D/g,
+                                  ""
+                                )}&text=Olá, ${
+                                  solicitation.details.contactName
+                                }, meu nome é ${
+                                  user?.name
+                                } e eu gostaria de falar sobre seu cadastro no Meu Menu!`;
+                              }}
+                              Label={"Entrar em contato"}
+                              fontSize={theme.fontSize.md}
+                              color={theme.colors.white.normal}
+                              bgColor={theme.colors.yellow.palete}
+                            />
+                          </div>
+
+                          <div className="btn-item">
+                            <ButtonSecondary
+                              minWidth="10vw"
+                              action={() => {
+                                refuse(index);
+                              }}
+                              Label={"Recusar"}
+                              fontSize={theme.fontSize.md}
+                              color={theme.colors.white.normal}
+                              bgColor={theme.colors.red.normal}
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              ))}
+              ))
+            ) : (
+              <>
+                <Styled.Span
+                  style={{
+                    fontSize: theme.fontSize.md2,
+                  }}
+                >
+                  Tudo aprovado!
+                </Styled.Span>
+                <ButtonSecondary
+                  action={() => {
+                    navigate("/j/adm/home");
+                  }}
+                  Label="Voltar ao menu."
+                  color={theme.colors.white.normal}
+                  bgColor={theme.colors.green.normal}
+                />
+              </>
+            )}
           </Styled.SolicitationsContainer>
         </Styled.CategoryContainer>
       </Styled.MainContainer>

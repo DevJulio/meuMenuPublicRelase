@@ -18,6 +18,7 @@ export const MainContainer = styled.div`
   width: 100%;
   background-color: ${({ theme }) => theme.colors.blue.palete};
   flex-direction: column;
+  min-height: 56vh;
 `;
 export const CategoryContainer = styled.div`
 justify-content: center;
@@ -33,6 +34,7 @@ align-self: center;
 justify-content: center;
 @media ${({ theme }) => theme.devices.tablet} {
   flex-direction: column;
+  width: 90%;
 }
 `;
 
@@ -62,8 +64,15 @@ export const SolicitationsContainer = styled.div`
         max-width: 10vw;
         min-width: 10vw;
         padding: 1vw;
+        @media ${({ theme }) => theme.devices.tablet} {
+          max-width: 25vw;
+          min-width: 25vw;
+          margin-top: 1vh;
+        }
       }
-
+      @media ${({ theme }) => theme.devices.tablet} {
+        flex-direction: column;        
+       }
     }
     .solicitation-detail {
       display: flex;
@@ -74,10 +83,18 @@ export const SolicitationsContainer = styled.div`
       
       .title {
         font-size: ${theme.fontSize.lg};
+        @media ${({ theme }) => theme.devices.tablet} {
+          align-self: center;
+          font-size: ${theme.fontSize.md2};
+        }
       }
       .address {
         font-size: ${theme.fontSize.md};
         font-family: ${theme.fonts.secundary};
+        @media ${({ theme }) => theme.devices.tablet} {
+          font-size: ${theme.fontSize.mm};
+          margin-top: 1vh;
+        }
       }
       .solicitation-btns-container {
         margin-top: 3vh;
@@ -88,7 +105,22 @@ export const SolicitationsContainer = styled.div`
         .btn-item {
           margin-right: 1vw;
         }
+        .btn-row {
+          display: flex;
+          flex-direction: row;
+          @media ${({ theme }) => theme.devices.tablet} {
+            margin-bottom: 1vh;
+          }
+        }
+        @media ${({ theme }) => theme.devices.tablet} {
+          flex-direction: column;
+          align-items: center;
+          margin-right: inherit;
+        }
       }  
+    }
+    @media ${({ theme }) => theme.devices.tablet} {
+      height: 40vh;
     }
   }
 

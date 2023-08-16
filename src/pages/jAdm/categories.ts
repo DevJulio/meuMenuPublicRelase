@@ -8,7 +8,7 @@ import comanda from "../../assets/icons/admIcons/comanda.png";
 import info from "../../assets/icons/admIcons/info.png";
 import estatisticas from "../../assets/icons/admIcons/estatisticas.png";
 import solicitacoes from "../../assets/icons/admIcons/solicitacoes.png";
-import equipe from "../../assets/icons/admIcons/equipe.png";
+import empresa from "../../assets/icons/admIcons/empresa.png";
 import outro from "../../assets/icons/categories/allCategories/outro.png";
 import { theme } from "../../theme/theme";
 import { TCardProps } from "../../components/plansCards/card";
@@ -25,16 +25,16 @@ export const mainAdmCategories: TCardProps[] = [
         customWidth: true,
         url: "/j/adm/solicitations"
     },
-    // {
-    //     icon: equipe,
-    //     title: "Equipe",
-    //     text: "Atualize e gerencie sua equipe",
-    //     mainColor: theme.colors.blue.palete,
-    //     auxColor: theme.colors.red.normal,
-    //     textColor: theme.colors.white.normal,
-    //     customWidth: true,
-    //     url: "/adm/time"
-    // },
+    {
+        icon: empresa,
+        title: "Empresas",
+        text: "Atualize e gerencie todas as empresas",
+        mainColor: theme.colors.blue.palete,
+        auxColor: theme.colors.red.normal,
+        textColor: theme.colors.white.normal,
+        customWidth: true,
+        url: "/j/adm/companies"//criar página de listagem de empresas com o status, se está pago ou não. pegar exemplo de solicitações.
+    },
     // {
     //     icon: outro,
     //     title: "Em desenvolvimento",

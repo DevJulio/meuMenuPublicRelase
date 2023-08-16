@@ -6,6 +6,7 @@ import ButtonSecondary from "../buttons/homeBtn";
 import point from "../../assets/icons/cardsIcons/plans/point.png";
 import Modal from "../modal";
 import { useNavigate } from "react-router-dom";
+import { encryptToAuth } from "../../utils/security/isAuth";
 
 const PlansCard: React.FC<TCardProps> = ({
   icon,
@@ -39,7 +40,7 @@ const PlansCard: React.FC<TCardProps> = ({
   }, 150);
 
   const signIn = () => {
-    localStorage.setItem("meuMenuPlanType", title);
+    localStorage.setItem("@meumenu/planType", encryptToAuth(title));
     setModal(true);
   };
   const continueSignIn = () => {

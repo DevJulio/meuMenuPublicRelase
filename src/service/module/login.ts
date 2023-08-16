@@ -7,23 +7,6 @@ import { CompanyService } from "./company";
 import { TLogin } from "../../pages/account/login";
 import { TProducts, TProductsOffers } from "../../pages/menu";
 import { TTable } from "../../pages/adm/adm/comanda";
-import { useNavigate } from "react-router-dom";
-import * as firebase from "firebase/app";
-import * as firebaseAuth from "firebase/auth";
-
-import { firebaseConfig } from "../../config";
-import { genericToken } from "../../utils/utils";
-
-
-
-const app = firebase.initializeApp(firebaseConfig);
-
-const auth = firebaseAuth.getAuth(app);
-
-type TSocialMedia = {
-    link: string
-}
-
 
 export type TCompanyDetail = {
     icon: string;
@@ -56,12 +39,19 @@ export type TCompanyDetail = {
         spotify: string,
     }
 }
+type TAT = {
+    nanoseconds: number
+    seconds: number
+}
+
 export type TUser = {
     name: string;
     statusCadastro: boolean;
     userType: string;
     uid: string;
     codCompany?: string;
+    createdAt?: TAT;
+    updatedAt?: TAT;
 }
 
 export type TStaf = {
@@ -85,6 +75,7 @@ export type TCompany = {
     title: string;
     statusCadastro: boolean;
     icon: string;
+    plan: string;
     address: string;
     adminsUids: [{ uid: string }];
     stafsUids: [{ uid: string }];
@@ -94,6 +85,10 @@ export type TCompany = {
     offers: TProductsOffers[];
     tables: TTable[];
     staff: TStaf[];
+    URL: string;
+    docId?: string;
+    createdAt?: TAT;
+    updatedAt?: TAT;
     //sales: 
 }
 
@@ -154,53 +149,7 @@ export const getMainToken = () => {
 export const setMainToken = (token: string) => {
     localStorage.setItem('@meumenu/maintoken', encryptToAuth(token));
 }
-export const createSolicitation = async (credencials: TLogin) => {
-    try {
 
-        // let user: any = {};
-        // let isNewUser = false;
-        // try {
-        //     await firebaseAuth.createUserWithEmailAndPassword(auth, credencials.email, credencials.password).then((userCredential: any) => {
-        //         console.log(userCredential);
-        //         isNewUser = true
-        //         // user = userCredential.user;
-        //         // setMainToken(userCredential.accessToken)
-        //     })
-        //
-        // } catch (error: any) {
-        //     const errorCode = error.code;
-        //     const errorMessage = error.message;
-        //     console.log(errorCode, errorMessage);
-        // }
-        //
-        // if (isNewUser) {
-        //     try {
-        //         const resemp: any = await UserService.setUser(user.uid);//Request para criar usuário com o UID do recém adicionado ao auth
-        //         if (resemp) {
-        //             try {
-        //                 //criar empresa com o tipo TCompanyDetail
-        //             } catch (error) {
-        //
-        //             }
-        //
-        //         }
-        //     } catch (error) {
-        //
-        //     }
-        //
-        // } else {
-        //     message.error('Verifique as credenciais e tente novamente');
-        // }
-        //
-    } catch (error) {
-        if ((error as AxiosError).response && (error as AxiosError).response?.status === 401) {
-            message.error('Verifique as credenciais e tente novamente');
-        } else {
-            console.error(error);
-            message.error('Houve um erro ao completar a solicitação');
-        }
-    }
-};
 export const login = async (data: any) => {
     try {
         const res = await api.post('/login', data, {});
