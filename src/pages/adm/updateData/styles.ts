@@ -47,6 +47,10 @@ export const FormItemContainer = styled.div`
   .row-container {
     display: flex;
     flex-direction: row;  
+    @media ${({ theme }) => theme.devices.tablet} {
+      display: flex;
+      flex-direction: column;
+    }
   }
   .span-lbl {
     color: ${({ theme }) => theme.colors.white.normal};
@@ -58,6 +62,10 @@ export const FormItemContainer = styled.div`
     display: flex;
     margin-top: auto;
     margin-left: 2vw;
+    @media ${({ theme }) => theme.devices.tablet} {
+      margin-top: 2vh;
+      margin-bottom: 1vh;
+    }
   }
   @media ${({ theme }) => theme.devices.tablet} {
     margin-left: 0px;
@@ -99,8 +107,22 @@ flex-direction: column;
 place-Self: center;
 place-items: center;
 text-align-last: center;
-margin-inline: 2vw;
+margin-inline: 1vw;
 margin-bottom: 1vw;
+.placer {
+  color: ${({ theme }) => theme.colors.red.normal};
+  font-size: ${({ theme }) => theme.fontSize.md2};
+  font-family: ${({ theme }) => theme.fonts.primary};
+  margin-top: 3vh;
+}
+.details-container {
+  display: flex;
+  flex-direction: row;
+
+  .detail-container-ex {
+    
+  }
+ }
 
 `;
 export const SocialMediaContainer = styled.div`

@@ -18,20 +18,24 @@ export type TCompanyDetail = {
     fontStyleAux: string;
     welcome: string;
     banner: string;
-    offers: boolean;
-    hasHappyHour: boolean;
-    reservation: boolean;
-    reservationTextDetail: string;
-    reservationContactNumber: string;
-    offersText: string;
-    happyHourText: string;
-    happyHourTextDetail: string;
-    reservationText: string;
-    contactEmail: string;
-    contactNumber: string;
-    contactName: string;
+    offers: boolean;//Atualizar para true quando alguma oferta for cadastrada
+    offersText: string;//Título do Banner de ofertas
+    hasHappyHour: boolean;//Caso tenha adicionado na tela de edição de cadastros
+    happyHourText: string;//Título do Banner do happy hour
+    happyHourTextDetail: string;//Texto do modal ao abrir para saber mais sobre o happy hour
+    reservation: boolean; //caso true, banner de reservas aparece, alterar para true e defirir as regras.
+    reservationText: string; //Título do Banner de reservas
+    reservationTextDetail: string;    //Texto do modal ao abrir para saber mais sobre resevas
+    reservationContactNumber: string; //número para reservas
+    contactEmail: string;//Informações para o meu menu
+    contactNumber: string;//Informações para o meu menu
+    contactName: string;//Informações para o meu menu
     city: string;
     socialMedia: {
+        localization: {
+            lat: number,
+            lon: number
+        }
         instagram: string,
         youtube: string,
         whatsapp: string,
@@ -43,7 +47,6 @@ type TAT = {
     nanoseconds: number
     seconds: number
 }
-
 export type TUser = {
     name: string;
     statusCadastro: boolean;

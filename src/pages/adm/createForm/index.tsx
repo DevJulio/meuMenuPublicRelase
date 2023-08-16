@@ -8,6 +8,8 @@ import marker from "../../../assets/icons/socialMedia/gif/marker.gif";
 import spotify from "../../../assets/icons/socialMedia/gif/spotify.gif";
 import whatsapp from "../../../assets/icons/socialMedia/gif/whatsapp.gif";
 import youtube from "../../../assets/icons/socialMedia/gif/youtube.gif";
+import latlon from "../../../assets/icons/socialMedia/gif/latlon.gif";
+
 import happy from "../../../assets/icons/socialMedia/gif/happy.gif";
 import resevation from "../../../assets/icons/socialMedia/gif/resevation.png";
 import loadingGif from "../../../assets/icons/loading.gif";
@@ -42,12 +44,12 @@ const SolicitationMeuMenu: React.FC = () => {
 
   const [welcome, setWelcome] = useState<string>("");
   const [instagramLink, setinstagramLink] = useState<string>("");
-  const [localizacao, setLocalizacao] = useState<string>("");
+  const [endereco, setEndereco] = useState<string>("");
   const [spotifyLink, setSpotifyLink] = useState<string>("");
   const [whatsAppLink, setWhatsAppLink] = useState<string>("");
   const [youtubeLink, setYoutubeLink] = useState<string>("");
-  const [reservationText, setReservationText] = useState<string>("");
-  const [happyHourText, setHappyHourText] = useState<string>("");
+  //const [reservationText, setReservationText] = useState<string>("");
+  //const [happyHourText, setHappyHourText] = useState<string>("");
 
   const [icon, setIcon] = useState<File>();
   const [banner, setBanner] = useState<File>();
@@ -57,6 +59,8 @@ const SolicitationMeuMenu: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [modalAux, setModalAux] = useState<boolean>(false);
   const [modalFail, setModalFail] = useState<boolean>(false);
+
+  const [disponiility, setDisponiility] = useState<boolean>(false);
 
   const changeInput = (e: any, isBanner: boolean = false) => {
     const localFile = e.target.files[0];
@@ -76,18 +80,7 @@ const SolicitationMeuMenu: React.FC = () => {
     }
   };
 
-  const getUrlFromLink = () => {
-    if (localizacao) {
-      console.log(localizacao);
-      return localizacao;
-    } else {
-      console.log("???");
-      return "";
-    }
-  };
-
   const createRequest = async () => {
-    getUrlFromLink();
     if (
       title &&
       contactEmail &&
@@ -132,7 +125,7 @@ const SolicitationMeuMenu: React.FC = () => {
               statusCadastro: false,
               icon: iconUrl,
               URL,
-              address: localizacao,
+              address: endereco,
               adminsUids: [{ uid: userUid }],
               stafsUids: [{ uid: "" }],
               details: {
@@ -145,21 +138,25 @@ const SolicitationMeuMenu: React.FC = () => {
                 fontStyleAux: "",
                 welcome,
                 banner: bannerUrl,
-                offers: true,
-                hasHappyHour: happyHourText ? true : false,
-                reservation: reservationText ? true : false,
-                reservationTextDetail: reservationText,
+                offers: false,
+                hasHappyHour: false,
+                reservation: false,
+                reservationTextDetail: "",
                 reservationContactNumber: contactReservationNumber,
                 offersText: "Confira as nossas promoções!",
                 happyHourText: "É dia de happy hour",
-                happyHourTextDetail: happyHourText,
+                happyHourTextDetail: "",
                 reservationText: "Reserve sua mesa!",
                 contactEmail,
                 contactNumber,
                 contactName: nome,
                 city: cidade,
                 socialMedia: {
-                  address: getUrlFromLink(), //TRATA ISSO LOGO.
+                  localization: {
+                    lat: 0,
+                    lon: 0,
+                  },
+                  address: endereco,
                   spotify: spotifyLink,
                   instagram: instagramLink,
                   youtube: youtubeLink,
@@ -288,7 +285,20 @@ const SolicitationMeuMenu: React.FC = () => {
   };
 
   const navigate = useNavigate();
-  //const width = window.screen.width;
+
+  const checkURL = async () => {
+    if (URL.length > 0) {
+      const urlRes = await CompanyService.CheckUrl(URL);
+      if (urlRes) {
+        message.success("URL disponível!");
+        setDisponiility(true);
+      } else {
+        message.error("URL já em uso, tente novamente");
+      }
+    } else {
+      message.error("uma URL personalizada precisa ser informada!");
+    }
+  };
 
   return (
     <>
@@ -525,15 +535,40 @@ const SolicitationMeuMenu: React.FC = () => {
               </span>
             </Styled.FormItemContainer>
             <Styled.FormItemContainer>
-              <Input
-                setValue={setURL}
-                placeholder="www.meu-menu.com/sua-empresa"
-                label="Link personalizado"
-                isRequired
-              />
+              <div className="row-container">
+                <Input
+                  value={URL}
+                  setValue={setURL}
+                  placeholder="www.meu-menu.com/sua-empresa"
+                  label="Link personalizado"
+                  isRequired
+                  isDisabled={disponiility}
+                />
+                <div className="btn-container">
+                  <ButtonSecondary
+                    action={() => {
+                      if (!disponiility) {
+                        checkURL();
+                      } else {
+                        setDisponiility(false);
+                      }
+                    }}
+                    fontSize={theme.fontSize.md}
+                    Label={
+                      disponiility
+                        ? URL.length
+                          ? "Alterar link"
+                          : "verificar disponibilidade"
+                        : "verificar disponibilidade"
+                    }
+                    color={theme.colors.red.normal}
+                    bgColor={theme.colors.white.normal}
+                  />
+                </div>
+              </div>
               <span className="span-lbl">
                 informe como você quer ser encontrado por seus clientes.
-                www.meu-menu.com/{URL}
+                www.meu-menu.com/cardapio/{URL}
               </span>
             </Styled.FormItemContainer>
           </Styled.MenusRow>
@@ -568,9 +603,10 @@ const SolicitationMeuMenu: React.FC = () => {
                 <Styled.Icon src={marker} onClick={() => {}} />
                 <Input
                   labelColor={theme.colors.red.normal}
-                  setValue={setLocalizacao}
-                  label="Endereço *"
+                  setValue={setEndereco}
+                  label="Endereço"
                   customWidth={isMobile() ? "250px" : "300px"}
+                  isRequired
                 />
               </Styled.IconCentralize>
               <Styled.IconCentralize>
@@ -580,6 +616,18 @@ const SolicitationMeuMenu: React.FC = () => {
                   setValue={setSpotifyLink}
                   label="Link da playlist"
                   customWidth={isMobile() ? "250px" : "170px"}
+                />
+              </Styled.IconCentralize>
+              <Styled.IconCentralize>
+                <Styled.Icon src={latlon} onClick={() => {}} />
+                <span className="placer">Localização</span>
+                <ButtonSecondary
+                  action={() => {
+                    //setModal(true);
+                  }}
+                  Label="Clique para abrir mapa"
+                  color={theme.colors.yellow.palete}
+                  bgColor={theme.colors.blue.palete}
                 />
               </Styled.IconCentralize>
               <Styled.IconCentralize>
@@ -598,80 +646,6 @@ const SolicitationMeuMenu: React.FC = () => {
                   setValue={setYoutubeLink}
                   label="Canal do Youtube"
                   customWidth={isMobile() ? "250px" : "170px"}
-                />
-              </Styled.IconCentralize>
-            </Styled.SocialMediaContainer>
-          </Styled.MenusRow>
-          {/* <Styled.MenusRow style={{ flexDirection: "column" }}>
-            <Styled.TitleSpan
-              style={{
-                marginTop: "5vh",
-              }}
-            >
-              Localização:
-            </Styled.TitleSpan>
-            <Styled.BtnContainer>
-              {!modalAux ? (
-                <>
-                  <ButtonSecondary
-                    action={() => {
-                      setModalAux(true);
-                    }}
-                    Label="Clique para abrir mapa"
-                    color={theme.colors.red.normal}
-                    bgColor={theme.colors.white.normal}
-                  />
-                </>
-              ) : (
-                <>
-                  <iframe
-                    title="Map"
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d30571.286431759458!2d-49.280785039213846!3d-16.70634218493767!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x935ef12544136db3%3A0x1b20c322bbad1d83!2sGoi%C3%A2nia%20Shopping!5e0!3m2!1spt-BR!2sbr!4v1677269482432!5m2!1spt-BR!2sbr"
-                    width={width - 25}
-                    height="400"
-                    style={{ border: "0", borderRadius: "25px" }}
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                  ></iframe>
-                </>
-              )}
-            </Styled.BtnContainer>
-          </Styled.MenusRow> */}
-          <Styled.TitleSpan
-            style={{
-              marginTop: "5vh",
-            }}
-          >
-            Reservas / Happy Hour:
-          </Styled.TitleSpan>
-          <Styled.ItemSpan
-            style={{
-              fontFamily: theme.fonts.secundary,
-            }}
-          >
-            Desconsiderar caso não ofereça os serviços a seguir:
-          </Styled.ItemSpan>
-          <Styled.MenusRow>
-            <Styled.SocialMediaContainer>
-              <Styled.IconCentralize>
-                <Styled.Icon src={happy} onClick={() => {}} />
-                <Input
-                  labelColor={theme.colors.red.normal}
-                  setValue={setHappyHourText}
-                  label="Intruções e regras do happy hour"
-                  isTextArea
-                  customWidth={isMobile() ? "250px" : "450px"}
-                />
-              </Styled.IconCentralize>
-
-              <Styled.IconCentralize>
-                <Styled.Icon src={resevation} onClick={() => {}} />
-                <Input
-                  labelColor={theme.colors.red.normal}
-                  setValue={setReservationText}
-                  label="Instruções de reserva"
-                  isTextArea
-                  customWidth={isMobile() ? "250px" : "450px"}
                 />
               </Styled.IconCentralize>
             </Styled.SocialMediaContainer>

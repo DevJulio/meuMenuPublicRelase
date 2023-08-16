@@ -12,6 +12,7 @@ interface Props {
   placeholder?: string;
   isRequired?: boolean;
   isDisabled?: boolean;
+  isStartLbl?: boolean;
 }
 const Input: React.FC<Props> = ({
   setValue,
@@ -24,11 +25,15 @@ const Input: React.FC<Props> = ({
   customWidth,
   isRequired,
   isDisabled,
+  isStartLbl,
 }) => {
   return (
     <>
       <Styled.MainContainer
-        style={{ color: labelColor ? labelColor : theme.colors.white.normal }}
+        style={{
+          color: labelColor ? labelColor : theme.colors.white.normal,
+          alignItems: isStartLbl ? "center" : "inherit",
+        }}
       >
         <Styled.InputRow>
           {label}

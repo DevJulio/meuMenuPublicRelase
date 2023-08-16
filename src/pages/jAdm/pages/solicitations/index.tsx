@@ -28,6 +28,7 @@ const JSolicitations: React.FC = () => {
         const resSolicitations: any =
           await SolicitationService.getSolicitations();
         if (resSolicitations && resSolicitations.status === 200) {
+          console.log(resSolicitations.data);
           setSolicitations(resSolicitations.data);
         } else {
           setSolicitations([]);
@@ -179,7 +180,9 @@ const JSolicitations: React.FC = () => {
                       >
                         {solicitation.title}
                       </span>
-                      <span className="address">{solicitation.address}</span>
+                      <span className="address">
+                        {solicitation.details.socialMedia.address}
+                      </span>
                       <span className="address">
                         Cidade: {solicitation.details.city}
                       </span>
