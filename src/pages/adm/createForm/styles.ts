@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { theme } from "../../../theme/theme";
 
 
 export const TitleSpan = styled.span`
@@ -44,6 +45,12 @@ export const FormItemContainer = styled.div`
   width: 40%;
   display: flex;
   flex-direction: column;
+  .span-lbl {
+    color: ${({ theme }) => theme.colors.white.normal};
+    font-size: ${({ theme }) => theme.fontSize.sm};
+    font-family: ${({ theme }) => theme.fonts.secundary};
+    margin-top: 1vh;
+  }
   @media ${({ theme }) => theme.devices.tablet} {
     margin-left: 0px;
     margin-right: 0px;
@@ -137,3 +144,4 @@ export const PlansDetailModal = styled.span`
   font-size: ${({ theme }) => theme.fontSize.mm};
  
 `;
+

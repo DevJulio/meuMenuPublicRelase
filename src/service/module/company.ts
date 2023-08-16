@@ -14,26 +14,38 @@ export class CompanyService {
             });
             return res;
         } catch (error) {
-            console.log(error, (error as AxiosError).message);
+            console.log(error, " setCompany", (error as AxiosError).message);
             message.error("Verifique os dados cadastrados e tente novamente");
             return false
         }
     }
     static async GetCompany(cod: string) {
         try {
-            const res = await api.get('/companys/company', {
+            const res = await api.get('/companies/company', {
                 params: {
                     cod_company: cod
-                },
-                headers: {
-                    //"Authorization": `Bearer ${await genericToken()}`
                 },
             });
             if (res) {
                 return res.data
             }
         } catch (error) {
-            message.error((error as AxiosError).message);
+            console.log(error, " GetCompany", (error as AxiosError).message);
+            message.error("Verifique os dados cadastrados e tente novamente");
+            return false
+        }
+    }
+    static async CheckUrl(URL: string) {
+        try {
+            const res = await api.get('/companies/url', {
+                params: { URL },
+            });
+            if (res) {
+                return res.data
+            }
+        } catch (error) {
+            console.log(error, " CheckUrl", (error as AxiosError).message);
+            return false
         }
     }
     static async GetStaff(cod: string) {

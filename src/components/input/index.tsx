@@ -11,6 +11,7 @@ interface Props {
   value?: string;
   placeholder?: string;
   isRequired?: boolean;
+  isDisabled?: boolean;
 }
 const Input: React.FC<Props> = ({
   setValue,
@@ -22,13 +23,18 @@ const Input: React.FC<Props> = ({
   isTextArea,
   customWidth,
   isRequired,
+  isDisabled,
 }) => {
   return (
     <>
       <Styled.MainContainer
         style={{ color: labelColor ? labelColor : theme.colors.white.normal }}
       >
-        {label}
+        <Styled.InputRow>
+          {label}
+          {isRequired && <span className="span-required">*</span>}
+        </Styled.InputRow>
+
         {isTextArea ? (
           <Styled.InputTextField
             style={{
@@ -51,6 +57,7 @@ const Input: React.FC<Props> = ({
             onChange={(e: any) => {
               setValue(e.target.value);
             }}
+            disabled={isDisabled ? true : false}
           />
         ) : (
           <Styled.InputPw

@@ -44,6 +44,21 @@ export const FormItemContainer = styled.div`
   width: 40%;
   display: flex;
   flex-direction: column;
+  .row-container {
+    display: flex;
+    flex-direction: row;  
+  }
+  .span-lbl {
+    color: ${({ theme }) => theme.colors.white.normal};
+    font-size: ${({ theme }) => theme.fontSize.sm};
+    font-family: ${({ theme }) => theme.fonts.secundary};
+    margin-top: 1vh;
+  }
+  .btn-container {
+    display: flex;
+    margin-top: auto;
+    margin-left: 2vw;
+  }
   @media ${({ theme }) => theme.devices.tablet} {
     margin-left: 0px;
     margin-right: 0px;
@@ -137,9 +152,11 @@ export const PlansDetailModal = styled.span`
   font-size: ${({ theme }) => theme.fontSize.mm};
  
 `;
+
 export const MenuBanner = styled.img`
   max-width: 320px;
   margin-top: 1vw;
+  display: flex;
   margin-bottom: 1vw;
   @media ${({ theme }) => theme.devices.tablet} {
   }

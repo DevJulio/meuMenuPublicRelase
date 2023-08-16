@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Footer from "../../components/footer";
 import HeaderCustom from "../../components/headerCustom";
 import { theme } from "../../theme/theme";
@@ -37,6 +37,7 @@ import Modal from "../../components/modal";
 import FoodModalDetail from "../../components/foodModalDetail";
 import isMobile from "is-mobile";
 import FoodCardOffer from "../../components/foodCardOffer";
+import { useLocation, useParams } from "react-router-dom";
 
 export type TAutomation = {
   daysWeek: [];
@@ -88,22 +89,12 @@ export type TProductsOffers = {
 };
 
 const Menu: React.FC = () => {
+  const { empresa } = useParams();
   const [modal, setModal] = useState<boolean>(false);
   const [defaultCategory, setDefaultCategory] = useState<string>("Todas");
   const [modalIten, setmodalIten] = useState<TProducts | TProductsOffers>();
   const [modalHappy, setModalHappy] = useState<boolean>(false);
   const [modalReservation, setModalReservation] = useState<boolean>(false);
-
-  const handleClose = () => {
-    setModal(false);
-  };
-  const handleCloseHappy = () => {
-    setModalHappy(false);
-  };
-  const handleCloseReservation = () => {
-    setModalReservation(false);
-  };
-
   const header = {
     icon: ren,
     title: "Ren.",
@@ -135,6 +126,26 @@ const Menu: React.FC = () => {
         "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d0!2d0!3d0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zM4wNTInNTcuNyJOIDDCsDI3JzE0LjUiVw!5e0!3m2!1spt-BR!2sbr!4v1628942353270!5m2!1spt-BR!2sbr",
       //"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d30571.286431759458!2d-49.280785039213846!3d-16.70634218493767!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x935ef12544136db3%3A0x1b20c322bbad1d83!2sGoi%C3%A2nia%20Shopping!5e0!3m2!1spt-BR!2sbr!4v1677269482432!5m2!1spt-BR!2sbr",
     },
+  };
+
+  useEffect(() => {
+    console.log(empresa);
+    //os dois em estados TCompany;
+    if (empresa === "ren") {
+      //setar os valores de header.
+    } else {
+      //fazer get na tabela empresas where url == empresa e setyar
+    }
+  }, []);
+
+  const handleClose = () => {
+    setModal(false);
+  };
+  const handleCloseHappy = () => {
+    setModalHappy(false);
+  };
+  const handleCloseReservation = () => {
+    setModalReservation(false);
   };
 
   const categories: ICategory[] = [
@@ -249,17 +260,19 @@ const Menu: React.FC = () => {
   };
 
   const generateGoogleMaps = (link: string) => {
-    return (
-      <iframe
-        title="Map"
-        src={link}
-        width={width - 25}
-        height="400"
-        style={{ border: "0", borderRadius: "25px" }}
-        loading="lazy"
-        referrerPolicy="no-referrer-when-downgrade"
-      ></iframe>
-    );
+    return link;
+    //Tratar para receber um endereço e retornar o mapa incorporado.
+    // return (
+    //   <iframe
+    //     title="Map"
+    //     src={link}
+    //     width={width - 25}
+    //     height="400"
+    //     style={{ border: "0", borderRadius: "25px" }}
+    //     loading="lazy"
+    //     referrerPolicy="no-referrer-when-downgrade"
+    //   ></iframe>
+    // );
   };
 
   return (

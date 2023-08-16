@@ -120,8 +120,10 @@ const SolicitationMeuMenu: React.FC = () => {
           (data: any) => data.status === 200
         );
         if (checkUpload) {
+          console.log(checkUploadAux);
           const iconUrl = checkUploadAux[0].data;
           const bannerUrl = checkUploadAux[1].data;
+          console.log(bannerUrl);
           try {
             const newDate = new Date();
             const company: TCompany = {
@@ -257,6 +259,7 @@ const SolicitationMeuMenu: React.FC = () => {
 
   const handleClose = () => {
     setModal(false);
+    navigate("/login");
   };
   const handleCloseAux = () => {
     setModalAux(false);
@@ -336,6 +339,7 @@ const SolicitationMeuMenu: React.FC = () => {
                 <ButtonSecondary
                   //TODO: COLOCAR NUMERO DO ZAP
                   action={() => {
+                    navigate("/login");
                     window.location.href =
                       "https://api.whatsapp.com/send?phone=5564996140938&text=Meu menu!";
                   }}
@@ -465,7 +469,11 @@ const SolicitationMeuMenu: React.FC = () => {
           </Styled.MenusRow>
           <Styled.MenusRow>
             <Styled.FormItemContainer>
-              <Input setValue={setTitle} label="Nome do estabelecimento" />
+              <Input
+                setValue={setTitle}
+                isRequired
+                label="Nome do estabelecimento"
+              />
             </Styled.FormItemContainer>
             <Styled.FormItemContainer>
               <Styled.ItemSpan>
@@ -512,13 +520,21 @@ const SolicitationMeuMenu: React.FC = () => {
                 setValue={setContactReservationNumber}
                 label="Número para contato dos clientes e reservas."
               />
+              <span className="span-lbl">
+                Número que seus clientes falaram com você sobre reservas
+              </span>
             </Styled.FormItemContainer>
             <Styled.FormItemContainer>
               <Input
                 setValue={setURL}
                 placeholder="www.meu-menu.com/sua-empresa"
                 label="Link personalizado"
+                isRequired
               />
+              <span className="span-lbl">
+                informe como você quer ser encontrado por seus clientes.
+                www.meu-menu.com/{URL}
+              </span>
             </Styled.FormItemContainer>
           </Styled.MenusRow>
           <Styled.TitleSpan
@@ -553,7 +569,7 @@ const SolicitationMeuMenu: React.FC = () => {
                 <Input
                   labelColor={theme.colors.red.normal}
                   setValue={setLocalizacao}
-                  label="Endereço"
+                  label="Endereço *"
                   customWidth={isMobile() ? "250px" : "300px"}
                 />
               </Styled.IconCentralize>

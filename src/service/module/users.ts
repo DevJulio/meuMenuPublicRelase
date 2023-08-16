@@ -1,21 +1,13 @@
 import { AxiosError } from "axios";
 import { api } from "../api";
 import { message } from "antd";
-//import { genericToken } from "../../utils/utils";
-//import { getMainToken } from "./login";
 
 export class UserService {
-    //constructor() { }
 
     static async GetUser(uid: string) {
         try {
             const res = await api.get('/users/user/', {
-                params: {
-                    uid
-                },
-                //headers: {
-                //    "Authorization": `Bearer ${getMainToken()}`
-                //},
+                params: { uid }
             });
             if (res) {
                 return res.data

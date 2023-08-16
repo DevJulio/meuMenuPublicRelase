@@ -19,7 +19,7 @@ const Curious: React.FC = () => {
       <Styled.BtnContainer>
         <ButtonSecondary
           action={() => {
-            navigate("/cardapio");
+            navigate("/cardapio/ren");
           }}
           Label="Seu cardápio será assim!"
           color={theme.colors.red.normal}

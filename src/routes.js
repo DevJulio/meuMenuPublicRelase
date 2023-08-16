@@ -38,7 +38,7 @@ function RoutesList() {
         <Route path="/planos" element={<Plans />} />
         <Route path="/login" element={<Login />} />
         <Route path="/contato" element={<Contact />} />
-        <Route path="/cardapio" element={<Menu />} />
+        <Route path="/cardapio/:empresa" element={<Menu />} />
         <Route path="/cardapios" element={<PreMenu />} />
         <Route path="/cadastro" element={<SolicitationMeuMenu />} />
         <Route path="/cadastro-cardapio" element={<MenuMeuMenu />} />

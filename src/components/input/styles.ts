@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import InputMask from "react-input-mask";
+import { theme } from "../../theme/theme";
 
 export const MainContainer = styled.div`
   place-content: center;
@@ -41,3 +42,12 @@ export const InputTextField = styled.textarea.attrs(() => ({
   margin-top: 10px;
 `;
 export const InputMaskHtml = styled(InputMask)``;
+
+export const InputRow = styled.div`
+display: flex;
+flex-direction: row;
+.span-required {
+  margin-left: 1vw;
+  color: ${theme.colors.red.normal};
+}
+`

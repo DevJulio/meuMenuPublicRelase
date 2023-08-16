@@ -33,7 +33,6 @@ export function isAuth(isJ: boolean = false) {
             console.log("if auth");
             return null;
         } else {
-            console.log("else auth");
             let usrData = localStorage.getItem('@meumenu/user')!;
             let stringjson = decryptToAuth(usrData);
             let obj = JSON.parse(stringjson);

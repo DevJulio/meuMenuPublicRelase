@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Footer from "../../../../components/footer";
 import Header from "../../../../components/header";
 
@@ -9,8 +9,23 @@ import { TCardProps } from "../../../../components/plansCards/card";
 import { mainAdmCategories } from "./categories";
 import { useNavigate } from "react-router-dom";
 import isMobile from "is-mobile";
+import { isAuth } from "../../../../utils/security/isCrypto";
+import { TUser } from "../../../../service/module/login";
 
 const RestaurantHome: React.FC = () => {
+  const [user, setUser] = useState<TUser>();
+
+  useEffect(() => {
+    const usr = isAuth();
+    console.log(usr);
+    if (usr && usr.userType === "admin") {
+      setUser(usr);
+    } else {
+      navigate("/login");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const navigate = useNavigate();
 
   const dividirArray = (array: any[], tamanho: number) => {
@@ -43,13 +58,12 @@ const RestaurantHome: React.FC = () => {
   };
 
   const optionsRows = dividirArray(mainAdmCategories, isMobile() ? 1 : 3);
-  const title = "Ren";
   return (
     <>
       <Header />
       <Styled.MainContainer>
         <Styled.CategoryContainer>
-          <Styled.ItemSpan> Bem vindo, {title}.</Styled.ItemSpan>
+          <Styled.ItemSpan> Bem vindo, {user?.name}.</Styled.ItemSpan>
           {optionsRows}
         </Styled.CategoryContainer>
       </Styled.MainContainer>

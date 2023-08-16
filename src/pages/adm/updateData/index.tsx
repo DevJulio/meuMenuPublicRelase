@@ -10,6 +10,7 @@ import whatsapp from "../../../assets/icons/socialMedia/gif/whatsapp.gif";
 import youtube from "../../../assets/icons/socialMedia/gif/youtube.gif";
 import happy from "../../../assets/icons/socialMedia/gif/happy.gif";
 import resevation from "../../../assets/icons/socialMedia/gif/resevation.png";
+import loadingGif from "../../../assets/icons/loading.gif";
 
 import { theme } from "../../../theme/theme";
 import isMobile from "is-mobile";
@@ -17,11 +18,16 @@ import Checkbox from "../../../components/CheckBox";
 import InputMasked from "../../../components/MaskedIpunt";
 import ButtonSecondary from "../../../components/buttons/secondary";
 import Modal from "../../../components/modal";
+import { isAuth } from "../../../utils/security/isCrypto";
+import { useNavigate } from "react-router-dom";
+import { TCompany, TUser } from "../../../service/module/login";
+import { CompanyService } from "../../../service/module/company";
+import { message } from "antd";
 
 const UpdateData: React.FC = () => {
-  const [brandName, setBrandName] = useState<string>("Sua empresa");
   const [email, setEmail] = useState<string>("");
   const [contact, setContact] = useState<string>("");
+  const [title, setTitle] = useState<string>("");
 
   const [welcome, setWelcome] = useState<string>("");
   const [instagramLink, setinstagramLink] = useState<string>("");
@@ -40,6 +46,63 @@ const UpdateData: React.FC = () => {
 
   const [modal, setModal] = useState<boolean>(false);
   const [modalFail, setModalFail] = useState<boolean>(false);
+  const [user, setUser] = useState<TUser>();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [contactEmail, setContactEmail] = useState<string>("");
+
+  const [nome, setNome] = useState<string>("");
+  const [cidade, setCidade] = useState<string>("");
+  const [URL, setURL] = useState<string>("");
+  const [contactReservationNumber, setContactReservationNumber] =
+    useState<string>("");
+  const [login, setLogin] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [contactNumber, setContactNumber] = useState<string>("");
+
+  const [disponiility, setDisponiility] = useState<boolean>(false);
+  const [originalUrl, setOriginalUrl] = useState<string>("");
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const usr = isAuth();
+    if (usr.userType === "admin") {
+      setUser(usr);
+      const fetchData = async () => {
+        const resCompany: any = await CompanyService.GetCompany(usr.codCompany);
+        if (resCompany && resCompany.status) {
+          const data: TCompany = resCompany.data;
+          if (data.URL.length > 0) {
+            setDisponiility(true);
+          }
+          setTitle(data.title);
+          setLogo(data.details.icon);
+          setBanner(data.details.banner);
+          setWelcome(data.details.welcome);
+          setURL(data.URL);
+          setOriginalUrl(data.URL);
+          setContactReservationNumber(data.details.reservationContactNumber);
+          //
+          // setinstagramLink();
+          // setLocalizacao();
+          // setSpotifyLink();
+          // setWhatsAppLink();
+          // setYoutubeLink();
+          // setHappyHourText();
+          // setReservationText();
+          // setContact();
+          // setEmail();
+          // setFontCheckBox();
+        } else {
+          console.log("não ");
+        }
+      };
+      fetchData();
+    } else {
+      navigate("/login");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const changeInput = (e: any, isBanner: boolean = false) => {
     const localFile = e.target.files[0];
@@ -82,21 +145,27 @@ const UpdateData: React.FC = () => {
     },
   };
 
-  const createRequest = () => {
+  const updateCompany = () => {
     if (
-      brandName &&
+      title &&
       email &&
       contact &&
       welcome &&
       logo &&
       banner &&
-      fontStyle
+      fontStyle &&
+      URL
     ) {
-      //       logoUpdated
+      //logoUpdated
       // bannerUpdated
       //criar if para verificar se as fotos foram alteradas.
-      setModal(true);
-      setModalFail(false);
+      //adicionar fonte secundária, e cores
+      //mainColor: "",
+      //auxColor: "",
+      //textColor: "",
+      //fontStyleAux: "",
+      //setModal(true);
+      //setModalFail(false);
     } else {
       setModal(false);
       setModalFail(true);
@@ -109,28 +178,27 @@ const UpdateData: React.FC = () => {
     setModalFail(false);
   };
 
-  useEffect(() => {
-    //chamar api
-    setBrandName("teste");
-    setWelcome("teste");
-    setBanner(
-      "https://meu-menu-public-relase-pkprjispv-devjulio.vercel.app/static/media/food.cf115d2f839bce6feab3.png"
-    );
-    setLogo(
-      "data:image/png;base64,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"
-    );
-
-    setinstagramLink("teste");
-    setLocalizacao("teste");
-    setSpotifyLink("teste");
-    setWhatsAppLink("teste");
-    setYoutubeLink("teste");
-    setHappyHourText("teste");
-    setReservationText("teste");
-    setContact("1140029822");
-    setEmail("teste");
-    setFontCheckBox("hand"); //método para definir qual é a fonte
-  }, []);
+  // useEffect(() => {
+  //   //chamar api
+  //   setTitle("teste");
+  //   setWelcome("teste");
+  //   setBanner(
+  //     "https://meu-menu-public-relase-pkprjispv-devjulio.vercel.app/static/media/food.cf115d2f839bce6feab3.png"
+  //   );
+  //   setLogo(
+  //     "data:image/png;base64,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"
+  //   );
+  //   setinstagramLink("teste");
+  //   setLocalizacao("teste");
+  //   setSpotifyLink("teste");
+  //   setWhatsAppLink("teste");
+  //   setYoutubeLink("teste");
+  //   setHappyHourText("teste");
+  //   setReservationText("teste");
+  //   setContact("1140029822");
+  //   setEmail("teste");
+  //   setFontCheckBox("hand"); //método para definir qual é a fonte
+  // }, []);
 
   const setFontCheckBox = (fontName: string) => {
     const fonts = [
@@ -171,6 +239,28 @@ const UpdateData: React.FC = () => {
     ) as HTMLInputElement | null;
     if (checkbox != null) {
       checkbox.checked = true;
+    }
+  };
+
+  const handleCloseLoading = () => {
+    setLoading(false);
+  };
+  const checkURL = async () => {
+    if (URL.length > 0) {
+      if (originalUrl === URL) {
+        message.success("URL igual!");
+        setDisponiility(true);
+      } else {
+        const urlRes = await CompanyService.CheckUrl(URL);
+        if (urlRes) {
+          message.success("URL disponível!");
+          setDisponiility(true);
+        } else {
+          message.error("URL já em uso, tente novamente");
+        }
+      }
+    } else {
+      message.error("uma URL personalizada precisa ser informada!");
     }
   };
 
@@ -222,7 +312,10 @@ const UpdateData: React.FC = () => {
               >
                 <ButtonSecondary
                   //TODO: COLOCAR NUMERO DO ZAP
-                  action={() => {}}
+                  action={() => {
+                    window.location.href =
+                      "https://api.whatsapp.com/send?phone=5564996140938&text=Meu menu!";
+                  }}
                   Label={"Entrar em contato com o Meu Menu!"}
                   fontSize={theme.fontSize.md}
                   color={theme.colors.white.normal}
@@ -277,25 +370,49 @@ const UpdateData: React.FC = () => {
           </Modal>
         )}
 
+        {loading && (
+          <Modal
+            bannerColor={theme.colors.yellow.palete}
+            title={"Carregando..."}
+            handleClose={handleCloseLoading}
+            titleFont={theme.fonts.primary}
+          >
+            <div
+              style={{
+                display: "flex",
+                placeItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <img
+                src={loadingGif}
+                alt=""
+                style={{
+                  width: "4vw",
+                  padding: "3vh",
+                }}
+              />
+            </div>
+          </Modal>
+        )}
+
         <Styled.TitleSpan>Preencha todos os campos</Styled.TitleSpan>
         <Styled.Menus>
           <Styled.MenusRow>
-            <Styled.FormItemContainer>
-              <Input
-                setValue={setBrandName}
-                value={brandName}
-                label="Nome do estabelecimento"
-              />
-            </Styled.FormItemContainer>
-            <Styled.FormItemContainer>
-              <Input
-                setValue={setWelcome}
-                value={welcome}
-                label="Frase de boas vindas"
-              />
-            </Styled.FormItemContainer>
+            <span
+              style={{
+                color: theme.colors.white.normal,
+                cursor: "pointer",
+                fontFamily: theme.fonts.primary,
+                fontSize: theme.fontSize.md2,
+              }}
+              onClick={() => {
+                navigate("/cardapio");
+              }}
+            >
+              Clique aqui e veja um exemplo de cardápio
+            </span>
           </Styled.MenusRow>
-
           <Styled.MenusRow>
             <Styled.FormItemContainer>
               <Styled.ItemSpan>Logo atual: </Styled.ItemSpan>
@@ -313,6 +430,14 @@ const UpdateData: React.FC = () => {
 
           <Styled.MenusRow>
             <Styled.FormItemContainer>
+              <Input
+                setValue={setTitle}
+                isRequired
+                label="Nome do estabelecimento"
+                value={title}
+              />
+            </Styled.FormItemContainer>
+            <Styled.FormItemContainer>
               <Styled.ItemSpan>
                 Selecione a logo do estabelecimento
               </Styled.ItemSpan>
@@ -325,6 +450,16 @@ const UpdateData: React.FC = () => {
                   }}
                 />
               </Styled.Centralize>
+            </Styled.FormItemContainer>
+          </Styled.MenusRow>
+          <Styled.MenusRow>
+            <Styled.FormItemContainer>
+              <Input
+                value={welcome}
+                placeholder="Primeiro contato do seu cliente com o cardápio"
+                setValue={setWelcome}
+                label="Frase de boas vindas"
+              />
             </Styled.FormItemContainer>
             <Styled.FormItemContainer>
               <Styled.ItemSpan>
@@ -339,6 +474,56 @@ const UpdateData: React.FC = () => {
                   }}
                 />
               </Styled.Centralize>
+            </Styled.FormItemContainer>
+          </Styled.MenusRow>
+          <Styled.MenusRow>
+            <Styled.FormItemContainer>
+              <InputMasked
+                value={contactReservationNumber}
+                mask="(99) 9 9999-9999"
+                setValue={setContactReservationNumber}
+                label="Número para contato dos clientes e reservas."
+              />
+              <span className="span-lbl">
+                Número que seus clientes falaram com você sobre reservas
+              </span>
+            </Styled.FormItemContainer>
+            <Styled.FormItemContainer>
+              <div className="row-container">
+                <Input
+                  value={URL}
+                  setValue={setURL}
+                  placeholder="www.meu-menu.com/sua-empresa"
+                  label="Link personalizado"
+                  isRequired
+                  isDisabled={disponiility}
+                />
+                <div className="btn-container">
+                  <ButtonSecondary
+                    action={() => {
+                      if (!disponiility) {
+                        checkURL();
+                      } else {
+                        setDisponiility(false);
+                      }
+                    }}
+                    fontSize={theme.fontSize.md}
+                    Label={
+                      disponiility
+                        ? URL.length
+                          ? "Alterar link"
+                          : "verificar disponibilidade"
+                        : "verificar disponibilidade"
+                    }
+                    color={theme.colors.red.normal}
+                    bgColor={theme.colors.white.normal}
+                  />
+                </div>
+              </div>
+              <span className="span-lbl">
+                informe como você quer ser encontrado por seus clientes.
+                www.meu-menu.com/cardapio/{URL}
+              </span>
             </Styled.FormItemContainer>
           </Styled.MenusRow>
           <Styled.TitleSpan
@@ -361,10 +546,10 @@ const UpdateData: React.FC = () => {
               <Styled.IconCentralize>
                 <Styled.Icon src={instagram} onClick={() => {}} />
                 <Input
+                  value={"aaa"}
                   labelColor={theme.colors.red.normal}
                   setValue={setinstagramLink}
                   label="Instagram"
-                  value={instagramLink}
                   customWidth={isMobile() ? "250px" : "170px"}
                 />
               </Styled.IconCentralize>
@@ -372,46 +557,80 @@ const UpdateData: React.FC = () => {
               <Styled.IconCentralize>
                 <Styled.Icon src={marker} onClick={() => {}} />
                 <Input
+                  value={"aaa"}
                   labelColor={theme.colors.red.normal}
                   setValue={setLocalizacao}
-                  label="Endereço"
-                  value={localizacao}
+                  label="Endereço *"
                   customWidth={isMobile() ? "250px" : "300px"}
                 />
               </Styled.IconCentralize>
               <Styled.IconCentralize>
                 <Styled.Icon src={spotify} onClick={() => {}} />
                 <Input
+                  value={"aaa"}
                   labelColor={theme.colors.red.normal}
                   setValue={setSpotifyLink}
                   label="Link da playlist"
-                  value={spotifyLink}
                   customWidth={isMobile() ? "250px" : "170px"}
                 />
               </Styled.IconCentralize>
               <Styled.IconCentralize>
                 <Styled.Icon src={whatsapp} onClick={() => {}} />
                 <Input
+                  value={"aaa"}
                   labelColor={theme.colors.red.normal}
                   setValue={setWhatsAppLink}
                   label="WhatsApp"
-                  value={whatsAppLink}
                   customWidth={isMobile() ? "250px" : "170px"}
                 />
               </Styled.IconCentralize>
               <Styled.IconCentralize>
                 <Styled.Icon src={youtube} onClick={() => {}} />
                 <Input
+                  value={"aaa"}
                   labelColor={theme.colors.red.normal}
                   setValue={setYoutubeLink}
                   label="Canal do Youtube"
-                  value={youtubeLink}
                   customWidth={isMobile() ? "250px" : "170px"}
                 />
               </Styled.IconCentralize>
             </Styled.SocialMediaContainer>
           </Styled.MenusRow>
-
+          {/* <Styled.MenusRow style={{ flexDirection: "column" }}>
+            <Styled.TitleSpan
+              style={{
+                marginTop: "5vh",
+              }}
+            >
+              Localização:
+            </Styled.TitleSpan>
+            <Styled.BtnContainer>
+              {!modalAux ? (
+                <>
+                  <ButtonSecondary
+                    action={() => {
+                      setModalAux(true);
+                    }}
+                    Label="Clique para abrir mapa"
+                    color={theme.colors.red.normal}
+                    bgColor={theme.colors.white.normal}
+                  />
+                </>
+              ) : (
+                <>
+                  <iframe
+                    title="Map"
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d30571.286431759458!2d-49.280785039213846!3d-16.70634218493767!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x935ef12544136db3%3A0x1b20c322bbad1d83!2sGoi%C3%A2nia%20Shopping!5e0!3m2!1spt-BR!2sbr!4v1677269482432!5m2!1spt-BR!2sbr"
+                    width={width - 25}
+                    height="400"
+                    style={{ border: "0", borderRadius: "25px" }}
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                  ></iframe>
+                </>
+              )}
+            </Styled.BtnContainer>
+          </Styled.MenusRow> */}
           <Styled.TitleSpan
             style={{
               marginTop: "5vh",
@@ -431,11 +650,11 @@ const UpdateData: React.FC = () => {
               <Styled.IconCentralize>
                 <Styled.Icon src={happy} onClick={() => {}} />
                 <Input
+                  value={"aaa"}
                   labelColor={theme.colors.red.normal}
                   setValue={setHappyHourText}
                   label="Intruções e regras do happy hour"
                   isTextArea
-                  value={happyHourText}
                   customWidth={isMobile() ? "250px" : "450px"}
                 />
               </Styled.IconCentralize>
@@ -443,11 +662,11 @@ const UpdateData: React.FC = () => {
               <Styled.IconCentralize>
                 <Styled.Icon src={resevation} onClick={() => {}} />
                 <Input
+                  value={"aaa"}
                   labelColor={theme.colors.red.normal}
                   setValue={setReservationText}
                   label="Instruções de reserva"
                   isTextArea
-                  value={reservationText}
                   customWidth={isMobile() ? "250px" : "450px"}
                 />
               </Styled.IconCentralize>
@@ -475,7 +694,7 @@ const UpdateData: React.FC = () => {
                   fontFamily: theme.fonts.AlwaysSmile,
                 }}
               >
-                {brandName}
+                {title}
               </Styled.Fonts>
               <Checkbox
                 id="1"
@@ -493,7 +712,7 @@ const UpdateData: React.FC = () => {
                   fontFamily: theme.fonts.Bachelorette,
                 }}
               >
-                {brandName}
+                {title}
               </Styled.Fonts>
               <Checkbox
                 id="2"
@@ -510,7 +729,7 @@ const UpdateData: React.FC = () => {
                   fontFamily: theme.fonts.BeYou,
                 }}
               >
-                {brandName}
+                {title}
               </Styled.Fonts>
               <Checkbox
                 id="3"
@@ -527,7 +746,7 @@ const UpdateData: React.FC = () => {
                   fontFamily: theme.fonts.Bravely,
                 }}
               >
-                {brandName}
+                {title}
               </Styled.Fonts>
               <Checkbox
                 id="4"
@@ -547,7 +766,7 @@ const UpdateData: React.FC = () => {
                   fontFamily: theme.fonts.GlossySheen,
                 }}
               >
-                {brandName}
+                {title}
               </Styled.Fonts>
               <Checkbox
                 id="5"
@@ -564,7 +783,7 @@ const UpdateData: React.FC = () => {
                   fontFamily: theme.fonts.LatoRegular,
                 }}
               >
-                {brandName}
+                {title}
               </Styled.Fonts>
               <Checkbox
                 id="6"
@@ -582,7 +801,7 @@ const UpdateData: React.FC = () => {
                   fontFamily: theme.fonts.LEMONMILK,
                 }}
               >
-                {brandName}
+                {title}
               </Styled.Fonts>
               <Checkbox
                 id="7"
@@ -599,7 +818,7 @@ const UpdateData: React.FC = () => {
                   fontFamily: theme.fonts.NiceSugar,
                 }}
               >
-                {brandName}
+                {title}
               </Styled.Fonts>
               <Checkbox
                 id="8"
@@ -619,7 +838,7 @@ const UpdateData: React.FC = () => {
                   fontFamily: theme.fonts.RoughAnthem,
                 }}
               >
-                {brandName}
+                {title}
               </Styled.Fonts>
               <Checkbox
                 id="9"
@@ -636,7 +855,7 @@ const UpdateData: React.FC = () => {
                   fontFamily: theme.fonts.primary,
                 }}
               >
-                {brandName}
+                {title}
               </Styled.Fonts>
               <Checkbox
                 id="10"
@@ -654,7 +873,7 @@ const UpdateData: React.FC = () => {
                   fontFamily: theme.fonts.secundary,
                 }}
               >
-                {brandName}
+                {title}
               </Styled.Fonts>
               <Checkbox
                 id="11"
@@ -671,7 +890,7 @@ const UpdateData: React.FC = () => {
                   fontFamily: theme.fonts.hand,
                 }}
               >
-                {brandName}
+                {title}
               </Styled.Fonts>
               <Checkbox
                 id="12"
@@ -684,38 +903,70 @@ const UpdateData: React.FC = () => {
             </Styled.IconCentralize>
           </Styled.MenusRow>
 
+          <Styled.TitleSpan>
+            Informações Para acesso do Meu Menu
+          </Styled.TitleSpan>
+          <Styled.ItemSpan
+            style={{
+              fontFamily: theme.fonts.secundary,
+            }}
+          >
+            Login e senha para realizar o acesso a plataforma.
+          </Styled.ItemSpan>
+          <Styled.MenusRow>
+            <Styled.FormItemContainer>
+              <Input
+                value={"aaa"}
+                setValue={setLogin}
+                label="E-mail para login na plataforma"
+              />
+            </Styled.FormItemContainer>
+            <Styled.FormItemContainer>
+              <Input isPassowd setValue={setPassword} label={"Senha"}></Input>
+              value={"aaa"}
+            </Styled.FormItemContainer>
+          </Styled.MenusRow>
+
           <Styled.TitleSpan>Informações Para o Meu Menu</Styled.TitleSpan>
           <Styled.ItemSpan
             style={{
               fontFamily: theme.fonts.secundary,
             }}
           >
-            Informações para a equipe do Meu Menu entrar em contato.
+            Informações para seu perfil na plataforma e para a equipe do Meu
+            Menu entrar em contato.
           </Styled.ItemSpan>
           <Styled.MenusRow>
             <Styled.FormItemContainer>
+              <Input setValue={setNome} label="Nome" />
+              value={"aaa"}
+            </Styled.FormItemContainer>
+            <Styled.FormItemContainer>
+              <Input setValue={setCidade} label="Cidade" />
+              value={"aaa"}
+            </Styled.FormItemContainer>
+          </Styled.MenusRow>
+          <Styled.MenusRow>
+            <Styled.FormItemContainer>
               <InputMasked
+                value={"aaa"}
                 mask="(99) 9 9999-9999"
-                setValue={setContact}
-                value={contact}
+                setValue={setContactNumber}
                 label="Número para contato"
               />
             </Styled.FormItemContainer>
             <Styled.FormItemContainer>
-              <Input
-                setValue={setEmail}
-                value={email}
-                label="E-mail para contato"
-              />
+              <Input setValue={setContactEmail} label="E-mail para contato" />
+              value={"aaa"}
             </Styled.FormItemContainer>
           </Styled.MenusRow>
         </Styled.Menus>
         <Styled.BtnContainer>
           <ButtonSecondary
             action={() => {
-              createRequest();
+              updateCompany();
             }}
-            Label="Atualizar"
+            Label="Finalizar solicitação"
             color={theme.colors.red.normal}
             bgColor={theme.colors.white.normal}
           />
