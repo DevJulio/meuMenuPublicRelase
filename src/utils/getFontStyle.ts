@@ -28,6 +28,6 @@ export const getFontStyle = (fontStyle: string) => {
         case "hand":
             return theme.fonts.hand
         default:
-            break;
+            return theme.fonts.secundary
     }
 }

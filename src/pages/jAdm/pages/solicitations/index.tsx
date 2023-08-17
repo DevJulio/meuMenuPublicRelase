@@ -13,6 +13,7 @@ import { getFontStyle } from "../../../../utils/getFontStyle";
 import ButtonSecondary from "../../../../components/buttons/secondary";
 import Modal from "../../../../components/modal";
 import { message } from "antd";
+import { UserService } from "../../../../service/module/users";
 
 const JSolicitations: React.FC = () => {
   const [user, setUser] = useState<TUser>();
@@ -48,41 +49,47 @@ const JSolicitations: React.FC = () => {
   };
   let solicitationsCounter = 0;
   const aprove = async (i: number) => {
-    const newDate = new Date();
     const cardRef = "card" + i;
     const company = solicitations[i];
 
-    const data = {
+    company.details.fontStyleAux = getFontStyle(theme.fonts.secundary);
+    company.details.auxColor = theme.colors.yellow.palete;
+    company.details.mainColor = "#fff";
+    company.details.textColor = "#000";
+
+    const { uid } = company.adminsUids[0];
+    const solicitationPayload = {
       statusCadastro: true,
-      updatedAt: {
-        seconds: newDate.getTime() / 1000,
-        nanoseconds: newDate.getMilliseconds(),
-      },
       details: {
-        fontStyleAux: theme.fonts.secundary,
-        auxColor: theme.colors.yellow.palete,
-        mainColor: "#fff",
-        textColor: "#000",
+        ...company.details,
       },
     };
-    //Atualizar status do cadastro do usuário.
-    await SolicitationService.updateSolicitations(company.docId!, data).then(
-      (companyRes: any) => {
-        if (companyRes.status) {
-          solicitationsCounter++;
-          const card = document.getElementById(cardRef);
-          card!.style.display = "none";
-          message.success("Sucesso ao aprovar " + company.title);
 
-          if (solicitationsCounter === solicitations.length) {
-            setSolicitations([]);
+    await SolicitationService.updateSolicitations(
+      company.docId!,
+      solicitationPayload
+    ).then(async (companyRes: any) => {
+      if (companyRes.status) {
+        await UserService.updateUser(uid, { statusCadastro: true }).then(
+          (res: boolean) => {
+            if (res) {
+              solicitationsCounter++;
+              const card = document.getElementById(cardRef);
+              card!.style.display = "none";
+              message.success("Sucesso ao aprovar " + company.title);
+              if (solicitationsCounter === solicitations.length) {
+                setSolicitations([]);
+              }
+            } else {
+              message.error("Erro ao aprovar.");
+            }
           }
-        } else {
-          console.log(companyRes);
-          message.error("Erro ao aprovar.");
-        }
+        );
+      } else {
+        console.log(companyRes);
+        message.error("Erro ao aprovar.");
       }
-    );
+    });
   };
   const refuse = async (i: number) => {
     message.error("não implementou pq? não precisava excluir na mão? kkkkkk");
@@ -162,7 +169,11 @@ const JSolicitations: React.FC = () => {
           <Styled.SolicitationsContainer>
             {solicitations.length > 0 ? (
               solicitations.map((solicitation, index) => (
-                <div className="solicitation-card" id={"card" + index}>
+                <div
+                  key={index}
+                  className="solicitation-card"
+                  id={"card" + index}
+                >
                   <div className="solicitation-row">
                     <img
                       className="solicitation-img"

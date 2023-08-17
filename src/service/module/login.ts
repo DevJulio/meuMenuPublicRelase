@@ -52,6 +52,7 @@ export type TUser = {
     statusCadastro: boolean;
     userType: string;
     uid: string;
+    docId?: string;
     codCompany?: string;
     createdAt?: TAT;
     updatedAt?: TAT;

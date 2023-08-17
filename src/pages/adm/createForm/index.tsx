@@ -113,12 +113,9 @@ const SolicitationMeuMenu: React.FC = () => {
           (data: any) => data.status === 200
         );
         if (checkUpload) {
-          console.log(checkUploadAux);
           const iconUrl = checkUploadAux[0].data;
           const bannerUrl = checkUploadAux[1].data;
-          console.log(bannerUrl);
           try {
-            const newDate = new Date();
             const company: TCompany = {
               title: title,
               plan: decryptToAuth(localStorage.getItem("@meumenu/planType")),
@@ -169,8 +166,8 @@ const SolicitationMeuMenu: React.FC = () => {
               tables: [],
               staff: [],
               createdAt: {
-                seconds: newDate.getTime() / 1000,
-                nanoseconds: newDate.getMilliseconds(),
+                seconds: 0,
+                nanoseconds: 0,
               },
               updatedAt: {
                 seconds: 0,
@@ -180,7 +177,6 @@ const SolicitationMeuMenu: React.FC = () => {
             const resCompany: any = await CompanyService.setCompany(company);
             if (resCompany.status === 200) {
               const companyDocId = resCompany.data;
-              const newDate = new Date();
               const user: TUser = {
                 name: nome,
                 statusCadastro: false,
@@ -188,8 +184,8 @@ const SolicitationMeuMenu: React.FC = () => {
                 userType: "admin",
                 codCompany: companyDocId,
                 createdAt: {
-                  seconds: newDate.getTime() / 1000,
-                  nanoseconds: newDate.getMilliseconds(),
+                  seconds: 0,
+                  nanoseconds: 0,
                 },
                 updatedAt: {
                   seconds: 0,
