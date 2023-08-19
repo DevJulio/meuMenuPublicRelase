@@ -37,7 +37,7 @@ import Modal from "../../components/modal";
 import FoodModalDetail from "../../components/foodModalDetail";
 import isMobile from "is-mobile";
 import FoodCardOffer from "../../components/foodCardOffer";
-import { useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 export type TAutomation = {
   daysWeek: [];
@@ -136,6 +136,7 @@ const Menu: React.FC = () => {
     } else {
       //fazer get na tabela empresas where url == empresa e setyar
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleClose = () => {
@@ -260,8 +261,8 @@ const Menu: React.FC = () => {
   };
 
   const generateGoogleMaps = (link: string) => {
+    //Exibir mapa baseado na lat lon
     return link;
-    //Tratar para receber um endereço e retornar o mapa incorporado.
     // return (
     //   <iframe
     //     title="Map"

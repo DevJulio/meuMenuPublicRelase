@@ -9,6 +9,7 @@ interface Props {
   bgColor?: string;
   fontSize?: string;
   minWidth?: string;
+  isDisabled?: boolean;
 }
 const ButtonSecondary: React.FC<Props> = ({
   action,
@@ -17,11 +18,13 @@ const ButtonSecondary: React.FC<Props> = ({
   bgColor,
   fontSize,
   minWidth,
+  isDisabled,
 }) => {
   return (
     <>
       <Styled.MainContainer>
         <Styled.Btn
+          disabled={isDisabled ? true : false}
           style={{
             color: color ? color : theme.colors.white.normal,
             backgroundColor: bgColor ? bgColor : theme.colors.red.normal,

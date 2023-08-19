@@ -8,6 +8,30 @@ import { TLogin } from "../../pages/account/login";
 import { TProducts, TProductsOffers } from "../../pages/menu";
 import { TTable } from "../../pages/adm/adm/comanda";
 
+export type TLatLon = {
+    lat: number,
+    lng: number
+}
+export type TSocialMedia = {
+    localization: TLatLon,
+    instagram: string,
+    youtube: string,
+    whatsapp: string,
+    address: string,
+    spotify: string,
+}
+export type TMenuFeatures = {
+    status: boolean,//Atualizar para true quando existir alguma oferta, reserva ou happy hour
+    bannerText: string,//Descrição do modal
+    bannerTitle: string,//título do banner
+    daysOfWeek?: [],
+    startAt?: string;
+    endAt?: string;
+    reservationNumber?: string;
+}
+
+
+//Criar tipo happy hour, ofertas e reserva para conter todos os dados de contato, texto, dias e horário
 export type TCompanyDetail = {
     icon: string;
     title: string;
@@ -18,34 +42,21 @@ export type TCompanyDetail = {
     fontStyleAux: string;
     welcome: string;
     banner: string;
-    offers: boolean;//Atualizar para true quando alguma oferta for cadastrada
-    offersText: string;//Título do Banner de ofertas
-    hasHappyHour: boolean;//Caso tenha adicionado na tela de edição de cadastros
-    happyHourText: string;//Título do Banner do happy hour
-    happyHourTextDetail: string;//Texto do modal ao abrir para saber mais sobre o happy hour
-    reservation: boolean; //caso true, banner de reservas aparece, alterar para true e defirir as regras.
-    reservationText: string; //Título do Banner de reservas
-    reservationTextDetail: string;    //Texto do modal ao abrir para saber mais sobre resevas
-    reservationContactNumber: string; //número para reservas
+    offers: TMenuFeatures;
+    reservation: TMenuFeatures;
+    happyHour: TMenuFeatures;
     contactEmail: string;//Informações para o meu menu
     contactNumber: string;//Informações para o meu menu
     contactName: string;//Informações para o meu menu
     city: string;
-    socialMedia: {
-        localization: {
-            lat: number,
-            lon: number
-        }
-        instagram: string,
-        youtube: string,
-        whatsapp: string,
-        address: string,
-        spotify: string,
-    }
+    socialMedia: TSocialMedia;
 }
 type TAT = {
     nanoseconds: number
     seconds: number
+}
+type TUids = {
+    uid: string
 }
 export type TUser = {
     name: string;
@@ -56,12 +67,14 @@ export type TUser = {
     codCompany?: string;
     createdAt?: TAT;
     updatedAt?: TAT;
+    token?: TToken;
 }
 
 export type TStaf = {
     name: string;
     statusCadastro: boolean;
     codCompany?: string;
+    //implementar log
 }
 
 export type TCategory = {
@@ -78,11 +91,12 @@ export type TCategory = {
 export type TCompany = {
     title: string;
     statusCadastro: boolean;
+    isAproved: boolean;//Caso seja false, a solicitação não foi aprovada.
     icon: string;
     plan: string;
     address: string;
-    adminsUids: [{ uid: string }];
-    stafsUids: [{ uid: string }];
+    adminsUids: TUids[];
+    stafsUids: TUids[];
     details: TCompanyDetail;
     categories: TCategory[];
     menu: TProducts[];
@@ -95,16 +109,23 @@ export type TCompany = {
     updatedAt?: TAT;
     //sales: 
 }
+export type TToken = {
+    refreshToken: string;
+    accessToken: string;
+    expirationTime: number;
+}
 
-
-export const sessionHandler = async (user: TUser) => {
-    console.log(user);
-    message.success("Bem vindo, " + user.name)
+export const sessionHandler = async (userP: TUser, token: TToken) => {
+    message.success("Bem vindo, " + userP.name)
+    const user = {
+        ...userP,
+        token,
+    }
     if (user.userType === "admin") {
         const company = await CompanyService.GetCompany(user.codCompany!)
         const adminUser = {
             ...user,
-            ...company
+            ...company,
         }
         localStorage.setItem('@meumenu/user', encryptToAuth(JSON.stringify(adminUser)));
         window.location.replace('/adm/home')
@@ -158,18 +179,15 @@ export const login = async (data: any) => {
     try {
         const res = await api.post('/login', data, {});
         if (res.status === 200) {
-            //setar token: res.data.stsTokenManager.accessToken ou .refreshToken
-            //.expirationTime: 1691593084602
-            const uid = res.data.user.uid
-            localStorage.setItem("@meumenu/userId", encryptToAuth(uid));
+            const token: TToken = res.data.user.stsTokenManager
+            const { uid } = res.data.user
             const profile: TUser = await UserService.GetUser(uid);
             if (profile.statusCadastro) {
                 message.success('Bem vindo!');
-                sessionHandler(profile);
+                sessionHandler(profile, token);
             } else {
                 message.error('Cadastro ainda não aprovado');
             }
-            console.log(profile);
             return true
         } else {
             return false
@@ -202,3 +220,11 @@ export const createUser = async (credencials: TLogin) => {
     }
 }
 
+export const logoutForce = async () => {
+    localStorage.removeItem('@meumenu/user');
+    localStorage.removeItem('@meumenu/staff');
+    localStorage.removeItem('@meumenu/j');
+    localStorage.removeItem('@meumenu/planType');
+    localStorage.removeItem('@meumenu/config');
+    window.location.replace('/login')
+};

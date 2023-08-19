@@ -115,6 +115,14 @@ margin-bottom: 1vw;
   font-family: ${({ theme }) => theme.fonts.primary};
   margin-top: 3vh;
 }
+.placerAux {
+  color: ${({ theme }) => theme.colors.red.normal};
+  font-size: ${({ theme }) => theme.fontSize.md2};
+  font-family: ${({ theme }) => theme.fonts.primary};
+  margin-top: 0vh;
+  margin-bottom: 3vh;
+
+}
 .details-container {
   display: flex;
   flex-direction: row;
@@ -164,7 +172,7 @@ export const BtnContainer = styled.div`
    margin-top: 4vw;
   margin-bottom: 4vw; 
 `;
-export const PlansDetailModal = styled.span`
+export const PlansDetailModal = styled.div`
   display: flex;
   justify-content: left;
   width: 95%;
@@ -172,6 +180,13 @@ export const PlansDetailModal = styled.span`
   justify-content: center;
   font-family: ${({ theme }) => theme.fonts.secundary};
   font-size: ${({ theme }) => theme.fontSize.mm};
+
+  .map-container {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    place-content: center;
+  }
  
 `;
 

@@ -20,13 +20,19 @@ import Checkbox from "../../../components/CheckBox";
 import InputMasked from "../../../components/MaskedIpunt";
 import ButtonSecondary from "../../../components/buttons/secondary";
 import Modal from "../../../components/modal";
-import { TCompany, TUser, createUser } from "../../../service/module/login";
+import {
+  TCompany,
+  TLatLon,
+  TUser,
+  createUser,
+} from "../../../service/module/login";
 import { useNavigate } from "react-router-dom";
 import { fileUpload } from "../../../service/module/fileUpload";
 import { message } from "antd";
 import { CompanyService } from "../../../service/module/company";
 import { UserService } from "../../../service/module/users";
 import { decryptToAuth } from "../../../utils/security/isAuth";
+import MapComponent from "../../../components/googleMap";
 
 const SolicitationMeuMenu: React.FC = () => {
   const [title, setTitle] = useState<string>("Sua empresa");
@@ -59,8 +65,8 @@ const SolicitationMeuMenu: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [modalAux, setModalAux] = useState<boolean>(false);
   const [modalFail, setModalFail] = useState<boolean>(false);
-
   const [disponiility, setDisponiility] = useState<boolean>(false);
+  const [localization, setLocalization] = useState<TLatLon>({ lat: 0, lng: 0 });
 
   const changeInput = (e: any, isBanner: boolean = false) => {
     const localFile = e.target.files[0];
@@ -115,11 +121,13 @@ const SolicitationMeuMenu: React.FC = () => {
         if (checkUpload) {
           const iconUrl = checkUploadAux[0].data;
           const bannerUrl = checkUploadAux[1].data;
+          const newDate = new Date();
           try {
             const company: TCompany = {
               title: title,
               plan: decryptToAuth(localStorage.getItem("@meumenu/planType")),
               statusCadastro: false,
+              isAproved: true,
               icon: iconUrl,
               URL,
               address: endereco,
@@ -135,24 +143,31 @@ const SolicitationMeuMenu: React.FC = () => {
                 fontStyleAux: "",
                 welcome,
                 banner: bannerUrl,
-                offers: false,
-                hasHappyHour: false,
-                reservation: false,
-                reservationTextDetail: "",
-                reservationContactNumber: contactReservationNumber,
-                offersText: "Confira as nossas promoções!",
-                happyHourText: "É dia de happy hour",
-                happyHourTextDetail: "",
-                reservationText: "Reserve sua mesa!",
+                offers: {
+                  bannerText: "Confira as nossas promoções!",
+                  bannerTitle: "",
+                  status: false,
+                },
+                reservation: {
+                  bannerText: "Evite filas, faça sua reserva.",
+                  bannerTitle: "",
+                  status: false,
+                  reservationNumber: contactReservationNumber,
+                },
+                happyHour: {
+                  bannerText: "É dia de happy hour!",
+                  bannerTitle: "",
+                  status: false,
+                  daysOfWeek: [],
+                  startAt: "",
+                  endAt: "",
+                },
                 contactEmail,
                 contactNumber,
                 contactName: nome,
                 city: cidade,
                 socialMedia: {
-                  localization: {
-                    lat: 0,
-                    lon: 0,
-                  },
+                  localization: localization,
                   address: endereco,
                   spotify: spotifyLink,
                   instagram: instagramLink,
@@ -166,8 +181,8 @@ const SolicitationMeuMenu: React.FC = () => {
               tables: [],
               staff: [],
               createdAt: {
-                seconds: 0,
-                nanoseconds: 0,
+                seconds: newDate.getTime() / 1000,
+                nanoseconds: newDate.getMilliseconds(),
               },
               updatedAt: {
                 seconds: 0,
@@ -184,8 +199,8 @@ const SolicitationMeuMenu: React.FC = () => {
                 userType: "admin",
                 codCompany: companyDocId,
                 createdAt: {
-                  seconds: 0,
-                  nanoseconds: 0,
+                  seconds: newDate.getTime() / 1000,
+                  nanoseconds: newDate.getMilliseconds(),
                 },
                 updatedAt: {
                   seconds: 0,
@@ -404,14 +419,17 @@ const SolicitationMeuMenu: React.FC = () => {
         )}
         {modalAux && (
           <Modal
-            bannerColor={theme.colors.green.normal}
+            bannerColor={theme.colors.blue.palete}
             title={"Onde fica seu estabelecimento?"}
             handleClose={handleCloseAux}
             titleFont={theme.fonts.primary}
           >
             <>
-              <div></div>
-              {/* <Styled.BtnContainer
+              <MapComponent
+                localization={localization}
+                setLocalization={setLocalization}
+              />
+              <Styled.BtnContainer
                 style={{
                   marginTop: "0px",
                   justifyContent: "center",
@@ -419,14 +437,20 @@ const SolicitationMeuMenu: React.FC = () => {
                 }}
               >
                 <ButtonSecondary
-                  //TODO: COLOCAR NUMERO DO ZAP
-                  action={() => {}}
-                  Label={"Entrar em contato com o Meu Menu!"}
+                  action={() => {
+                    if (localization.lat === 0) {
+                      message.error("Você precisa escolher um local");
+                    } else {
+                      handleCloseAux();
+                      message.success("Localização adicionada com sucesso!");
+                    }
+                  }}
+                  Label={"Salvar"}
                   fontSize={theme.fontSize.md}
                   color={theme.colors.white.normal}
                   bgColor={theme.colors.green.normal}
                 />
-              </Styled.BtnContainer> */}
+              </Styled.BtnContainer>
             </>
           </Modal>
         )}
@@ -619,7 +643,7 @@ const SolicitationMeuMenu: React.FC = () => {
                 <span className="placer">Localização</span>
                 <ButtonSecondary
                   action={() => {
-                    //setModal(true);
+                    setModalAux(true);
                   }}
                   Label="Clique para abrir mapa"
                   color={theme.colors.yellow.palete}

@@ -1,3 +1,4 @@
+import { TUser, logoutForce } from '../../service/module/login';
 import { decryptToAuth } from './isAuth';
 
 export type authPayload = {
@@ -27,35 +28,28 @@ export function isAuth(isJ: boolean = false) {
     if (isJ) {
         let usrData = localStorage.getItem('@meumenu/j')!;
         let stringjson = decryptToAuth(usrData);
-        return JSON.parse(stringjson);
+        let obj = JSON.parse(stringjson) as TUser;
+        const { expirationTime } = obj.token!
+        if (expirationTime > Date.now()) {
+            return obj;
+        } else {
+            logoutForce()
+        }
     } else {
         if (localStorage.getItem('@meumenu/user') === null) {
-            console.log("if auth");
             return null;
         } else {
             let usrData = localStorage.getItem('@meumenu/user')!;
             let stringjson = decryptToAuth(usrData);
-            let obj = JSON.parse(stringjson);
-            //let d = new Date();
-            // if (!obj.keepSigned) {
-            //     // if ((obj.dateToken! !== parseInt(format(d, 'dd'))) || parseInt(format(d, 'HHmm')) > obj.hourExpiration!) {
-            //     //     logoutForce();
-            //     // }
-            // } else {
-            //     if (obj.dateToken! !== parseInt(format(d, 'dd'))) {
-            //         logoutForce();
-            //     }
-            // }
-            // console.log((obj.hourExpiration !== (parseInt(format(d, 'HHmm')) + 60)))
-            // if (obj.hourExpiration !== (parseInt(format(d, 'HHmm')) + 60)) {
-            //     obj.hourExpiration = parseInt(format(d, 'HHmm')) + 60;
-            //     localStorage.setItem('@slwc/user', encryptToAuth(JSON.stringify(obj)));
-            // }
-            return obj;
+            let obj = JSON.parse(stringjson) as TUser;
+            const { expirationTime } = obj.token!
+            if (expirationTime > Date.now()) {
+                return obj;
+            } else {
+                logoutForce()
+            }
         }
     }
-
-
 }
 
 export const isStaff = () => {

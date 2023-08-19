@@ -16,7 +16,7 @@ const JHome: React.FC = () => {
 
   useEffect(() => {
     const usr = isAuth(true);
-    if (usr.userType === "admin-j") {
+    if (usr && usr.userType === "admin-j") {
       setUser(usr);
     } else {
       navigate("/login");

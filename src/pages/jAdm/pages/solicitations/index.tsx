@@ -23,7 +23,7 @@ const JSolicitations: React.FC = () => {
 
   useEffect(() => {
     const usr = isAuth(true);
-    if (usr.userType === "admin-j") {
+    if (usr && usr.userType === "admin-j") {
       setUser(usr);
       const fetchData = async () => {
         const resSolicitations: any =
