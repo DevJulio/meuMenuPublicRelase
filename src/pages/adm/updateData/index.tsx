@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Footer from "../../../components/footer";
 import Header from "../../../components/header";
 import Input from "../../../components/input";
@@ -72,6 +72,11 @@ const UpdateData: React.FC = () => {
   const [happyHour, setHappyHour] = useState<TMenuFeatures>();
 
   const navigate = useNavigate();
+
+  const center = {
+    lat: -16.665213362370324,
+    lng: -49.272946456170146,
+  };
 
   useEffect(() => {
     const usr = isAuth();

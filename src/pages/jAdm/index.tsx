@@ -38,14 +38,7 @@ const JHome: React.FC = () => {
         <Styled.CardsContainer>
           {row.map((item: TCardProps) => {
             return (
-              <div
-                style={{
-                  width: isMobile() ? "80%" : "50%",
-                }}
-                onClick={() => {
-                  item.url && navigate(item.url);
-                }}
-              >
+              <div style={{ width: isMobile() ? "80%" : "50%"}} onClick={() => { item.url && navigate(item.url)}}>
                 <Homecard {...item} />
               </div>
             );
