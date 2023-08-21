@@ -30,7 +30,11 @@ const JSolicitations: React.FC = () => {
           await SolicitationService.getSolicitations();
         if (resSolicitations && resSolicitations.status === 200) {
           console.log(resSolicitations.data);
-          setSolicitations(resSolicitations.data);
+          setSolicitations(
+            resSolicitations.data.filter(
+              (req: TCompany) => req.isAproved !== false
+            )
+          );
         } else {
           setSolicitations([]);
         }
@@ -92,7 +96,26 @@ const JSolicitations: React.FC = () => {
     });
   };
   const refuse = async (i: number) => {
-    message.error("não implementou pq? não precisava excluir na mão? kkkkkk");
+    const cardRef = "card" + i;
+
+    const company = solicitations[i];
+    const solicitationPayload = {
+      statusCadastro: false,
+      isAproved: false,
+    };
+    await SolicitationService.updateSolicitations(
+      company.docId!,
+      solicitationPayload
+    ).then(async (companyRes: any) => {
+      console.log(companyRes);
+      solicitationsCounter++;
+      const card = document.getElementById(cardRef);
+      card!.style.display = "none";
+      message.success("Sucesso ao negar " + company.title);
+      if (solicitationsCounter === solicitations.length) {
+        setSolicitations([]);
+      }
+    });
   };
 
   return (

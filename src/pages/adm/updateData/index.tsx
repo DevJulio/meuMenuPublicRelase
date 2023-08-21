@@ -13,6 +13,7 @@ import latlon from "../../../assets/icons/socialMedia/gif/latlon.gif";
 import resevation from "../../../assets/icons/socialMedia/gif/resevation.png";
 import venda from "../../../assets/icons/socialMedia/gif/venda.gif";
 import loadingGif from "../../../assets/icons/loading.gif";
+import dayjs from "dayjs";
 
 import { theme } from "../../../theme/theme";
 import isMobile from "is-mobile";
@@ -28,7 +29,7 @@ import {
   TMenuFeatures,
 } from "../../../service/module/login";
 import { CompanyService } from "../../../service/module/company";
-import { message } from "antd";
+import { TimePicker, message } from "antd";
 import MapComponent from "../../../components/googleMap";
 
 const UpdateData: React.FC = () => {
@@ -71,8 +72,22 @@ const UpdateData: React.FC = () => {
   const [reservation, setReservation] = useState<TMenuFeatures>();
   const [happyHour, setHappyHour] = useState<TMenuFeatures>();
 
+  const [domingo, setDomingo] = useState(false);
+  const [segundaFeira, setSegundaFeira] = useState(false);
+  const [tercaFeira, setTercaFeira] = useState(false);
+  const [quartaFeira, setQuartaFeira] = useState(false);
+  const [quintaFeira, setQuintaFeira] = useState(false);
+  const [sextaFeira, setSextaFeira] = useState(false);
+  const [sabado, setSabado] = useState(false);
+  const [startAt, setStartAt] = useState("00:00");
+  const [endAt, setEndAt] = useState("00:00");
+  const [bannerText, setBannerText] = useState<string>("");
+  const [bannerTitle, setBannerTitle] = useState<string>("");
+  const [confirmModal, setConfirmModal] = useState<boolean>(false);
+
   const navigate = useNavigate();
 
+  const format = "HH:mm";
   const center = {
     lat: -16.665213362370324,
     lng: -49.272946456170146,
@@ -116,6 +131,30 @@ const UpdateData: React.FC = () => {
           setNome(data.details.contactName);
           setCidade(data.details.city);
           setContactNumber(data.details.contactNumber);
+
+          //muita informação, cara
+
+          if (data.details.happyHour.daysOfWeek?.find((days) => days === 0)) {
+            setDomingo(true);
+          }
+          if (data.details.happyHour.daysOfWeek?.find((days) => days === 1)) {
+            setSegundaFeira(true);
+          }
+          if (data.details.happyHour.daysOfWeek?.find((days) => days === 2)) {
+            setTercaFeira(true);
+          }
+          if (data.details.happyHour.daysOfWeek?.find((days) => days === 3)) {
+            setQuartaFeira(true);
+          }
+          if (data.details.happyHour.daysOfWeek?.find((days) => days === 4)) {
+            setQuintaFeira(true);
+          }
+          if (data.details.happyHour.daysOfWeek?.find((days) => days === 5)) {
+            setSextaFeira(true);
+          }
+          if (data.details.happyHour.daysOfWeek?.find((days) => days === 6)) {
+            setSabado(true);
+          }
         } else {
           console.log("não ");
         }
@@ -242,6 +281,96 @@ const UpdateData: React.FC = () => {
     }
   };
 
+  const checkDays = () => {
+    const days = [];
+    if (domingo) {
+      days.push(0);
+    }
+    if (segundaFeira) {
+      days.push(1);
+    }
+    if (tercaFeira) {
+      days.push(2);
+    }
+    if (quartaFeira) {
+      days.push(3);
+    }
+    if (quintaFeira) {
+      days.push(4);
+    }
+    if (sextaFeira) {
+      days.push(5);
+    }
+    if (sabado) {
+      days.push(6);
+    }
+    return days;
+  };
+
+  const saveHpAndReservation = async () => {
+    if (happyHourModal) {
+      const days = checkDays();
+      if (bannerText && bannerTitle && startAt && endAt && days.length > 0) {
+        setHappyHour({
+          bannerText: bannerText,
+          bannerTitle: bannerTitle,
+          status: true,
+          daysOfWeek: days,
+          startAt: startAt,
+          endAt: endAt,
+        });
+        //Criar função para atualizar esses dados
+        handleCloseFeatureUpdate();
+      } else {
+        message.error("Verifique os campos e tente novamente");
+      }
+    } else {
+      if (bannerText && bannerTitle && startAt && endAt) {
+        setReservation({
+          bannerText: bannerText,
+          bannerTitle: bannerTitle,
+          status: true,
+        });
+        handleCloseFeatureUpdate();
+      } else {
+        message.error("Verifique os campos e tente novamente");
+      }
+    }
+  };
+
+  const disableFeatures = () => {
+    let res = false;
+    if (happyHourModal) {
+      res = disableHp();
+    } else {
+      res = disableReservation();
+    }
+    if (res) {
+      handleCloseFeatureUpdate();
+      handleCloseConfirmModal();
+    } else {
+      message.error("Verifique os dadaos e tente novamente");
+    }
+  };
+  const disableHp = () => {
+    setHappyHour({
+      ...happyHour!,
+      status: false,
+    });
+    return true;
+  };
+
+  const disableReservation = () => {
+    setHappyHour({
+      ...happyHour!,
+      status: false,
+    });
+    return true;
+  };
+
+  const handleCloseConfirmModal = () => {
+    setConfirmModal(false);
+  };
   return (
     <>
       <Header />
@@ -372,14 +501,257 @@ const UpdateData: React.FC = () => {
                 justifyContent: "center",
               }}
             >
-              <img
-                src={loadingGif}
-                alt=""
+              {/* 
+              Para happy hour:
+              1 - Dias da semana
+              2 - horários,
+              para todos
+              1 - título do banner
+              2 - texto do banner
+              3 - botão de salvar para alterar os status de hp e reserva
+               */}
+              <Styled.UpdateModalContainer>
+                {happyHourModal ? (
+                  <div className="HP">
+                    <span className="HP-title">
+                      Marque os dias da semana que o Happy hour funciona!
+                    </span>
+                    <Styled.CheckBoxRow>
+                      <Styled.CheckBoxItem>
+                        <Checkbox
+                          lblColor="black"
+                          label="Domingo"
+                          setValue={() => {
+                            setDomingo(!domingo);
+                          }}
+                          value={domingo}
+                        />
+                      </Styled.CheckBoxItem>
+                      <Styled.CheckBoxItem>
+                        <Checkbox
+                          lblColor="black"
+                          label={"Segunda Feira"}
+                          setValue={() => {
+                            setSegundaFeira(!segundaFeira);
+                          }}
+                          value={segundaFeira}
+                        />
+                      </Styled.CheckBoxItem>
+                      <Styled.CheckBoxItem>
+                        <Checkbox
+                          lblColor="black"
+                          label={"Terça Feira"}
+                          setValue={() => {
+                            setTercaFeira(!tercaFeira);
+                          }}
+                          value={tercaFeira}
+                        />
+                      </Styled.CheckBoxItem>
+                      <Styled.CheckBoxItem>
+                        <Checkbox
+                          lblColor="black"
+                          label={"Quarta Feira"}
+                          setValue={() => {
+                            setQuartaFeira(!quartaFeira);
+                          }}
+                          value={quartaFeira}
+                        />
+                      </Styled.CheckBoxItem>
+                      <Styled.CheckBoxItem>
+                        <Checkbox
+                          lblColor="black"
+                          label={"Quinta Feira"}
+                          setValue={() => {
+                            setQuintaFeira(!quintaFeira);
+                          }}
+                          value={quintaFeira}
+                        />
+                      </Styled.CheckBoxItem>
+                      <Styled.CheckBoxItem>
+                        <Checkbox
+                          lblColor="black"
+                          label={"Sexta Feira"}
+                          setValue={() => {
+                            setSextaFeira(!sextaFeira);
+                          }}
+                          value={sextaFeira}
+                        />
+                      </Styled.CheckBoxItem>
+                      <Styled.CheckBoxItem>
+                        <Checkbox
+                          lblColor="black"
+                          label={"Sábado"}
+                          setValue={() => {
+                            setSabado(!sabado);
+                          }}
+                          value={sabado}
+                        />
+                      </Styled.CheckBoxItem>
+                    </Styled.CheckBoxRow>
+
+                    <span className="HP-title">
+                      Infome a hora de início e de fim.
+                    </span>
+                    <div className="clock-row">
+                      <Styled.ClockContainerCol>
+                        <Styled.ClockSpan>Começo</Styled.ClockSpan>
+                        <TimePicker
+                          value={dayjs(startAt, format)}
+                          onChange={(value: any) => {
+                            setStartAt(value);
+                          }}
+                          format={format}
+                        />
+                      </Styled.ClockContainerCol>
+                      <Styled.ClockContainerCol>
+                        <Styled.ClockSpan>Final</Styled.ClockSpan>
+                        <TimePicker
+                          value={dayjs(endAt, format)}
+                          format={format}
+                          onChange={(value: any) => {
+                            setEndAt(value);
+                          }}
+                        />
+                      </Styled.ClockContainerCol>
+                    </div>
+                    <div className="text-container">
+                      <Styled.FormItemContainer>
+                        <Input
+                          value={happyHour?.bannerTitle}
+                          setValue={setBannerTitle}
+                          label="Titulo do happy hour"
+                          labelColor={theme.colors.blue.palete}
+                        />
+                        <span className="span-lbl" style={{ color: "black" }}>
+                          ex: É dia de Happy Hour!
+                        </span>
+                      </Styled.FormItemContainer>
+                      <Styled.FormItemContainer>
+                        <Input
+                          labelColor={theme.colors.blue.palete}
+                          value={happyHour?.bannerText}
+                          setValue={setBannerText}
+                          label="Descrição"
+                          isTextArea
+                          customWidth="500px"
+                        />
+                        <span className="span-lbl" style={{ color: "black" }}>
+                          Dê maiores detalhes a respeito do happy hour
+                        </span>
+                      </Styled.FormItemContainer>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <div className="HP">
+                      <div className="text-container">
+                        <Styled.FormItemContainer>
+                          <Input
+                            value={reservation?.bannerTitle}
+                            setValue={setBannerTitle}
+                            label="Titulo da reserva"
+                            labelColor={theme.colors.blue.palete}
+                          />
+                          <span className="span-lbl" style={{ color: "black" }}>
+                            ex: Faça sua reserva para hoje!
+                          </span>
+                        </Styled.FormItemContainer>
+                        <Styled.FormItemContainer>
+                          <Input
+                            labelColor={theme.colors.blue.palete}
+                            value={reservation?.bannerText}
+                            setValue={setBannerText}
+                            label="Descrição"
+                            isTextArea
+                            customWidth="500px"
+                          />
+                          <span className="span-lbl" style={{ color: "black" }}>
+                            Dê maiores detalhes a respeito das reservas
+                          </span>
+                        </Styled.FormItemContainer>
+                      </div>
+                    </div>
+                  </>
+                )}
+                <Styled.BtnContainer
+                  style={{
+                    marginTop: "1vh",
+                    justifyContent: "center",
+                    marginBottom: "2vh",
+                  }}
+                >
+                  <ButtonSecondary
+                    action={saveHpAndReservation}
+                    Label={"Salvar"}
+                    fontSize={theme.fontSize.md}
+                    color={theme.colors.white.normal}
+                    bgColor={theme.colors.green.normal}
+                  />
+                  {happyHourModal ? (
+                    <ButtonSecondary
+                      action={() => {
+                        setConfirmModal(true);
+                      }}
+                      Label={"Desabilitar Happy Hour"}
+                      fontSize={theme.fontSize.md}
+                      color={theme.colors.white.normal}
+                      bgColor={theme.colors.red.normal}
+                    />
+                  ) : (
+                    <ButtonSecondary
+                      action={() => {
+                        setConfirmModal(true);
+                      }}
+                      Label={"Desabilitar reservas"}
+                      fontSize={theme.fontSize.md}
+                      color={theme.colors.white.normal}
+                      bgColor={theme.colors.red.normal}
+                    />
+                  )}
+                </Styled.BtnContainer>
+              </Styled.UpdateModalContainer>
+            </div>
+          </Modal>
+        )}
+
+        {confirmModal && (
+          <Modal
+            bannerColor={theme.colors.yellow.palete}
+            title={"Atenção"}
+            handleClose={handleCloseConfirmModal}
+            titleFont={theme.fonts.primary}
+          >
+            <div
+              style={{
+                display: "flex",
+                placeItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <span>Deseja continuar?</span>
+              <Styled.BtnContainer
                 style={{
-                  width: "4vw",
-                  padding: "3vh",
+                  marginTop: "1vh",
+                  justifyContent: "center",
+                  marginBottom: "2vh",
                 }}
-              />
+              >
+                <ButtonSecondary
+                  action={disableFeatures}
+                  Label={"Sim"}
+                  fontSize={theme.fontSize.md}
+                  color={theme.colors.white.normal}
+                  bgColor={theme.colors.blue.palete}
+                />
+
+                <ButtonSecondary
+                  action={handleCloseConfirmModal}
+                  Label={"Não"}
+                  fontSize={theme.fontSize.md}
+                  color={theme.colors.white.normal}
+                  bgColor={theme.colors.red.normal}
+                />
+              </Styled.BtnContainer>
             </div>
           </Modal>
         )}
@@ -415,7 +787,6 @@ const UpdateData: React.FC = () => {
               </Styled.Centralize>
             </Styled.FormItemContainer>
           </Styled.MenusRow>
-
           <Styled.MenusRow>
             <Styled.FormItemContainer>
               <Input
@@ -531,73 +902,75 @@ const UpdateData: React.FC = () => {
           </Styled.ItemSpan>
           <Styled.MenusRow>
             <Styled.SocialMediaContainer>
-              <Styled.IconCentralize>
-                <Styled.Icon src={instagram} onClick={() => {}} />
-                <Input
-                  isStartLbl={true}
-                  value={instagramLink}
-                  labelColor={theme.colors.red.normal}
-                  setValue={setinstagramLink}
-                  label="Instagram"
-                  customWidth={isMobile() ? "250px" : "170px"}
-                />
-              </Styled.IconCentralize>
-
-              <Styled.IconCentralize>
-                <Styled.Icon src={marker} onClick={() => {}} />
-                <Input
-                  isStartLbl={true}
-                  value={endereco}
-                  labelColor={theme.colors.red.normal}
-                  setValue={setEndereco}
-                  label="Endereço"
-                  isRequired
-                  customWidth={isMobile() ? "250px" : "300px"}
-                />
-              </Styled.IconCentralize>
-
-              <Styled.IconCentralize>
-                <Styled.Icon src={spotify} onClick={() => {}} />
-                <Input
-                  value={spotifyLink}
-                  labelColor={theme.colors.red.normal}
-                  setValue={setSpotifyLink}
-                  label="Link da playlist"
-                  customWidth={isMobile() ? "250px" : "170px"}
-                />
-              </Styled.IconCentralize>
-              <Styled.IconCentralize>
-                <Styled.Icon src={latlon} onClick={() => {}} />
-                <span className="placer">Localização</span>
-                <ButtonSecondary
-                  action={() => {
-                    setModal(true);
-                  }}
-                  Label="Clique para abrir mapa"
-                  color={theme.colors.yellow.palete}
-                  bgColor={theme.colors.blue.palete}
-                />
-              </Styled.IconCentralize>
-              <Styled.IconCentralize>
-                <Styled.Icon src={whatsapp} onClick={() => {}} />
-                <Input
-                  value={whatsAppLink}
-                  labelColor={theme.colors.red.normal}
-                  setValue={setWhatsAppLink}
-                  label="WhatsApp"
-                  customWidth={isMobile() ? "250px" : "170px"}
-                />
-              </Styled.IconCentralize>
-              <Styled.IconCentralize>
-                <Styled.Icon src={youtube} onClick={() => {}} />
-                <Input
-                  value={youtubeLink}
-                  labelColor={theme.colors.red.normal}
-                  setValue={setYoutubeLink}
-                  label="Canal do Youtube"
-                  customWidth={isMobile() ? "250px" : "170px"}
-                />
-              </Styled.IconCentralize>
+              <div className="row-aux">
+                <Styled.IconCentralize>
+                  <Styled.Icon src={instagram} onClick={() => {}} />
+                  <Input
+                    isStartLbl={true}
+                    value={instagramLink}
+                    labelColor={theme.colors.red.normal}
+                    setValue={setinstagramLink}
+                    label="Instagram"
+                    customWidth={isMobile() ? "250px" : "170px"}
+                  />
+                </Styled.IconCentralize>
+                <Styled.IconCentralize>
+                  <Styled.Icon src={marker} onClick={() => {}} />
+                  <Input
+                    isStartLbl={true}
+                    value={endereco}
+                    labelColor={theme.colors.red.normal}
+                    setValue={setEndereco}
+                    label="Endereço"
+                    isRequired
+                    customWidth={isMobile() ? "250px" : "300px"}
+                  />
+                </Styled.IconCentralize>
+                <Styled.IconCentralize>
+                  <Styled.Icon src={spotify} onClick={() => {}} />
+                  <Input
+                    value={spotifyLink}
+                    labelColor={theme.colors.red.normal}
+                    setValue={setSpotifyLink}
+                    label="Link da playlist"
+                    customWidth={isMobile() ? "250px" : "170px"}
+                  />
+                </Styled.IconCentralize>
+              </div>
+              <div className="row-aux">
+                <Styled.IconCentralize>
+                  <Styled.Icon src={latlon} onClick={() => {}} />
+                  <span className="placer">Localização</span>
+                  <ButtonSecondary
+                    action={() => {
+                      setModal(true);
+                    }}
+                    Label="Clique para abrir mapa"
+                    color={theme.colors.yellow.palete}
+                    bgColor={theme.colors.blue.palete}
+                  />
+                </Styled.IconCentralize>
+                <Styled.IconCentralize>
+                  <Styled.Icon src={whatsapp} onClick={() => {}} />
+                  <Input
+                    value={whatsAppLink}
+                    labelColor={theme.colors.red.normal}
+                    setValue={setWhatsAppLink}
+                    label="WhatsApp"
+                    customWidth={isMobile() ? "250px" : "170px"}
+                  />
+                </Styled.IconCentralize>
+                <Styled.IconCentralize>
+                  <Styled.Icon src={youtube} onClick={() => {}} />
+                  <Input
+                    value={youtubeLink}
+                    labelColor={theme.colors.red.normal}
+                    setValue={setYoutubeLink}
+                    label="Canal do Youtube"
+                    customWidth={isMobile() ? "250px" : "170px"}
+                  />
+                </Styled.IconCentralize>
+              </div>
             </Styled.SocialMediaContainer>
           </Styled.MenusRow>
           <Styled.TitleSpan
@@ -668,6 +1041,7 @@ const UpdateData: React.FC = () => {
           >
             Detalhes:
           </Styled.TitleSpan>
+          fonte secundária, layout do header e cores
           <Styled.ItemSpan
             style={{
               fontFamily: theme.fonts.secundary,
@@ -747,7 +1121,6 @@ const UpdateData: React.FC = () => {
               />
             </Styled.IconCentralize>
           </Styled.MenusRow>
-
           <Styled.MenusRow>
             <Styled.IconCentralize>
               <Styled.Fonts
@@ -819,7 +1192,6 @@ const UpdateData: React.FC = () => {
               />
             </Styled.IconCentralize>
           </Styled.MenusRow>
-
           <Styled.MenusRow>
             <Styled.IconCentralize>
               <Styled.Fonts
@@ -891,7 +1263,6 @@ const UpdateData: React.FC = () => {
               />
             </Styled.IconCentralize>
           </Styled.MenusRow>
-
           <Styled.TitleSpan>Informações Para o Meu Menu</Styled.TitleSpan>
           <Styled.ItemSpan
             style={{

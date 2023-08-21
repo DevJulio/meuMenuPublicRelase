@@ -127,6 +127,17 @@ width: 90%;
 background-color: ${({ theme }) => theme.colors.white.normal};
 align-self: center;
 justify-content: center;
+.row-aux {
+  display: flex;
+  flex-direction: row;
+  @media ${({ theme }) => theme.devices.laptopL} {
+    width: 100%;
+    place-content: center;
+  }
+}
+@media ${({ theme }) => theme.devices.laptopL} {
+  flex-direction: column;
+}
 @media ${({ theme }) => theme.devices.tablet} {
   flex-direction: column;
 }

@@ -11,9 +11,9 @@ import ButtonSecondary from "../../../components/buttons/secondary";
 import { useNavigate } from "react-router-dom";
 
 const OffersMenuAuto: React.FC = () => {
-  const format = "HH:mm";
   const navigate = useNavigate();
-
+  
+  const format = "HH:mm";
   const [domingo, setDomingo] = useState(false);
   const [segundaFeira, setSegundaFeira] = useState(false);
   const [tercaFeira, setTercaFeira] = useState(false);

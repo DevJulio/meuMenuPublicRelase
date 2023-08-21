@@ -609,65 +609,75 @@ const SolicitationMeuMenu: React.FC = () => {
           </Styled.ItemSpan>
           <Styled.MenusRow>
             <Styled.SocialMediaContainer>
-              <Styled.IconCentralize>
-                <Styled.Icon src={instagram} onClick={() => {}} />
-                <Input
-                  labelColor={theme.colors.red.normal}
-                  setValue={setinstagramLink}
-                  label="Instagram"
-                  customWidth={isMobile() ? "250px" : "170px"}
-                />
-              </Styled.IconCentralize>
-
-              <Styled.IconCentralize>
-                <Styled.Icon src={marker} onClick={() => {}} />
-                <Input
-                  labelColor={theme.colors.red.normal}
-                  setValue={setEndereco}
-                  label="Endereço"
-                  customWidth={isMobile() ? "250px" : "300px"}
-                  isRequired
-                />
-              </Styled.IconCentralize>
-              <Styled.IconCentralize>
-                <Styled.Icon src={spotify} onClick={() => {}} />
-                <Input
-                  labelColor={theme.colors.red.normal}
-                  setValue={setSpotifyLink}
-                  label="Link da playlist"
-                  customWidth={isMobile() ? "250px" : "170px"}
-                />
-              </Styled.IconCentralize>
-              <Styled.IconCentralize>
-                <Styled.Icon src={latlon} onClick={() => {}} />
-                <span className="placer">Localização</span>
-                <ButtonSecondary
-                  action={() => {
-                    setModalAux(true);
-                  }}
-                  Label="Clique para abrir mapa"
-                  color={theme.colors.yellow.palete}
-                  bgColor={theme.colors.blue.palete}
-                />
-              </Styled.IconCentralize>
-              <Styled.IconCentralize>
-                <Styled.Icon src={whatsapp} onClick={() => {}} />
-                <Input
-                  labelColor={theme.colors.red.normal}
-                  setValue={setWhatsAppLink}
-                  label="WhatsApp"
-                  customWidth={isMobile() ? "250px" : "170px"}
-                />
-              </Styled.IconCentralize>
-              <Styled.IconCentralize>
-                <Styled.Icon src={youtube} onClick={() => {}} />
-                <Input
-                  labelColor={theme.colors.red.normal}
-                  setValue={setYoutubeLink}
-                  label="Canal do Youtube"
-                  customWidth={isMobile() ? "250px" : "170px"}
-                />
-              </Styled.IconCentralize>
+              <div className="row-aux">
+                <Styled.IconCentralize>
+                  <Styled.Icon src={instagram} onClick={() => {}} />
+                  <Input
+                    isStartLbl={true}
+                    value={instagramLink}
+                    labelColor={theme.colors.red.normal}
+                    setValue={setinstagramLink}
+                    label="Instagram"
+                    customWidth={isMobile() ? "250px" : "170px"}
+                  />
+                </Styled.IconCentralize>
+                <Styled.IconCentralize>
+                  <Styled.Icon src={marker} onClick={() => {}} />
+                  <Input
+                    isStartLbl={true}
+                    value={endereco}
+                    labelColor={theme.colors.red.normal}
+                    setValue={setEndereco}
+                    label="Endereço"
+                    isRequired
+                    customWidth={isMobile() ? "250px" : "300px"}
+                  />
+                </Styled.IconCentralize>
+                <Styled.IconCentralize>
+                  <Styled.Icon src={spotify} onClick={() => {}} />
+                  <Input
+                    value={spotifyLink}
+                    labelColor={theme.colors.red.normal}
+                    setValue={setSpotifyLink}
+                    label="Link da playlist"
+                    customWidth={isMobile() ? "250px" : "170px"}
+                  />
+                </Styled.IconCentralize>
+              </div>
+              <div className="row-aux">
+                <Styled.IconCentralize>
+                  <Styled.Icon src={latlon} onClick={() => {}} />
+                  <span className="placer">Localização</span>
+                  <ButtonSecondary
+                    action={() => {
+                      setModal(true);
+                    }}
+                    Label="Clique para abrir mapa"
+                    color={theme.colors.yellow.palete}
+                    bgColor={theme.colors.blue.palete}
+                  />
+                </Styled.IconCentralize>
+                <Styled.IconCentralize>
+                  <Styled.Icon src={whatsapp} onClick={() => {}} />
+                  <Input
+                    value={whatsAppLink}
+                    labelColor={theme.colors.red.normal}
+                    setValue={setWhatsAppLink}
+                    label="WhatsApp"
+                    customWidth={isMobile() ? "250px" : "170px"}
+                  />
+                </Styled.IconCentralize>
+                <Styled.IconCentralize>
+                  <Styled.Icon src={youtube} onClick={() => {}} />
+                  <Input
+                    value={youtubeLink}
+                    labelColor={theme.colors.red.normal}
+                    setValue={setYoutubeLink}
+                    label="Canal do Youtube"
+                    customWidth={isMobile() ? "250px" : "170px"}
+                  />
+                </Styled.IconCentralize>
+              </div>
             </Styled.SocialMediaContainer>
           </Styled.MenusRow>
           <Styled.TitleSpan
