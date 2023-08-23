@@ -144,6 +144,7 @@ export const SocialMediaContainer = styled.div`
     @media ${({ theme }) => theme.devices.laptopL} {
       width: 100%;
       place-content: center;
+      flex-direction: column;
     }
   }
   @media ${({ theme }) => theme.devices.laptopL} {
@@ -231,6 +232,10 @@ export const UpdateModalContainer = styled.div`
       flex-direction: row;
       margin-top: 1vh;
       place-content: center;
+      @media ${({ theme }) => theme.devices.laptopL} {
+        display: flex;
+        flex-direction: column;
+      }
     }
     @media ${({ theme }) => theme.devices.tablet} {
       display: flex;

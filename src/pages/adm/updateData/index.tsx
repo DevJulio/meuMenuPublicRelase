@@ -34,6 +34,7 @@ import {
 import { CompanyService } from "../../../service/module/company";
 import { TimePicker, message } from "antd";
 import MapComponent from "../../../components/googleMap";
+import { fileUpload } from "../../../service/module/fileUpload";
 
 const UpdateData: React.FC = () => {
   const [title, setTitle] = useState<string>("");
@@ -49,8 +50,10 @@ const UpdateData: React.FC = () => {
 
   const [logo, setLogo] = useState<string>("");
   const [banner, setBanner] = useState<string>("");
-  const [logoUpdated, setLogoUpdated] = useState<string>("");
-  const [bannerUpdated, setBannerUpdated] = useState<string>("");
+  const [logoUpdated, setLogoUpdated] = useState<File>();
+  const [bannerUpdated, setBannerUpdated] = useState<File>();
+  const [bannerModal, setBannerModal] = useState<File>();
+
   const [fontStyle, setFontStyle] = useState<string>("");
 
   const [modal, setModal] = useState<boolean>(false);
@@ -85,7 +88,7 @@ const UpdateData: React.FC = () => {
   const [quintaFeira, setQuintaFeira] = useState(false);
   const [sextaFeira, setSextaFeira] = useState(false);
   const [sabado, setSabado] = useState(false);
-  const [startAt, setStartAt] = useState("00:00");
+  const [startAt, setStartAt] = useState("00:10");
   const [endAt, setEndAt] = useState("00:00");
   const [bannerText, setBannerText] = useState<string>("");
   const [bannerTitle, setBannerTitle] = useState<string>("");
@@ -121,7 +124,18 @@ const UpdateData: React.FC = () => {
           setLocalization(data.details.socialMedia.localization);
           setOffers(data.details.offers);
           setReservation(data.details.reservation);
+          console.log(data.details.happyHour);
           setHappyHour(data.details.happyHour);
+          setStartAt(
+            data.details.happyHour.startAt
+              ? data.details.happyHour.startAt
+              : "00:00"
+          );
+          setEndAt(
+            data.details.happyHour.endAt
+              ? data.details.happyHour.endAt
+              : "00:00"
+          );
           setEndereco(data.details.socialMedia.address);
           setSpotifyLink(data.details.socialMedia.spotify);
           setWhatsAppLink(data.details.socialMedia.whatsapp);
@@ -174,7 +188,10 @@ const UpdateData: React.FC = () => {
       setLogoUpdated(localFile);
     }
   };
-
+  const changeInputModal = (e: any) => {
+    const localFile = e.target.files[0];
+    setBannerModal(localFile);
+  };
   const updateCompany = () => {
     if (
       title &&
@@ -313,8 +330,20 @@ const UpdateData: React.FC = () => {
 
   const saveHpAndReservation = async () => {
     if (happyHourModal) {
+      let isBannerURLAux;
+      if (bannerModal) {
+        const path = "/companies/imgs/";
+        isBannerURLAux = await fileUpload(
+          bannerModal,
+          path + "banner" + bannerModal.name
+        );
+      }
+
       const isBannerText = bannerText ? bannerText : happyHour!.bannerText;
       const isBannerTitle = bannerTitle ? bannerTitle : happyHour!.bannerTitle;
+      const isBannerURL = isBannerURLAux?.data
+        ? isBannerURLAux.data
+        : happyHour!.bannerURL;
       const days = checkDays();
 
       if (
@@ -324,14 +353,15 @@ const UpdateData: React.FC = () => {
         endAt &&
         days.length > 0
       ) {
-        //setHappyHour({
-        //  bannerText: isBannerText,
-        //  bannerTitle: isBannerTitle,
-        //  status: true,
-        //  daysOfWeek: days,
-        //  startAt: startAt,
-        //  endAt: endAt,
-        //});
+        setHappyHour({
+          bannerText: isBannerText,
+          bannerTitle: isBannerTitle,
+          status: true,
+          daysOfWeek: days,
+          startAt: startAt,
+          bannerURL: isBannerURL,
+          endAt: endAt,
+        });
 
         const res = await CompanyService.updateCompany(user!.codCompany!, {
           "details.happyHour": {
@@ -339,6 +369,7 @@ const UpdateData: React.FC = () => {
             bannerTitle: isBannerTitle,
             status: true,
             daysOfWeek: days,
+            bannerURL: isBannerURL,
             startAt: startAt,
             endAt: endAt,
           },
@@ -353,22 +384,36 @@ const UpdateData: React.FC = () => {
         message.error("Verifique os campos e tente novamente");
       }
     } else {
+      let isBannerURLAux;
+      if (bannerModal) {
+        const path = "/companies/imgs/";
+        isBannerURLAux = await fileUpload(
+          bannerModal,
+          path + "banner" + bannerModal.name
+        );
+      }
+
       const isBannerText = bannerText ? bannerText : reservation!.bannerText;
       const isBannerTitle = bannerTitle
         ? bannerTitle
         : reservation!.bannerTitle;
+      const isBannerURL = isBannerURLAux?.data
+        ? isBannerURLAux.data
+        : reservation!.bannerURL;
 
       if (isBannerText && isBannerTitle) {
-        // setReservation({
-        //   bannerText: isBannerText,
-        //   bannerTitle: isBannerTitle,
-        //   status: true,
-        // });
+        setReservation({
+          bannerText: isBannerText,
+          bannerTitle: isBannerTitle,
+          bannerURL: isBannerURL,
+          status: true,
+        });
 
         const res = await CompanyService.updateCompany(user!.codCompany!, {
           "details.reservation": {
             bannerText: isBannerText,
             bannerTitle: isBannerTitle,
+            bannerURL: isBannerURL,
             status: true,
           },
         });
@@ -381,6 +426,48 @@ const UpdateData: React.FC = () => {
       } else {
         message.error("Verifique os campos e tente novamente");
       }
+    }
+    setBannerModal(undefined);
+  };
+
+  const savePromo = async () => {
+    let isBannerURLAux;
+    if (bannerModal) {
+      const path = "/companies/imgs/";
+      isBannerURLAux = await fileUpload(
+        bannerModal,
+        path + "banner" + bannerModal.name
+      );
+    }
+
+    const isBannerTitle = bannerTitle ? bannerTitle : offers!.bannerTitle;
+    const isBannerURL = isBannerURLAux?.data
+      ? isBannerURLAux.data
+      : offers!.bannerURL;
+
+    if (isBannerTitle) {
+      setOffers({
+        bannerTitle: isBannerTitle,
+        bannerURL: isBannerURL,
+        status: true,
+        bannerText: "",
+      });
+
+      const res = await CompanyService.updateCompany(user!.codCompany!, {
+        "details.offers": {
+          bannerTitle: isBannerTitle,
+          bannerURL: isBannerURL,
+          status: true,
+        },
+      });
+      if (res.status) {
+        message.success("Detalhes de promoção atualizado com sucesso!");
+        handleCloseFeatureUpdate();
+      } else {
+        message.error("Verifique os campos e tente novamente");
+      }
+    } else {
+      message.error("Verifique os campos e tente novamente");
     }
   };
 
@@ -433,8 +520,8 @@ const UpdateData: React.FC = () => {
     }
   };
   const disableOffers = async () => {
-    setReservation({
-      ...reservation!,
+    setOffers({
+      ...offers!,
       status: false,
     });
     const res = await CompanyService.updateCompany(user!.codCompany!, {
@@ -452,6 +539,12 @@ const UpdateData: React.FC = () => {
   };
   const handleCloseConfirmModal = () => {
     setConfirmModal(false);
+  };
+
+  const formatDateJs = (val: any) => {
+    return `${dayjs(val, format).hour().toString()}:${dayjs(val, format)
+      .minute()
+      .toString()}`;
   };
 
   return (
@@ -672,7 +765,7 @@ const UpdateData: React.FC = () => {
                         <TimePicker
                           value={dayjs(startAt, format)}
                           onChange={(value: any) => {
-                            setStartAt(value);
+                            setStartAt(formatDateJs(value));
                           }}
                           format={format}
                         />
@@ -683,7 +776,7 @@ const UpdateData: React.FC = () => {
                           value={dayjs(endAt, format)}
                           format={format}
                           onChange={(value: any) => {
-                            setEndAt(value);
+                            setEndAt(formatDateJs(value));
                           }}
                         />
                       </Styled.ClockContainerCol>
@@ -714,6 +807,48 @@ const UpdateData: React.FC = () => {
                         </span>
                       </Styled.FormItemContainer>
                     </div>
+                    <div className="clock-row">
+                      <Styled.FormItemContainer>
+                        <Styled.ItemSpan
+                          style={{
+                            color: theme.colors.blue.palete,
+                            paddingBottom: "0px",
+                            marginTop: "5px",
+                          }}
+                        >
+                          Selecione o banner:
+                        </Styled.ItemSpan>
+                        <Styled.Centralize>
+                          <Styled.FileInput
+                            style={{
+                              color: theme.colors.blue.palete,
+                            }}
+                            type="file"
+                            id="mainBanner"
+                            onChange={(e: any) => {
+                              changeInputModal(e);
+                            }}
+                          />
+                        </Styled.Centralize>
+                      </Styled.FormItemContainer>
+                      <Styled.FormItemContainer>
+                        <Styled.ItemSpan
+                          style={{
+                            color: theme.colors.blue.palete,
+                            paddingBottom: "0px",
+                            marginTop: "5px",
+                          }}
+                        >
+                          Banner atual:
+                        </Styled.ItemSpan>
+                        <Styled.Centralize>
+                          <Styled.MenuBanner
+                            src={happyHour?.bannerURL}
+                            alt=""
+                          />
+                        </Styled.Centralize>
+                      </Styled.FormItemContainer>
+                    </div>
                   </div>
                 ) : (
                   <>
@@ -742,6 +877,48 @@ const UpdateData: React.FC = () => {
                           <span className="span-lbl" style={{ color: "black" }}>
                             Dê maiores detalhes a respeito das reservas
                           </span>
+                        </Styled.FormItemContainer>
+                      </div>
+                      <div className="clock-row">
+                        <Styled.FormItemContainer>
+                          <Styled.ItemSpan
+                            style={{
+                              color: theme.colors.blue.palete,
+                              paddingBottom: "0px",
+                              marginTop: "5px",
+                            }}
+                          >
+                            Selecione o banner:
+                          </Styled.ItemSpan>
+                          <Styled.Centralize>
+                            <Styled.FileInput
+                              style={{
+                                color: theme.colors.blue.palete,
+                              }}
+                              type="file"
+                              id="mainBanner"
+                              onChange={(e: any) => {
+                                changeInputModal(e);
+                              }}
+                            />
+                          </Styled.Centralize>
+                        </Styled.FormItemContainer>
+                        <Styled.FormItemContainer>
+                          <Styled.ItemSpan
+                            style={{
+                              color: theme.colors.blue.palete,
+                              paddingBottom: "0px",
+                              marginTop: "5px",
+                            }}
+                          >
+                            Banner atual:
+                          </Styled.ItemSpan>
+                          <Styled.Centralize>
+                            <Styled.MenuBanner
+                              src={reservation?.bannerURL}
+                              alt=""
+                            />
+                          </Styled.Centralize>
                         </Styled.FormItemContainer>
                       </div>
                     </div>
@@ -802,16 +979,25 @@ const UpdateData: React.FC = () => {
                 justifyContent: "center",
               }}
             >
-              <Styled.UpdateModalContainer>
+              <Styled.UpdateModalContainer
+                style={{
+                  width: "100%",
+                }}
+              >
                 <>
                   <div className="HP">
                     <div
                       className="text-container"
                       style={{
-                        width: "100%",
+                        width: "58%",
                       }}
                     >
-                      <Styled.FormItemContainer>
+                      <Styled.FormItemContainer
+                        style={{
+                          marginRight: "0px",
+                          marginLeft: "7vw",
+                        }}
+                      >
                         <Input
                           value={offers?.bannerTitle}
                           setValue={setBannerTitle}
@@ -819,12 +1005,53 @@ const UpdateData: React.FC = () => {
                           labelColor={theme.colors.blue.palete}
                         />
                         <span className="span-lbl" style={{ color: "black" }}>
-                          ex: Faça sua reserva para hoje!
+                          ex: Confira nossas promoções!
                         </span>
                       </Styled.FormItemContainer>
-                      {/*
-                      input para carregar banner
-                       */}
+                      <div className="clock-row">
+                        <Styled.FormItemContainer
+                          style={{
+                            marginLeft: "2vw",
+                            marginRight: "2vw",
+                          }}
+                        >
+                          <Styled.ItemSpan
+                            style={{
+                              color: theme.colors.blue.palete,
+                              paddingBottom: "0px",
+                              marginTop: "5px",
+                            }}
+                          >
+                            Selecione o banner:
+                          </Styled.ItemSpan>
+                          <Styled.Centralize>
+                            <Styled.FileInput
+                              style={{
+                                color: theme.colors.blue.palete,
+                              }}
+                              type="file"
+                              id="mainBanner"
+                              onChange={(e: any) => {
+                                changeInputModal(e);
+                              }}
+                            />
+                          </Styled.Centralize>
+                        </Styled.FormItemContainer>
+                        <Styled.FormItemContainer>
+                          <Styled.ItemSpan
+                            style={{
+                              color: theme.colors.blue.palete,
+                              paddingBottom: "0px",
+                              marginTop: "5px",
+                            }}
+                          >
+                            Banner atual:
+                          </Styled.ItemSpan>
+                          <Styled.Centralize>
+                            <Styled.MenuBanner src={offers?.bannerURL} alt="" />
+                          </Styled.Centralize>
+                        </Styled.FormItemContainer>
+                      </div>
                     </div>
                   </div>
                 </>
@@ -836,7 +1063,7 @@ const UpdateData: React.FC = () => {
                   }}
                 >
                   <ButtonSecondary
-                    action={saveHpAndReservation}
+                    action={savePromo}
                     Label={"Salvar"}
                     fontSize={theme.fontSize.md}
                     color={theme.colors.white.normal}
@@ -844,6 +1071,7 @@ const UpdateData: React.FC = () => {
                   />
                   <ButtonSecondary
                     action={() => {
+                      setPromoModal(true);
                       setConfirmModal(true);
                     }}
                     Label={"Desabilitar Promoções"}

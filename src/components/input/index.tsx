@@ -45,7 +45,7 @@ const Input: React.FC<Props> = ({
             style={{
               width: customWidth ? customWidth : "initial",
             }}
-            rows={5}
+            rows={4}
             placeholder={placeholder ? placeholder : ""}
             defaultValue={value ? value : ""}
             onChange={(e: any) => {
