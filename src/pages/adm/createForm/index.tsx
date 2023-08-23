@@ -147,12 +147,16 @@ const SolicitationMeuMenu: React.FC = () => {
                   bannerText: "Confira as nossas promoções!",
                   bannerTitle: "",
                   status: false,
+                  bannerURL:
+                    "https://firebasestorage.googleapis.com/v0/b/meumenu-b4b02.appspot.com/o/defaultImgs%2Foffers.jpeg?alt=media&token=df5afbf0-bd97-46f7-b88a-bd0fd4f709ee",
                 },
                 reservation: {
                   bannerText: "Evite filas, faça sua reserva.",
                   bannerTitle: "",
                   status: false,
                   reservationNumber: contactReservationNumber,
+                  bannerURL:
+                    "https://firebasestorage.googleapis.com/v0/b/meumenu-b4b02.appspot.com/o/defaultImgs%2Freservation.jpeg?alt=media&token=98e7f02d-f400-42eb-8b34-fc020f0771d7",
                 },
                 happyHour: {
                   bannerText: "É dia de happy hour!",
@@ -161,6 +165,8 @@ const SolicitationMeuMenu: React.FC = () => {
                   daysOfWeek: [],
                   startAt: "",
                   endAt: "",
+                  bannerURL:
+                    "https://firebasestorage.googleapis.com/v0/b/meumenu-b4b02.appspot.com/o/defaultImgs%2Fhappyhour.jpg?alt=media&token=a719f15d-dbcd-407e-8828-b885fd1c21aa",
                 },
                 contactEmail,
                 contactNumber,

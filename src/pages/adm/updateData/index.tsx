@@ -12,6 +12,8 @@ import happy from "../../../assets/icons/socialMedia/gif/happy.gif";
 import latlon from "../../../assets/icons/socialMedia/gif/latlon.gif";
 import resevation from "../../../assets/icons/socialMedia/gif/resevation.png";
 import venda from "../../../assets/icons/socialMedia/gif/venda.gif";
+import onlinevenda from "../../../assets/icons/socialMedia/gif/onlinevenda.gif";
+
 import loadingGif from "../../../assets/icons/loading.gif";
 import dayjs from "dayjs";
 
@@ -27,6 +29,7 @@ import {
   TCompany,
   TLatLon,
   TMenuFeatures,
+  TUser,
 } from "../../../service/module/login";
 import { CompanyService } from "../../../service/module/company";
 import { TimePicker, message } from "antd";
@@ -42,6 +45,7 @@ const UpdateData: React.FC = () => {
   const [whatsAppLink, setWhatsAppLink] = useState<string>("");
   const [youtubeLink, setYoutubeLink] = useState<string>("");
   const [happyHourModal, setHappyHourModal] = useState<boolean>(false);
+  const [promoModal, setPromoModal] = useState<boolean>(false);
 
   const [logo, setLogo] = useState<string>("");
   const [banner, setBanner] = useState<string>("");
@@ -52,7 +56,9 @@ const UpdateData: React.FC = () => {
   const [modal, setModal] = useState<boolean>(false);
   const [modalFail, setModalFail] = useState<boolean>(false);
   const [featureUpdate, setFeatureUpdate] = useState<boolean>(false);
-  // const [user, setUser] = useState<TUser>();
+  const [featureUpdateAux, setFeatureUpdateAux] = useState<boolean>(false);
+  const [user, setUser] = useState<TUser>();
+  const [company, setCompany] = useState<TCompany>();
   const [loading, setLoading] = useState<boolean>(false);
   const [contactEmail, setContactEmail] = useState<string>("");
 
@@ -88,16 +94,12 @@ const UpdateData: React.FC = () => {
   const navigate = useNavigate();
 
   const format = "HH:mm";
-  const center = {
-    lat: -16.665213362370324,
-    lng: -49.272946456170146,
-  };
 
   useEffect(() => {
     const usr = isAuth();
     if (usr && usr.userType === "admin") {
-      console.log(usr);
       const fetchData = async () => {
+        setUser(usr);
         const resCompany: any = await CompanyService.GetCompany(
           usr.codCompany!
         );
@@ -106,16 +108,13 @@ const UpdateData: React.FC = () => {
           if (data.URL.length > 0) {
             setDisponiility(true);
           }
-          //console.log(data);
+          setCompany(data);
           setTitle(data.title);
           setLogo(data.details.icon);
           setBanner(data.details.banner);
           setWelcome(data.details.welcome);
           setURL(data.URL);
           setOriginalUrl(data.URL);
-          setContactReservationNumber(
-            data.details.reservation.reservationNumber!
-          );
           setFontCheckBox(data.details.fontStyle);
           setFontCheckBox(data.details.fontStyleAux, false);
           setinstagramLink(data.details.socialMedia.instagram);
@@ -131,8 +130,6 @@ const UpdateData: React.FC = () => {
           setNome(data.details.contactName);
           setCidade(data.details.city);
           setContactNumber(data.details.contactNumber);
-
-          //muita informação, cara
 
           if (data.details.happyHour.daysOfWeek?.find((days) => days === 0)) {
             setDomingo(true);
@@ -155,6 +152,9 @@ const UpdateData: React.FC = () => {
           if (data.details.happyHour.daysOfWeek?.find((days) => days === 6)) {
             setSabado(true);
           }
+          setContactReservationNumber(
+            data.details.reservation.reservationNumber!
+          );
         } else {
           console.log("não ");
         }
@@ -262,6 +262,10 @@ const UpdateData: React.FC = () => {
     setFeatureUpdate(false);
     setHappyHourModal(false);
   };
+
+  const handleCloseFeatureAux = () => {
+    setFeatureUpdateAux(false);
+  };
   const checkURL = async () => {
     if (URL.length > 0) {
       if (originalUrl === URL) {
@@ -309,68 +313,147 @@ const UpdateData: React.FC = () => {
 
   const saveHpAndReservation = async () => {
     if (happyHourModal) {
+      const isBannerText = bannerText ? bannerText : happyHour!.bannerText;
+      const isBannerTitle = bannerTitle ? bannerTitle : happyHour!.bannerTitle;
       const days = checkDays();
-      if (bannerText && bannerTitle && startAt && endAt && days.length > 0) {
-        setHappyHour({
-          bannerText: bannerText,
-          bannerTitle: bannerTitle,
-          status: true,
-          daysOfWeek: days,
-          startAt: startAt,
-          endAt: endAt,
+
+      if (
+        isBannerText &&
+        isBannerTitle &&
+        startAt &&
+        endAt &&
+        days.length > 0
+      ) {
+        //setHappyHour({
+        //  bannerText: isBannerText,
+        //  bannerTitle: isBannerTitle,
+        //  status: true,
+        //  daysOfWeek: days,
+        //  startAt: startAt,
+        //  endAt: endAt,
+        //});
+
+        const res = await CompanyService.updateCompany(user!.codCompany!, {
+          "details.happyHour": {
+            bannerText: isBannerText,
+            bannerTitle: isBannerTitle,
+            status: true,
+            daysOfWeek: days,
+            startAt: startAt,
+            endAt: endAt,
+          },
         });
-        //Criar função para atualizar esses dados
-        handleCloseFeatureUpdate();
+        if (res.status) {
+          message.success("Happy Hour atualizado com sucesso!");
+          handleCloseFeatureUpdate();
+        } else {
+          message.error("Verifique os campos e tente novamente");
+        }
       } else {
         message.error("Verifique os campos e tente novamente");
       }
     } else {
-      if (bannerText && bannerTitle && startAt && endAt) {
-        setReservation({
-          bannerText: bannerText,
-          bannerTitle: bannerTitle,
-          status: true,
+      const isBannerText = bannerText ? bannerText : reservation!.bannerText;
+      const isBannerTitle = bannerTitle
+        ? bannerTitle
+        : reservation!.bannerTitle;
+
+      if (isBannerText && isBannerTitle) {
+        // setReservation({
+        //   bannerText: isBannerText,
+        //   bannerTitle: isBannerTitle,
+        //   status: true,
+        // });
+
+        const res = await CompanyService.updateCompany(user!.codCompany!, {
+          "details.reservation": {
+            bannerText: isBannerText,
+            bannerTitle: isBannerTitle,
+            status: true,
+          },
         });
-        handleCloseFeatureUpdate();
+        if (res.status) {
+          message.success("Detalhes de reserva atualizado com sucesso!");
+          handleCloseFeatureUpdate();
+        } else {
+          message.error("Verifique os campos e tente novamente");
+        }
       } else {
         message.error("Verifique os campos e tente novamente");
       }
     }
   };
 
-  const disableFeatures = () => {
-    let res = false;
+  const disableFeatures = async () => {
     if (happyHourModal) {
-      res = disableHp();
+      await disableHp();
+    } else if (promoModal) {
+      await disableOffers();
     } else {
-      res = disableReservation();
+      await disableReservation();
     }
-    if (res) {
+    handleCloseConfirmModal();
+  };
+  const disableHp = async () => {
+    setHappyHour({
+      ...happyHour!,
+      status: false,
+    });
+
+    const res = await CompanyService.updateCompany(user!.codCompany!, {
+      "details.happyHour": {
+        ...happyHour!,
+        status: false,
+      },
+    });
+    if (res.status) {
+      message.success("Happy hour desabilitado com sucesso");
       handleCloseFeatureUpdate();
-      handleCloseConfirmModal();
     } else {
-      message.error("Verifique os dadaos e tente novamente");
+      message.error("Verifique os campos e tente novamente");
     }
   };
-  const disableHp = () => {
-    setHappyHour({
-      ...happyHour!,
+
+  const disableReservation = async () => {
+    setReservation({
+      ...reservation!,
       status: false,
     });
-    return true;
+    const res = await CompanyService.updateCompany(user!.codCompany!, {
+      "details.reservation": {
+        ...reservation!,
+        status: false,
+      },
+    });
+    if (res.status) {
+      message.success("Reserva desabilitado com sucesso!");
+      handleCloseFeatureUpdate();
+    } else {
+      message.error("Verifique os campos e tente novamente");
+    }
   };
-
-  const disableReservation = () => {
-    setHappyHour({
-      ...happyHour!,
+  const disableOffers = async () => {
+    setReservation({
+      ...reservation!,
       status: false,
     });
-    return true;
+    const res = await CompanyService.updateCompany(user!.codCompany!, {
+      "details.offers": {
+        ...offers!,
+        status: false,
+      },
+    });
+    if (res.status) {
+      message.success("Ofertas desabilitadas com sucesso!");
+      handleCloseFeatureUpdate();
+    } else {
+      message.error("Verifique os campos e tente novamente");
+    }
   };
-
   const handleCloseConfirmModal = () => {
     setConfirmModal(false);
   };
+
   return (
     <>
       <Header />
@@ -416,7 +499,7 @@ const UpdateData: React.FC = () => {
         {modalFail && (
           <Modal
             bannerColor={theme.colors.red.normal}
-            title={"Verifique os campos e tente novamente!"}
+            title={"Verifique os campos e tente novamente 3!"}
             handleClose={handleCloseFail}
             titleFont={theme.fonts.primary}
           >
@@ -501,15 +584,6 @@ const UpdateData: React.FC = () => {
                 justifyContent: "center",
               }}
             >
-              {/* 
-              Para happy hour:
-              1 - Dias da semana
-              2 - horários,
-              para todos
-              1 - título do banner
-              2 - texto do banner
-              3 - botão de salvar para alterar os status de hp e reserva
-               */}
               <Styled.UpdateModalContainer>
                 {happyHourModal ? (
                   <div className="HP">
@@ -714,6 +788,75 @@ const UpdateData: React.FC = () => {
           </Modal>
         )}
 
+        {featureUpdateAux && (
+          <Modal
+            bannerColor={theme.colors.blue.palete}
+            title={"Instruções e detalhes de promoção"}
+            handleClose={handleCloseFeatureAux}
+            titleFont={theme.fonts.primary}
+          >
+            <div
+              style={{
+                display: "flex",
+                placeItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Styled.UpdateModalContainer>
+                <>
+                  <div className="HP">
+                    <div
+                      className="text-container"
+                      style={{
+                        width: "100%",
+                      }}
+                    >
+                      <Styled.FormItemContainer>
+                        <Input
+                          value={offers?.bannerTitle}
+                          setValue={setBannerTitle}
+                          label="Titulo da promoção"
+                          labelColor={theme.colors.blue.palete}
+                        />
+                        <span className="span-lbl" style={{ color: "black" }}>
+                          ex: Faça sua reserva para hoje!
+                        </span>
+                      </Styled.FormItemContainer>
+                      {/*
+                      input para carregar banner
+                       */}
+                    </div>
+                  </div>
+                </>
+                <Styled.BtnContainer
+                  style={{
+                    marginTop: "1vh",
+                    justifyContent: "center",
+                    marginBottom: "2vh",
+                  }}
+                >
+                  <ButtonSecondary
+                    action={saveHpAndReservation}
+                    Label={"Salvar"}
+                    fontSize={theme.fontSize.md}
+                    color={theme.colors.white.normal}
+                    bgColor={theme.colors.green.normal}
+                  />
+                  <ButtonSecondary
+                    action={() => {
+                      setConfirmModal(true);
+                    }}
+                    Label={"Desabilitar Promoções"}
+                    fontSize={theme.fontSize.md}
+                    color={theme.colors.white.normal}
+                    bgColor={theme.colors.red.normal}
+                  />
+                </Styled.BtnContainer>
+              </Styled.UpdateModalContainer>
+            </div>
+          </Modal>
+        )}
+
         {confirmModal && (
           <Modal
             bannerColor={theme.colors.yellow.palete}
@@ -726,9 +869,18 @@ const UpdateData: React.FC = () => {
                 display: "flex",
                 placeItems: "center",
                 justifyContent: "center",
+                flexDirection: "column",
               }}
             >
-              <span>Deseja continuar?</span>
+              <span
+                style={{
+                  fontSize: theme.fontSize.lg,
+                  marginTop: "5vh",
+                  marginBottom: "5vh",
+                }}
+              >
+                Deseja continuar?
+              </span>
               <Styled.BtnContainer
                 style={{
                   marginTop: "1vh",
@@ -1019,13 +1171,27 @@ const UpdateData: React.FC = () => {
                   bgColor={theme.colors.blue.palete}
                 />
               </Styled.IconCentralize>
-
               <Styled.IconCentralize>
                 <Styled.Icon src={venda} onClick={() => {}} />
+                <span className="placerAux">Detalhes de promoção</span>
+                <ButtonSecondary
+                  action={() => {
+                    setFeatureUpdateAux(true);
+                  }}
+                  Label="Cadastrar"
+                  color={theme.colors.yellow.palete}
+                  bgColor={theme.colors.blue.palete}
+                />
+              </Styled.IconCentralize>
+              <Styled.IconCentralize>
+                <Styled.Icon src={onlinevenda} onClick={() => {}} />
                 <span className="placerAux">Informações para venda online</span>
                 <ButtonSecondary
                   action={() => {
-                    setFeatureUpdate(true);
+                    message.success(
+                      "Fique atento para próximas atualizações!",
+                      5
+                    );
                   }}
                   Label="Em breve..."
                   color={theme.colors.blue.palete}

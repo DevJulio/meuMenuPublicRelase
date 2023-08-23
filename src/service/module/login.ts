@@ -24,6 +24,7 @@ export type TMenuFeatures = {
   status: boolean; //Atualizar para true quando existir alguma oferta, reserva ou happy hour
   bannerText: string; //Descrição do modal
   bannerTitle: string; //título do banner
+  bannerURL: string; //título do banner
   daysOfWeek?: number[];
   startAt?: string;
   endAt?: string;
