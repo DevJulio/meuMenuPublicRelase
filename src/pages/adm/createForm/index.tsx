@@ -9,9 +9,6 @@ import spotify from "../../../assets/icons/socialMedia/gif/spotify.gif";
 import whatsapp from "../../../assets/icons/socialMedia/gif/whatsapp.gif";
 import youtube from "../../../assets/icons/socialMedia/gif/youtube.gif";
 import latlon from "../../../assets/icons/socialMedia/gif/latlon.gif";
-
-import happy from "../../../assets/icons/socialMedia/gif/happy.gif";
-import resevation from "../../../assets/icons/socialMedia/gif/resevation.png";
 import loadingGif from "../../../assets/icons/loading.gif";
 
 import { theme } from "../../../theme/theme";

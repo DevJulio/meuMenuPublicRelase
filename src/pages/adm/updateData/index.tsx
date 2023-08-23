@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect, useState } from "react";
+/*Júlio, melhora esse código. ta bom? */
+import React, { useEffect, useState } from "react";
 import Footer from "../../../components/footer";
 import Header from "../../../components/header";
 import Input from "../../../components/input";
@@ -124,7 +125,6 @@ const UpdateData: React.FC = () => {
           setLocalization(data.details.socialMedia.localization);
           setOffers(data.details.offers);
           setReservation(data.details.reservation);
-          console.log(data.details.happyHour);
           setHappyHour(data.details.happyHour);
           setStartAt(
             data.details.happyHour.startAt
