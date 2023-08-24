@@ -271,3 +271,12 @@ export const ClockSpan = styled.span`
   font-size: ${({ theme }) => theme.fontSize.md2};
   font-family: ${({ theme }) => theme.fonts.primary};
 `;
+export const ColorsContainer = styled.div`
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  place-content: center;
+  @media ${({ theme }) => theme.devices.tablet} {
+    flex-direction: column;
+  }
+`

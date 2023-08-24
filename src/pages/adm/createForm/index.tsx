@@ -140,6 +140,8 @@ const SolicitationMeuMenu: React.FC = () => {
                 fontStyleAux: "",
                 welcome,
                 banner: bannerUrl,
+                hideLogo: false,
+                hideTitle: false,
                 offers: {
                   bannerText: "Confira as nossas promoções!",
                   bannerTitle: "",

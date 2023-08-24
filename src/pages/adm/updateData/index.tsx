@@ -33,9 +33,10 @@ import {
   TUser,
 } from "../../../service/module/login";
 import { CompanyService } from "../../../service/module/company";
-import { TimePicker, message } from "antd";
+import { TimePicker, message, ColorPicker } from "antd";
 import MapComponent from "../../../components/googleMap";
 import { fileUpload } from "../../../service/module/fileUpload";
+import { Color } from "antd/es/color-picker";
 
 const UpdateData: React.FC = () => {
   const [title, setTitle] = useState<string>("");
@@ -56,6 +57,7 @@ const UpdateData: React.FC = () => {
   const [bannerModal, setBannerModal] = useState<File>();
 
   const [fontStyle, setFontStyle] = useState<string>("");
+  const [fontStyleAux, setFontStyleAux] = useState<string>("");
 
   const [modal, setModal] = useState<boolean>(false);
   const [modalFail, setModalFail] = useState<boolean>(false);
@@ -94,6 +96,12 @@ const UpdateData: React.FC = () => {
   const [bannerText, setBannerText] = useState<string>("");
   const [bannerTitle, setBannerTitle] = useState<string>("");
   const [confirmModal, setConfirmModal] = useState<boolean>(false);
+
+  const [mainColor, setMainColor] = useState<string>("");
+  const [auxColor, setAuxColor] = useState<string>("");
+  const [textColor, setTextColor] = useState<string>("");
+  const [hideLogo, setHideLogo] = useState<boolean>(false);
+  const [hideTitle, setHideTitle] = useState<boolean>(false);
 
   const navigate = useNavigate();
 
@@ -144,7 +152,11 @@ const UpdateData: React.FC = () => {
           setNome(data.details.contactName);
           setCidade(data.details.city);
           setContactNumber(data.details.contactNumber);
-
+          setMainColor(data.details.mainColor);
+          setAuxColor(data.details.auxColor);
+          setTextColor(data.details.textColor);
+          setHideLogo(data.details.hideLogo);
+          setHideTitle(data.details.hideTitle);
           if (data.details.happyHour.daysOfWeek?.find((days) => days === 0)) {
             setDomingo(true);
           }
@@ -257,6 +269,22 @@ const UpdateData: React.FC = () => {
 
   const handleSwitch = (id: string) => {
     for (var i = 1; i <= 12; i++) {
+      const checkbox = document.getElementById(
+        i.toString()
+      ) as HTMLInputElement | null;
+      if (checkbox != null) {
+        checkbox.checked = false;
+      }
+    }
+    const checkbox = document.getElementById(
+      id.toString()
+    ) as HTMLInputElement | null;
+    if (checkbox != null) {
+      checkbox.checked = true;
+    }
+  };
+  const handleSwitchAux = (id: string) => {
+    for (var i = 13; i <= 24; i++) {
       const checkbox = document.getElementById(
         i.toString()
       ) as HTMLInputElement | null;
@@ -1435,7 +1463,68 @@ const UpdateData: React.FC = () => {
           >
             Detalhes:
           </Styled.TitleSpan>
-          fonte secundária, layout do header e cores
+
+          <Styled.ItemSpan
+            style={{
+              fontFamily: theme.fonts.secundary,
+            }}
+          >
+            Cores para seu cardápio!
+          </Styled.ItemSpan>
+          <Styled.ColorsContainer>
+            <Styled.FormItemContainer>
+              <Styled.ItemSpan
+                style={{
+                  paddingBottom: "0px",
+                  marginTop: "5px",
+                }}
+              >
+                Cor de fundo
+              </Styled.ItemSpan>
+              <ColorPicker
+                showText
+                onChange={(value: Color, hex: string) => {
+                  setMainColor(hex);
+                }}
+                value={mainColor}
+              />
+            </Styled.FormItemContainer>
+            <Styled.FormItemContainer>
+              <Styled.ItemSpan
+                style={{
+                  paddingBottom: "0px",
+                  marginTop: "5px",
+                }}
+              >
+                Cor de contraste
+              </Styled.ItemSpan>
+              <ColorPicker
+                showText
+                onChange={(value: Color, hex: string) => {
+                  setAuxColor(hex);
+                }}
+                value={auxColor}
+              />
+            </Styled.FormItemContainer>
+            <Styled.FormItemContainer>
+              <Styled.ItemSpan
+                style={{
+                  paddingBottom: "0px",
+                  marginTop: "5px",
+                }}
+              >
+                Cor dos títulos
+              </Styled.ItemSpan>
+              <ColorPicker
+                showText
+                onChange={(value: Color, hex: string) => {
+                  setTextColor(hex);
+                }}
+                value={textColor}
+              />
+            </Styled.FormItemContainer>
+          </Styled.ColorsContainer>
+
           <Styled.ItemSpan
             style={{
               fontFamily: theme.fonts.secundary,
@@ -1653,6 +1742,281 @@ const UpdateData: React.FC = () => {
                 setValue={() => {
                   setFontStyle("hand");
                   handleSwitch("12");
+                }}
+              />
+            </Styled.IconCentralize>
+          </Styled.MenusRow>
+
+          <Styled.ItemSpan
+            style={{
+              fontFamily: theme.fonts.secundary,
+            }}
+          >
+            Selecione a fonte que mais combina com seu estabelecimento para os
+            textos e descrições dos pratos
+          </Styled.ItemSpan>
+          <Styled.MenusRow>
+            <Styled.IconCentralize>
+              <Styled.Fonts
+                style={{
+                  fontFamily: theme.fonts.AlwaysSmile,
+                  fontSize: theme.fontSize.lg,
+                  color: theme.colors.yellow.palete,
+                }}
+              >
+                {welcome}
+              </Styled.Fonts>
+              <Checkbox
+                id="13"
+                label=""
+                setValue={() => {
+                  setFontStyleAux("AlwaysSmile");
+                  handleSwitchAux("13");
+                }}
+              />
+            </Styled.IconCentralize>
+
+            <Styled.IconCentralize>
+              <Styled.Fonts
+                style={{
+                  fontFamily: theme.fonts.Bachelorette,
+                  fontSize: theme.fontSize.lg,
+                  color: theme.colors.yellow.palete,
+                }}
+              >
+                {welcome}
+              </Styled.Fonts>
+              <Checkbox
+                id="14"
+                label=""
+                setValue={() => {
+                  setFontStyleAux("Bachelorette");
+                  handleSwitchAux("14");
+                }}
+              />
+            </Styled.IconCentralize>
+            <Styled.IconCentralize>
+              <Styled.Fonts
+                style={{
+                  fontFamily: theme.fonts.BeYou,
+                  fontSize: theme.fontSize.lg,
+                  color: theme.colors.yellow.palete,
+                }}
+              >
+                {welcome}
+              </Styled.Fonts>
+              <Checkbox
+                id="15"
+                label=""
+                setValue={() => {
+                  setFontStyleAux("BeYou");
+                  handleSwitchAux("15");
+                }}
+              />
+            </Styled.IconCentralize>
+            <Styled.IconCentralize>
+              <Styled.Fonts
+                style={{
+                  fontFamily: theme.fonts.Bravely,
+                  fontSize: theme.fontSize.lg,
+                  color: theme.colors.yellow.palete,
+                }}
+              >
+                {welcome}
+              </Styled.Fonts>
+              <Checkbox
+                id="16"
+                label=""
+                setValue={() => {
+                  setFontStyleAux("Bravely");
+                  handleSwitchAux("16");
+                }}
+              />
+            </Styled.IconCentralize>
+          </Styled.MenusRow>
+          <Styled.MenusRow>
+            <Styled.IconCentralize>
+              <Styled.Fonts
+                style={{
+                  fontFamily: theme.fonts.GlossySheen,
+                  fontSize: theme.fontSize.lg,
+                  color: theme.colors.yellow.palete,
+                }}
+              >
+                {welcome}
+              </Styled.Fonts>
+              <Checkbox
+                id="17"
+                label=""
+                setValue={() => {
+                  setFontStyleAux("GlossySheen");
+                  handleSwitchAux("17");
+                }}
+              />
+            </Styled.IconCentralize>
+            <Styled.IconCentralize>
+              <Styled.Fonts
+                style={{
+                  fontFamily: theme.fonts.LatoRegular,
+                  fontSize: theme.fontSize.lg,
+                  color: theme.colors.yellow.palete,
+                }}
+              >
+                {welcome}
+              </Styled.Fonts>
+              <Checkbox
+                id="18"
+                label=""
+                setValue={() => {
+                  setFontStyleAux("LatoRegular");
+                  handleSwitchAux("18");
+                }}
+              />
+            </Styled.IconCentralize>
+
+            <Styled.IconCentralize>
+              <Styled.Fonts
+                style={{
+                  fontFamily: theme.fonts.LEMONMILK,
+                  fontSize: theme.fontSize.lg,
+                  color: theme.colors.yellow.palete,
+                }}
+              >
+                {welcome}
+              </Styled.Fonts>
+              <Checkbox
+                id="19"
+                label=""
+                setValue={() => {
+                  setFontStyleAux("LEMONMILK");
+                  handleSwitchAux("19");
+                }}
+              />
+            </Styled.IconCentralize>
+            <Styled.IconCentralize>
+              <Styled.Fonts
+                style={{
+                  fontFamily: theme.fonts.NiceSugar,
+                  fontSize: theme.fontSize.lg,
+                  color: theme.colors.yellow.palete,
+                }}
+              >
+                {welcome}
+              </Styled.Fonts>
+              <Checkbox
+                id="20"
+                label=""
+                setValue={() => {
+                  setFontStyleAux("NiceSugar");
+                  handleSwitchAux("20");
+                }}
+              />
+            </Styled.IconCentralize>
+          </Styled.MenusRow>
+          <Styled.MenusRow>
+            <Styled.IconCentralize>
+              <Styled.Fonts
+                style={{
+                  fontFamily: theme.fonts.RoughAnthem,
+                  fontSize: theme.fontSize.lg,
+                  color: theme.colors.yellow.palete,
+                }}
+              >
+                {welcome}
+              </Styled.Fonts>
+              <Checkbox
+                id="21"
+                label=""
+                setValue={() => {
+                  setFontStyleAux("RoughAnthem");
+                  handleSwitchAux("21");
+                }}
+              />
+            </Styled.IconCentralize>
+            <Styled.IconCentralize>
+              <Styled.Fonts
+                style={{
+                  fontFamily: theme.fonts.primary,
+                  fontSize: theme.fontSize.lg,
+                  color: theme.colors.yellow.palete,
+                }}
+              >
+                {welcome}
+              </Styled.Fonts>
+              <Checkbox
+                id="22"
+                label=""
+                setValue={() => {
+                  setFontStyleAux("primary");
+                  handleSwitchAux("22");
+                }}
+              />
+            </Styled.IconCentralize>
+
+            <Styled.IconCentralize>
+              <Styled.Fonts
+                style={{
+                  fontFamily: theme.fonts.secundary,
+                  fontSize: theme.fontSize.lg,
+                  color: theme.colors.yellow.palete,
+                }}
+              >
+                {welcome}
+              </Styled.Fonts>
+              <Checkbox
+                id="23"
+                label=""
+                setValue={() => {
+                  setFontStyleAux("secundary");
+                  handleSwitchAux("23");
+                }}
+              />
+            </Styled.IconCentralize>
+            <Styled.IconCentralize>
+              <Styled.Fonts
+                style={{
+                  fontFamily: theme.fonts.hand,
+                  fontSize: theme.fontSize.lg,
+                  color: theme.colors.yellow.palete,
+                }}
+              >
+                {welcome}
+              </Styled.Fonts>
+              <Checkbox
+                id="24"
+                label=""
+                setValue={() => {
+                  setFontStyleAux("hand");
+                  handleSwitchAux("24");
+                }}
+              />
+            </Styled.IconCentralize>
+          </Styled.MenusRow>
+          <Styled.ItemSpan
+            style={{
+              fontFamily: theme.fonts.primary,
+              fontSize: theme.fontSize.lg,
+            }}
+          >
+            Cabeçalho
+          </Styled.ItemSpan>
+
+          <Styled.MenusRow>
+            <Styled.IconCentralize>
+              <Checkbox
+                label="Ocultar logo"
+                value={hideLogo}
+                setValue={() => {
+                  setHideLogo(!hideLogo);
+                }}
+              />
+            </Styled.IconCentralize>
+            <Styled.IconCentralize>
+              <Checkbox
+                label="Ocultar título"
+                value={hideTitle}
+                setValue={() => {
+                  setHideTitle(!hideTitle);
                 }}
               />
             </Styled.IconCentralize>

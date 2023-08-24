@@ -15,7 +15,7 @@
     "@types/pngjs": "^6.0.1",
     "@types/react": "^18.0.25",
     "@types/react-dom": "^18.0.8",
-    "antd": "^5.4.2",
+    "antd": "^5.8.4",
     "axios": "^1.4.0",
     "burger-menu": "^2.0.0",
     "color": "^4.2.3",

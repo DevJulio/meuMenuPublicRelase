@@ -50,6 +50,8 @@ export type TCompanyDetail = {
   contactName: string; //Informações para o meu menu
   city: string;
   socialMedia: TSocialMedia;
+  hideLogo: boolean;
+  hideTitle: boolean;
 };
 type TAT = {
   nanoseconds: number;
