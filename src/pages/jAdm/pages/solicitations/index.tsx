@@ -61,7 +61,7 @@ const JSolicitations: React.FC = () => {
     company.details.mainColor = "#fff";
     company.details.textColor = "#000";
 
-    const { uid } = company.adminsUids[0];
+    const { uid } = company.adminsUids![0];
     const solicitationPayload = {
       statusCadastro: true,
       details: {

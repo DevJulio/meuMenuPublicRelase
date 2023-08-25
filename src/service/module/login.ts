@@ -42,9 +42,9 @@ export type TCompanyDetail = {
   fontStyleAux: string;
   welcome: string;
   banner: string;
-  offers: TMenuFeatures;
-  reservation: TMenuFeatures;
-  happyHour: TMenuFeatures;
+  offers?: TMenuFeatures;
+  reservation?: TMenuFeatures;
+  happyHour?: TMenuFeatures;
   contactEmail: string; //Informações para o meu menu
   contactNumber: string; //Informações para o meu menu
   contactName: string; //Informações para o meu menu
@@ -52,6 +52,7 @@ export type TCompanyDetail = {
   socialMedia: TSocialMedia;
   hideLogo: boolean;
   hideTitle: boolean;
+  hideWelcome: boolean;
 };
 type TAT = {
   nanoseconds: number;
@@ -91,24 +92,24 @@ export type TCategory = {
 };
 
 export type TCompany = {
-  title: string;
-  statusCadastro: boolean;
-  isAproved: boolean; //Caso seja false, a solicitação não foi aprovada.
-  icon: string;
-  plan: string;
+  URL: string;
   address: string;
-  adminsUids: TUids[];
-  stafsUids: TUids[];
-  details: TCompanyDetail;
   categories: TCategory[];
+  createdAt?: TAT;
+  details: TCompanyDetail;
+  docId?: string;
+  icon: string;
+  isAproved: boolean; //Caso seja false, a solicitação não foi aprovada.
   menu: TProducts[];
   offers: TProductsOffers[];
-  tables: TTable[];
+  plan: string;
   staff: TStaf[];
-  URL: string;
-  docId?: string;
-  createdAt?: TAT;
+  statusCadastro: boolean;
+  tables: TTable[];
+  title: string;
   updatedAt?: TAT;
+  adminsUids?: TUids[];
+  stafsUids?: TUids[];
   //sales:
 };
 export type TToken = {

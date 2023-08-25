@@ -142,6 +142,7 @@ const SolicitationMeuMenu: React.FC = () => {
                 banner: bannerUrl,
                 hideLogo: false,
                 hideTitle: false,
+                hideWelcome: false,
                 offers: {
                   bannerText: "Confira as nossas promoções!",
                   bannerTitle: "",

@@ -8,6 +8,7 @@ export const MainContainer = styled.div`
   display: flex;
   flex-direction: row;
   width: 100%;
+  padding-top: 1vh;
   background-color: ${({ theme }) => theme.colors.blue.palete};
   @media ${({ theme }) => theme.devices.tablet} {
     flex: 3;
@@ -19,6 +20,7 @@ export const LogoContainer = styled.div`
   cursor: pointer;
   @media ${({ theme }) => theme.devices.tablet} {
     flex: 1;
+    margin-left: 2vw;
   }
 `;
 
@@ -69,6 +71,7 @@ export const MenuContainer = styled.div`
     flex: 1;
     display: flex;
     justify-content: right;
+    margin-bottom: 3vh;
   }
 `;
 

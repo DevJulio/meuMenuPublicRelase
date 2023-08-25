@@ -102,6 +102,7 @@ const UpdateData: React.FC = () => {
   const [textColor, setTextColor] = useState<string>("");
   const [hideLogo, setHideLogo] = useState<boolean>(false);
   const [hideTitle, setHideTitle] = useState<boolean>(false);
+  const [hideWelcome, setHideWelcome] = useState<boolean>(false);
 
   const navigate = useNavigate();
 
@@ -135,13 +136,13 @@ const UpdateData: React.FC = () => {
           setReservation(data.details.reservation);
           setHappyHour(data.details.happyHour);
           setStartAt(
-            data.details.happyHour.startAt
-              ? data.details.happyHour.startAt
+            data.details.happyHour!.startAt
+              ? data.details.happyHour!.startAt
               : "00:00"
           );
           setEndAt(
-            data.details.happyHour.endAt
-              ? data.details.happyHour.endAt
+            data.details.happyHour!.endAt
+              ? data.details.happyHour!.endAt
               : "00:00"
           );
           setEndereco(data.details.socialMedia.address);
@@ -157,31 +158,32 @@ const UpdateData: React.FC = () => {
           setTextColor(data.details.textColor);
           setHideLogo(data.details.hideLogo);
           setHideTitle(data.details.hideTitle);
+          setHideWelcome(data.details.hideTitle);
           setFontStyle(data.details.fontStyle);
           setFontStyleAux(data.details.fontStyleAux);
-          if (data.details.happyHour.daysOfWeek?.find((days) => days === 0)) {
+          if (data.details.happyHour!.daysOfWeek?.find((days) => days === 0)) {
             setDomingo(true);
           }
-          if (data.details.happyHour.daysOfWeek?.find((days) => days === 1)) {
+          if (data.details.happyHour!.daysOfWeek?.find((days) => days === 1)) {
             setSegundaFeira(true);
           }
-          if (data.details.happyHour.daysOfWeek?.find((days) => days === 2)) {
+          if (data.details.happyHour!.daysOfWeek?.find((days) => days === 2)) {
             setTercaFeira(true);
           }
-          if (data.details.happyHour.daysOfWeek?.find((days) => days === 3)) {
+          if (data.details.happyHour!.daysOfWeek?.find((days) => days === 3)) {
             setQuartaFeira(true);
           }
-          if (data.details.happyHour.daysOfWeek?.find((days) => days === 4)) {
+          if (data.details.happyHour!.daysOfWeek?.find((days) => days === 4)) {
             setQuintaFeira(true);
           }
-          if (data.details.happyHour.daysOfWeek?.find((days) => days === 5)) {
+          if (data.details.happyHour!.daysOfWeek?.find((days) => days === 5)) {
             setSextaFeira(true);
           }
-          if (data.details.happyHour.daysOfWeek?.find((days) => days === 6)) {
+          if (data.details.happyHour!.daysOfWeek?.find((days) => days === 6)) {
             setSabado(true);
           }
           setContactReservationNumber(
-            data.details.reservation.reservationNumber!
+            data.details.reservation!.reservationNumber!
           );
         } else {
           console.log("não ");
@@ -217,7 +219,7 @@ const UpdateData: React.FC = () => {
       nome &&
       URL
     ) {
-      let logoURl;
+      let logoURl: any;
       if (logoUpdated) {
         const path = "/companies/imgs/";
         logoURl = await fileUpload(
@@ -225,7 +227,7 @@ const UpdateData: React.FC = () => {
           path + "logo" + logoUpdated.name
         );
       }
-      let bannerUrl;
+      let bannerUrl: any;
       if (bannerUpdated) {
         const path = "/companies/imgs/";
         bannerUrl = await fileUpload(
@@ -233,50 +235,60 @@ const UpdateData: React.FC = () => {
           path + "logo" + bannerUpdated.name
         );
       }
+      console.log(user);
 
-      const iconRelease = logoURl ? logoURl : logo;
-      const bannerRelease = bannerUrl ? bannerUrl : banner;
+      await CompanyService.GetCompany(user!.codCompany!).then(
+        async (resCompany) => {
+          const iconRelease = logoURl ? logoURl : logo;
+          const bannerRelease = bannerUrl ? bannerUrl : banner;
+          const { data } = resCompany;
 
-      const updateCompany = {
-        ...company,
-        URL,
-        address: endereco,
-        details: {
-          ...company!.details,
-          auxColor,
-          banner: bannerRelease,
-          city: cidade,
-          contactEmail,
-          contactName: nome,
-          contactNumber,
-          fontStyle,
-          fontStyleAux,
-          hideLogo,
-          hideTitle,
-          icon: iconRelease,
-          mainColor,
-          socialMedia: {
-            ...company?.details.socialMedia,
-            localization,
-          },
-          textColor,
-          title,
-          welcome,
-        },
-        title,
-        icon: iconRelease,
-      };
+          const updateCompany = {
+            ...company,
+            URL,
+            address: endereco,
+            details: {
+              ...company!.details,
+              auxColor,
+              banner: bannerRelease,
+              city: cidade,
+              contactEmail,
+              contactName: nome,
+              contactNumber,
+              fontStyle,
+              fontStyleAux,
+              hideLogo,
+              hideTitle,
+              hideWelcome,
+              icon: iconRelease,
+              mainColor,
+              happyHour: data.details.happyHour,
+              offers: data.details.offers,
+              reservation: data.details.reservation,
+              socialMedia: {
+                ...company?.details.socialMedia,
+                localization,
+              },
+              textColor,
+              title,
+              welcome,
+            },
+            title,
+            icon: iconRelease,
+          };
 
-      const res = await CompanyService.updateCompany(user!.codCompany!, {
-        ...updateCompany,
-      });
-      if (res.status) {
-        message.success("Detalhes de reserva atualizado com sucesso!");
-        handleCloseFeatureUpdate();
-      } else {
-        message.error("Verifique os campos e tente novamente");
-      }
-      console.log(updateCompany);
+          const res = await CompanyService.updateCompany(user!.codCompany!, {
+            ...updateCompany,
+          });
+          if (res.status) {
+            message.success("Empresa atualizada com sucesso!");
+            handleCloseFeatureUpdate();
+          } else {
+            message.error("Verifique os campos e tente novamente");
+          }
+          console.log(updateCompany);
+        }
+      );
     } else {
       setModal(false);
       setModalFail(true);
@@ -2077,6 +2089,15 @@ const UpdateData: React.FC = () => {
                 value={hideTitle}
                 setValue={() => {
                   setHideTitle(!hideTitle);
+                }}
+              />
+            </Styled.IconCentralize>
+            <Styled.IconCentralize>
+              <Checkbox
+                label="Ocultar frase de boas vindas"
+                value={hideWelcome}
+                setValue={() => {
+                  setHideWelcome(!hideWelcome);
                 }}
               />
             </Styled.IconCentralize>

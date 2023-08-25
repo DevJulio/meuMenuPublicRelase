@@ -13,6 +13,8 @@ interface IHeaderProps {
   textColor: string;
   fontStyle: string;
   fontStyleAux: string;
+  hideLogo: boolean;
+  hideTitle: boolean;
 }
 
 const HeaderCustom: React.FC<IHeaderProps> = ({
@@ -23,6 +25,8 @@ const HeaderCustom: React.FC<IHeaderProps> = ({
   textColor,
   fontStyle,
   fontStyleAux,
+  hideLogo,
+  hideTitle,
 }) => {
   setTimeout(() => {
     const element = document.querySelector(
@@ -48,20 +52,35 @@ const HeaderCustom: React.FC<IHeaderProps> = ({
     <>
       <Styled.Container>
         <Styled.MainContainer style={{ backgroundColor: mainColor }}>
-          <Styled.LogoContainer
-            onClick={() => {
-              redirect("/");
-            }}
-          >
-            <Styled.LogoImg src={icon} alt="" />
-          </Styled.LogoContainer>
-          <Styled.MainSpanContainer>
-            <Styled.NameSpan
-              style={{ color: textColor, fontFamily: fontStyle }}
+          {hideLogo ? (
+            <>
+              <Styled.LogoContainer
+                onClick={() => {
+                  redirect("/");
+                }}
+              >
+              </Styled.LogoContainer>
+            </>
+          ) : (
+            <Styled.LogoContainer
+              onClick={() => {
+                redirect("/");
+              }}
             >
-              {title}
-            </Styled.NameSpan>
-          </Styled.MainSpanContainer>
+              <Styled.LogoImg src={icon} alt="" />
+            </Styled.LogoContainer>
+          )}
+          {hideTitle ? (
+            <></>
+          ) : (
+            <Styled.MainSpanContainer>
+              <Styled.NameSpan
+                style={{ color: textColor, fontFamily: fontStyle }}
+              >
+                {title}
+              </Styled.NameSpan>
+            </Styled.MainSpanContainer>
+          )}
           <Styled.MenuContainer>
             <Menu styles={burgerMenuStyles}>
               <Styled.MenuItem
