@@ -157,6 +157,8 @@ const UpdateData: React.FC = () => {
           setTextColor(data.details.textColor);
           setHideLogo(data.details.hideLogo);
           setHideTitle(data.details.hideTitle);
+          setFontStyle(data.details.fontStyle);
+          setFontStyleAux(data.details.fontStyleAux);
           if (data.details.happyHour.daysOfWeek?.find((days) => days === 0)) {
             setDomingo(true);
           }
@@ -204,7 +206,7 @@ const UpdateData: React.FC = () => {
     const localFile = e.target.files[0];
     setBannerModal(localFile);
   };
-  const updateCompany = () => {
+  const updateCompany = async () => {
     if (
       title &&
       contactEmail &&
@@ -215,16 +217,66 @@ const UpdateData: React.FC = () => {
       nome &&
       URL
     ) {
-      //logoUpdated
-      // bannerUpdated
-      //criar if para verificar se as fotos foram alteradas.
-      //adicionar fonte secundária, e cores
-      //mainColor: "",
-      //auxColor: "",
-      //textColor: "",
-      //fontStyleAux: "",
-      //setModal(true);
-      //setModalFail(false);
+      let logoURl;
+      if (logoUpdated) {
+        const path = "/companies/imgs/";
+        logoURl = await fileUpload(
+          logoUpdated,
+          path + "logo" + logoUpdated.name
+        );
+      }
+      let bannerUrl;
+      if (bannerUpdated) {
+        const path = "/companies/imgs/";
+        bannerUrl = await fileUpload(
+          bannerUpdated,
+          path + "logo" + bannerUpdated.name
+        );
+      }
+
+      const iconRelease = logoURl ? logoURl : logo;
+      const bannerRelease = bannerUrl ? bannerUrl : banner;
+
+      const updateCompany = {
+        ...company,
+        URL,
+        address: endereco,
+        details: {
+          ...company!.details,
+          auxColor,
+          banner: bannerRelease,
+          city: cidade,
+          contactEmail,
+          contactName: nome,
+          contactNumber,
+          fontStyle,
+          fontStyleAux,
+          hideLogo,
+          hideTitle,
+          icon: iconRelease,
+          mainColor,
+          socialMedia: {
+            ...company?.details.socialMedia,
+            localization,
+          },
+          textColor,
+          title,
+          welcome,
+        },
+        title,
+        icon: iconRelease,
+      };
+
+      const res = await CompanyService.updateCompany(user!.codCompany!, {
+        ...updateCompany,
+      });
+      if (res.status) {
+        message.success("Detalhes de reserva atualizado com sucesso!");
+        handleCloseFeatureUpdate();
+      } else {
+        message.error("Verifique os campos e tente novamente");
+      }
+      console.log(updateCompany);
     } else {
       setModal(false);
       setModalFail(true);
@@ -253,9 +305,9 @@ const UpdateData: React.FC = () => {
       "hand",
     ];
 
-    const fontIndex = fonts.findIndex((font) => font === fontName);
-    const indexFinal = fontIndex + 1;
     if (isPrimary) {
+      const fontIndex = fonts.findIndex((font) => font === fontName);
+      const indexFinal = fontIndex + 1;
       const checkbox = document.getElementById(
         indexFinal.toString()
       ) as HTMLInputElement | null;
@@ -263,7 +315,14 @@ const UpdateData: React.FC = () => {
         checkbox.checked = true;
       }
     } else {
-      //tratar fonte secundária
+      const fontIndex = fonts.findIndex((font) => font === fontName);
+      const indexFinal = fontIndex + 13;
+      const checkbox = document.getElementById(
+        indexFinal.toString()
+      ) as HTMLInputElement | null;
+      if (checkbox != null) {
+        checkbox.checked = true;
+      }
     }
   };
 
@@ -442,6 +501,7 @@ const UpdateData: React.FC = () => {
             bannerText: isBannerText,
             bannerTitle: isBannerTitle,
             bannerURL: isBannerURL,
+            reservationNumber: contactReservationNumber,
             status: true,
           },
         });
