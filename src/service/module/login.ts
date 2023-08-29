@@ -53,6 +53,7 @@ export type TCompanyDetail = {
   hideLogo: boolean;
   hideTitle: boolean;
   hideWelcome: boolean;
+  centerIcon: boolean;
 };
 type TAT = {
   nanoseconds: number;

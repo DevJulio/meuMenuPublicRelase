@@ -15,6 +15,7 @@ interface IHeaderProps {
   fontStyleAux: string;
   hideLogo: boolean;
   hideTitle: boolean;
+  centerIcon: boolean;
 }
 
 const HeaderCustom: React.FC<IHeaderProps> = ({
@@ -27,6 +28,7 @@ const HeaderCustom: React.FC<IHeaderProps> = ({
   fontStyleAux,
   hideLogo,
   hideTitle,
+  centerIcon,
 }) => {
   setTimeout(() => {
     const element = document.querySelector(
@@ -48,20 +50,31 @@ const HeaderCustom: React.FC<IHeaderProps> = ({
   // localBurgerStyle.bmMorphShape.background = mainColor;
   // localBurgerStyle.bmCross.background = auxColor;
 
-  return (
-    <>
-      <Styled.Container>
-        <Styled.MainContainer style={{ backgroundColor: mainColor }}>
-          {hideLogo ? (
-            <>
-              <Styled.LogoContainer
-                onClick={() => {
-                  redirect("/");
-                }}
-              >
-              </Styled.LogoContainer>
-            </>
-          ) : (
+  const isIconOnCenter = () => {
+    if (hideLogo) {
+      return (
+        <Styled.LogoContainer
+          onClick={() => {
+            redirect("/");
+          }}
+        ></Styled.LogoContainer>
+      );
+    } else {
+      if (centerIcon) {
+        return (
+          <>
+            <Styled.LogoContainerAux
+              onClick={() => {
+                redirect("/");
+              }}
+            >
+              <Styled.LogoImg src={icon} alt="" />
+            </Styled.LogoContainerAux>
+          </>
+        );
+      } else {
+        return (
+          <>
             <Styled.LogoContainer
               onClick={() => {
                 redirect("/");
@@ -69,7 +82,17 @@ const HeaderCustom: React.FC<IHeaderProps> = ({
             >
               <Styled.LogoImg src={icon} alt="" />
             </Styled.LogoContainer>
-          )}
+          </>
+        );
+      }
+    }
+  };
+
+  return (
+    <>
+      <Styled.Container>
+        <Styled.MainContainer style={{ backgroundColor: mainColor }}>
+          {isIconOnCenter()}
           {hideTitle ? (
             <></>
           ) : (

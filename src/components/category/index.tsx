@@ -1,5 +1,6 @@
 import React from "react";
 import * as Styled from "./styles";
+import { generateFilterTag } from "../../utils/pngColors";
 
 export interface ICategory {
   icon: string;
@@ -54,7 +55,19 @@ const Category: React.FC<ICategory> = ({
         }
       }}
     >
-      <img src={icon} alt="icon" />
+      <img
+        src={icon}
+        alt="icon"
+        style={{
+          filter: `brightness(1000%) grayscale(100%) 
+          opacity(0.1)
+          drop-shadow(0 0 0 ${fontColor}) 
+          drop-shadow(0 0 0 ${fontColor})
+          drop-shadow(0 0 0 ${fontColor})
+          drop-shadow(0 0 0 ${fontColor})
+          drop-shadow(0 0 0 ${fontColor})`,
+        }}
+      />
       <span
         style={{
           color: fontColor,

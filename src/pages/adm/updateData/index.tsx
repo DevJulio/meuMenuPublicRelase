@@ -103,6 +103,7 @@ const UpdateData: React.FC = () => {
   const [hideLogo, setHideLogo] = useState<boolean>(false);
   const [hideTitle, setHideTitle] = useState<boolean>(false);
   const [hideWelcome, setHideWelcome] = useState<boolean>(false);
+  const [centerIcon, setCenterIcon] = useState<boolean>(false);
 
   const navigate = useNavigate();
 
@@ -116,12 +117,14 @@ const UpdateData: React.FC = () => {
         const resCompany: any = await CompanyService.GetCompany(
           usr.codCompany!
         );
+
         if (resCompany && resCompany.status) {
           const data: TCompany = resCompany.data;
           if (data.URL.length > 0) {
             setDisponiility(true);
           }
-          setCompany(data);
+          console.log(data);
+
           setTitle(data.title);
           setLogo(data.details.icon);
           setBanner(data.details.banner);
@@ -158,9 +161,15 @@ const UpdateData: React.FC = () => {
           setTextColor(data.details.textColor);
           setHideLogo(data.details.hideLogo);
           setHideTitle(data.details.hideTitle);
-          setHideWelcome(data.details.hideTitle);
+          setHideWelcome(data.details.hideWelcome);
+          setCenterIcon(data.details.centerIcon);
           setFontStyle(data.details.fontStyle);
           setFontStyleAux(data.details.fontStyleAux);
+          if (data.details.happyHour!.daysOfWeek?.find((days) => days === 0)) {
+            setContactReservationNumber(
+              data.details.reservation!.reservationNumber!
+            );
+          }
           if (data.details.happyHour!.daysOfWeek?.find((days) => days === 0)) {
             setDomingo(true);
           }
@@ -185,15 +194,13 @@ const UpdateData: React.FC = () => {
           setContactReservationNumber(
             data.details.reservation!.reservationNumber!
           );
-        } else {
-          console.log("não ");
         }
       };
       fetchData();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     } else {
       navigate("/login");
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const changeInput = (e: any, isBanner: boolean = false) => {
@@ -224,7 +231,7 @@ const UpdateData: React.FC = () => {
         const path = "/companies/imgs/";
         logoURl = await fileUpload(
           logoUpdated,
-          path + "logo" + logoUpdated.name
+          path + "icon" + logoUpdated.name
         );
       }
       let bannerUrl: any;
@@ -232,23 +239,26 @@ const UpdateData: React.FC = () => {
         const path = "/companies/imgs/";
         bannerUrl = await fileUpload(
           bannerUpdated,
-          path + "logo" + bannerUpdated.name
+          path + "banner" + bannerUpdated.name
         );
       }
-      console.log(user);
 
       await CompanyService.GetCompany(user!.codCompany!).then(
         async (resCompany) => {
-          const iconRelease = logoURl ? logoURl : logo;
-          const bannerRelease = bannerUrl ? bannerUrl : banner;
-          const { data } = resCompany;
+          const iconRelease = logoURl
+            ? logoURl.data
+            : resCompany.data.details.icon;
+          const bannerRelease = bannerUrl
+            ? bannerUrl.data
+            : resCompany.data.details.banner;
 
+          const { data } = resCompany;
           const updateCompany = {
-            ...company,
+            ...data,
             URL,
             address: endereco,
             details: {
-              ...company!.details,
+              ...data!.details,
               auxColor,
               banner: bannerRelease,
               city: cidade,
@@ -260,15 +270,21 @@ const UpdateData: React.FC = () => {
               hideLogo,
               hideTitle,
               hideWelcome,
+              centerIcon,
               icon: iconRelease,
               mainColor,
               happyHour: data.details.happyHour,
               offers: data.details.offers,
               reservation: data.details.reservation,
               socialMedia: {
-                ...company?.details.socialMedia,
                 localization,
+                instagram: instagramLink,
+                youtube: youtubeLink,
+                whatsapp: whatsAppLink,
+                address: endereco,
+                spotify: spotifyLink,
               },
+
               textColor,
               title,
               welcome,
@@ -286,7 +302,6 @@ const UpdateData: React.FC = () => {
           } else {
             message.error("Verifique os campos e tente novamente");
           }
-          console.log(updateCompany);
         }
       );
     } else {
@@ -505,6 +520,7 @@ const UpdateData: React.FC = () => {
           bannerText: isBannerText,
           bannerTitle: isBannerTitle,
           bannerURL: isBannerURL,
+
           status: true,
         });
 
@@ -640,7 +656,6 @@ const UpdateData: React.FC = () => {
   const handleCloseConfirmModal = () => {
     setConfirmModal(false);
   };
-
   const formatDateJs = (val: any) => {
     return `${dayjs(val, format).hour().toString()}:${dayjs(val, format)
       .minute()
@@ -2074,6 +2089,15 @@ const UpdateData: React.FC = () => {
           </Styled.ItemSpan>
 
           <Styled.MenusRow>
+            <Styled.IconCentralize>
+              <Checkbox
+                label="Centralizar logo"
+                value={centerIcon}
+                setValue={() => {
+                  setCenterIcon(!centerIcon);
+                }}
+              />
+            </Styled.IconCentralize>
             <Styled.IconCentralize>
               <Checkbox
                 label="Ocultar logo"

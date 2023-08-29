@@ -7,6 +7,7 @@ import ren from "../../assets/icons/ren.png";
 import Category, { ICategory } from "../../components/category";
 
 import all from "../../assets/icons/categories/ios/all.png";
+import allAux from "../../assets/icons/categories/ios/allAux.png";
 import renEntradas from "../../assets/icons/categories/ios/renEntradas.png";
 import renPrincipal from "../../assets/icons/categories/ios/renPrincipal.png";
 import renPrimeiro from "../../assets/icons/categories/ios/renPrimeiro.png";
@@ -148,8 +149,8 @@ const Menu: React.FC = () => {
             mainColor: "#F2E8CF",
             auxColor: "#BC4749",
             textColor: "#386641",
-            fontStyle: theme.fonts.hand,
-            fontStyleAux: theme.fonts.primary,
+            fontStyle: "hand",
+            fontStyleAux: "primary",
             welcome: "Bem-vindo(a) ao Ren.",
             banner: food,
             offers: {
@@ -203,6 +204,7 @@ const Menu: React.FC = () => {
             hideLogo: false,
             hideTitle: false,
             hideWelcome: false,
+            centerIcon: false,
           },
           icon: ren,
           isAproved: true,
@@ -246,12 +248,12 @@ const Menu: React.FC = () => {
 
   const categories: ICategory[] = [
     {
-      icon: all,
+      icon: allAux,
       label: "Todas",
       color: "white",
       bgColor: "#386641",
-      auxColor: header.auxColor,
-      fontStyle: header.fontStyle,
+      auxColor: "white",
+      fontStyle: theme.fonts.hand, // getFontStyle(company!.details.fontStyle),
     },
 
     {
@@ -259,16 +261,16 @@ const Menu: React.FC = () => {
       label: "Bebidas",
       color: "white",
       bgColor: "#386641",
-      auxColor: header.auxColor,
-      fontStyle: header.fontStyle,
+      auxColor: "white",
+      fontStyle: theme.fonts.hand, // getFontStyle(company!.details.fontStyle),
     },
     {
       icon: renEntradas,
       label: "Entradas",
       color: "white",
       bgColor: "#386641",
-      auxColor: header.auxColor,
-      fontStyle: header.fontStyle,
+      auxColor: "white",
+      fontStyle: theme.fonts.hand, // getFontStyle(company!.details.fontStyle),
     },
 
     {
@@ -276,8 +278,8 @@ const Menu: React.FC = () => {
       label: "Primeiro Prato",
       color: "white",
       bgColor: "#386641",
-      auxColor: header.auxColor,
-      fontStyle: header.fontStyle,
+      auxColor: "white",
+      fontStyle: theme.fonts.hand, // getFontStyle(company!.details.fontStyle),
     },
 
     {
@@ -285,8 +287,8 @@ const Menu: React.FC = () => {
       label: "Prato Principal",
       color: "white",
       bgColor: "#386641",
-      auxColor: header.auxColor,
-      fontStyle: header.fontStyle,
+      auxColor: "white",
+      fontStyle: theme.fonts.hand, // getFontStyle(company!.details.fontStyle),
     },
 
     {
@@ -294,8 +296,8 @@ const Menu: React.FC = () => {
       label: "Sobremesas",
       color: "white",
       bgColor: "#386641",
-      auxColor: header.auxColor,
-      fontStyle: header.fontStyle,
+      auxColor: "white",
+      fontStyle: theme.fonts.hand, // getFontStyle(company!.details.fontStyle),
     },
   ];
 
@@ -318,19 +320,19 @@ const Menu: React.FC = () => {
 
   const checkFlexSize = () => {
     let count = 0;
-    if (header.socialMedia.address) {
+    if (company?.details.socialMedia.address) {
       count = count++;
     }
-    if (header.socialMedia.instagram) {
+    if (company?.details.socialMedia.instagram) {
       count = count++;
     }
-    if (header.socialMedia.spotify) {
+    if (company?.details.socialMedia.spotify) {
       count = count++;
     }
-    if (header.socialMedia.whatsapp) {
+    if (company?.details.socialMedia.whatsapp) {
       count = count++;
     }
-    if (header.socialMedia.youtube) {
+    if (company?.details.socialMedia.youtube) {
       count = count++;
     }
     return count;
@@ -370,16 +372,22 @@ const Menu: React.FC = () => {
     //   ></iframe>
     // );
   };
-
+  const parseColorTitle = (color: string) => {
+    if (color === "#ffffff") {
+      return "#000";
+    } else {
+      return color;
+    }
+  };
   return (
     <>
       {modal && modalIten && (
         <Modal
           customWidth={isMobile() ? 90 : 60}
-          bannerColor={header.auxColor}
+          bannerColor={company!.details.auxColor}
           title={modalIten.label ? modalIten.label : ""}
           handleClose={handleClose}
-          titleFont={header.fontStyle}
+          titleFont={getFontStyle(company!.details.fontStyle)}
         >
           <FoodModalDetail modalIten={modalIten} />
         </Modal>
@@ -387,19 +395,19 @@ const Menu: React.FC = () => {
 
       {modalHappy && (
         <Modal
-          bannerColor={header.auxColor}
-          title={header.happyHourText}
+          bannerColor={company!.details.auxColor}
+          title={company!.details.happyHour!.bannerTitle}
           handleClose={handleCloseHappy}
-          titleFont={header.fontStyle}
+          titleFont={getFontStyle(company!.details.fontStyle)}
           customWidth={isMobile() ? 90 : 60}
         >
           <Styled.HappyContainer
             style={{
-              backgroundColor: header.mainColor,
-              color: header.textColor,
+              backgroundColor: company!.details.mainColor,
+              color: company!.details.textColor,
             }}
           >
-            <p>{header.happyHourTextDetail}</p>
+            <p>{company!.details.happyHour!.bannerText}</p>
             <Styled.ModalBannerImg
               src={happyhour}
               style={{ maxHeight: "13vh" }}
@@ -409,26 +417,26 @@ const Menu: React.FC = () => {
       )}
       {modalReservation && (
         <Modal
-          bannerColor={header.auxColor}
-          title={"Reserva no " + header.title}
+          bannerColor={company!.details.auxColor}
+          title={"Reserva no " + company?.title}
           handleClose={handleCloseReservation}
-          titleFont={header.fontStyle}
+          titleFont={getFontStyle(company!.details.fontStyle)}
           customWidth={isMobile() ? 90 : 60}
         >
           <Styled.HappyContainer
             style={{
-              backgroundColor: header.mainColor,
-              color: header.textColor,
+              backgroundColor: company!.details.mainColor,
+              color: company!.details.textColor,
             }}
           >
-            <p>{header.reservationTextDetail}</p>
+            <p>{company!.details.reservation?.bannerText}</p>
             <ButtonSecondary
               action={() => {
-                window.location.href = `https://api.whatsapp.com/send?phone=55${header.reservationContactNumber}&text=Olá, desejo fazer uma reserva no ${header.title}!`;
+                window.location.href = `https://api.whatsapp.com/send?phone=55${company?.details.reservation?.reservationNumber}&text=Olá, desejo fazer uma reserva no ${company?.title}!`;
               }}
               Label="clique e saiba mais."
-              color={header.mainColor}
-              bgColor={header.textColor}
+              color={company!.details.mainColor}
+              bgColor={company!.details.textColor}
             />
             <Styled.ModalBannerImg
               src={reservation}
@@ -449,6 +457,7 @@ const Menu: React.FC = () => {
             fontStyleAux={getFontStyle(company.details.fontStyleAux)}
             hideLogo={company.details.hideLogo}
             hideTitle={company.details.hideTitle}
+            centerIcon={company.details.centerIcon}
           />
           <Styled.MainContainer
             style={{
@@ -516,12 +525,12 @@ const Menu: React.FC = () => {
                     ) : (
                       <></>
                     )}
-                    {header.reservation ? (
+                    {company.details.reservation!.status ? (
                       <HomeBanner
-                        bannerDateColor={header.auxColor}
-                        bannerImg={reservation}
-                        infoSpan={header.reservationText}
-                        infoSpanColor={header.textColor}
+                        bannerDateColor={company.details.auxColor}
+                        bannerImg={company.details.reservation!.bannerURL}
+                        infoSpan={company.details.reservation!.bannerTitle}
+                        infoSpanColor={company.details.mainColor}
                       />
                     ) : (
                       <></>
@@ -540,14 +549,14 @@ const Menu: React.FC = () => {
                   }}
                 >
                   <Category
-                    fontColor={header.mainColor}
+                    fontColor={company.details.mainColor}
                     id={index + 1}
                     icon={cateItem.icon}
                     label={cateItem.label}
-                    color={cateItem.color}
-                    bgColor={cateItem.bgColor}
-                    auxColor={cateItem.auxColor}
-                    fontStyle={cateItem.fontStyle}
+                    color={company.details.mainColor}
+                    bgColor={company.details.textColor}
+                    auxColor={company.details.auxColor}
+                    fontStyle={getFontStyle(company.details.fontStyle)}
                   />
                 </a>
               ))}
@@ -556,8 +565,8 @@ const Menu: React.FC = () => {
               <>
                 <Styled.Arrow
                   style={{
-                    color: header.auxColor,
-                    fontFamily: header.fontStyle,
+                    color: company.details.auxColor,
+                    fontFamily: getFontStyle(company.details.fontStyle),
                   }}
                 >
                   Confira todo nosso menu! ➜
@@ -567,9 +576,9 @@ const Menu: React.FC = () => {
             <Styled.CarouselContainer>
               <Styled.Title
                 style={{
-                  color: header.textColor,
+                  color: company.details.textColor,
 
-                  fontFamily: header.fontStyleAux,
+                  fontFamily: getFontStyle(company.details.fontStyleAux),
                   placeSelf: "baseline",
                 }}
               >
@@ -594,9 +603,9 @@ const Menu: React.FC = () => {
                           <FoodCard
                             category=""
                             categoryIcon=""
-                            bgColor={header.auxColor}
+                            bgColor={company.details.auxColor}
                             price={foodItem.price}
-                            color={header.textColor}
+                            color={company.details.textColor}
                             label={foodItem.label}
                             description={foodItem.description}
                             img={foodItem.img}
@@ -619,9 +628,9 @@ const Menu: React.FC = () => {
                           <FoodCard
                             category=""
                             categoryIcon=""
-                            bgColor={header.auxColor}
+                            bgColor={company.details.auxColor}
                             price={foodItem.price}
-                            color={header.textColor}
+                            color={company.details.textColor}
                             label={foodItem.label}
                             description={foodItem.description}
                             img={foodItem.img}
@@ -632,11 +641,11 @@ const Menu: React.FC = () => {
             </Styled.CarouselContainer>
             <Styled.SocialMediaContainer
               style={{
-                backgroundColor: header.textColor,
+                backgroundColor: company.details.textColor,
                 flex: socialFlexCount,
               }}
             >
-              {header.socialMedia.address && (
+              {company.details.socialMedia.address && (
                 <>
                   <Styled.Icon
                     src={marker}
@@ -646,20 +655,41 @@ const Menu: React.FC = () => {
                         whereWeAre.scrollIntoView({ behavior: "smooth" });
                       }
                     }}
-                  />
-                </>
-              )}
-              {header.socialMedia.instagram && (
-                <>
-                  <Styled.Icon
-                    src={instagram}
-                    onClick={() => {
-                      window.location.href = header.socialMedia.instagram;
+                    style={{
+                      filter: `brightness(1000%) grayscale(100%) 
+                      opacity(0.1)
+                      contrast(1)
+                      drop-shadow(0 0 0 ${company.details.mainColor}) 
+                      drop-shadow(0 0 0 ${company.details.mainColor})
+                      drop-shadow(0 0 0 ${company.details.mainColor})
+                      drop-shadow(0 0 0 ${company.details.mainColor})
+                      drop-shadow(0 0 0 ${company.details.mainColor})`,
                     }}
                   />
                 </>
               )}
-              {header.socialMedia.spotify && (
+              {company.details.socialMedia.instagram && (
+                <>
+                  <Styled.Icon
+                    src={instagram}
+                    onClick={() => {
+                      window.location.href =
+                        company.details.socialMedia.instagram;
+                    }}
+                    style={{
+                      filter: `brightness(1000%) grayscale(100%) 
+                      opacity(0.1)
+                      contrast(1)
+                      drop-shadow(0 0 0 ${company.details.mainColor}) 
+                      drop-shadow(0 0 0 ${company.details.mainColor})
+                      drop-shadow(0 0 0 ${company.details.mainColor})
+                      drop-shadow(0 0 0 ${company.details.mainColor})
+                      drop-shadow(0 0 0 ${company.details.mainColor})`,
+                    }}
+                  />
+                </>
+              )}
+              {company.details.socialMedia.spotify && (
                 <>
                   <Styled.Icon
                     src={spotify}
@@ -669,25 +699,56 @@ const Menu: React.FC = () => {
                         sound.scrollIntoView({ behavior: "smooth" });
                       }
                     }}
-                  />
-                </>
-              )}
-              {header.socialMedia.whatsapp && (
-                <>
-                  <Styled.Icon
-                    src={whatsapp}
-                    onClick={() => {
-                      window.location.href = `https://api.whatsapp.com/send?phone=55${header.reservationContactNumber}&text=Olá, quero conhecer melhor o ${header.title}!`;
+                    style={{
+                      filter: `brightness(1000%) grayscale(100%) 
+                      opacity(0.1)
+                      contrast(1)
+                      drop-shadow(0 0 0 ${company.details.mainColor}) 
+                      drop-shadow(0 0 0 ${company.details.mainColor})
+                      drop-shadow(0 0 0 ${company.details.mainColor})
+                      drop-shadow(0 0 0 ${company.details.mainColor})
+                      drop-shadow(0 0 0 ${company.details.mainColor})`,
                     }}
                   />
                 </>
               )}
-              {header.socialMedia.youtube && (
+              {company.details.socialMedia.whatsapp && (
+                <>
+                  <Styled.Icon
+                    src={whatsapp}
+                    onClick={() => {
+                      window.location.href = `https://api.whatsapp.com/send?phone=55${header.reservationContactNumber}&text=Olá, quero conhecer melhor o ${company.title}!`;
+                    }}
+                    style={{
+                      filter: `brightness(1000%) grayscale(100%) 
+                      opacity(0.1)
+                      contrast(1)
+                      drop-shadow(0 0 0 ${company.details.mainColor}) 
+                      drop-shadow(0 0 0 ${company.details.mainColor})
+                      drop-shadow(0 0 0 ${company.details.mainColor})
+                      drop-shadow(0 0 0 ${company.details.mainColor})
+                      drop-shadow(0 0 0 ${company.details.mainColor})`,
+                    }}
+                  />
+                </>
+              )}
+              {company.details.socialMedia.youtube && (
                 <>
                   <Styled.Icon
                     src={youtube}
                     onClick={() => {
-                      window.location.href = header.socialMedia.youtube;
+                      window.location.href =
+                        company.details.socialMedia.youtube;
+                    }}
+                    style={{
+                      filter: `brightness(1000%) grayscale(100%) 
+                      opacity(0.1)
+                      contrast(1)
+                      drop-shadow(0 0 0 ${company.details.mainColor}) 
+                      drop-shadow(0 0 0 ${company.details.mainColor})
+                      drop-shadow(0 0 0 ${company.details.mainColor})
+                      drop-shadow(0 0 0 ${company.details.mainColor})
+                      drop-shadow(0 0 0 ${company.details.mainColor})`,
                     }}
                   />
                 </>
@@ -695,8 +756,8 @@ const Menu: React.FC = () => {
             </Styled.SocialMediaContainer>
             <Styled.Arrow
               style={{
-                color: header.auxColor,
-                fontFamily: header.fontStyle,
+                color: company.details.auxColor,
+                fontFamily: getFontStyle(company.details.fontStyle),
                 marginBottom: "-10px",
                 marginTop: "1vh",
               }}
@@ -718,11 +779,24 @@ const Menu: React.FC = () => {
                       marginTop: "4vh",
                     }}
                   >
-                    <Styled.LogoImg src={menu} alt="icone" />
+                    <Styled.LogoImg
+                      src={menu}
+                      alt="icone"
+                      style={{
+                        filter: `brightness(1000%) grayscale(100%) 
+                      opacity(0.1)
+                      contrast(1)
+                      drop-shadow(0 0 0 ${company.details.mainColor}) 
+                      drop-shadow(0 0 0 ${company.details.mainColor})
+                      drop-shadow(0 0 0 ${company.details.mainColor})
+                      drop-shadow(0 0 0 ${company.details.mainColor})
+                      drop-shadow(0 0 0 ${company.details.mainColor})`,
+                      }}
+                    />
                     <Styled.Title
                       style={{
-                        color: header.mainColor,
-                        fontFamily: header.fontStyleAux,
+                        color: company.details.mainColor,
+                        fontFamily: getFontStyle(company.details.fontStyle),
                         marginLeft: "0vw",
                         fontSize: theme.fontSize.xxlg,
                       }}
@@ -757,9 +831,9 @@ const Menu: React.FC = () => {
                                 <FoodCard
                                   category=""
                                   categoryIcon=""
-                                  bgColor={header.auxColor}
+                                  bgColor={company.details.auxColor}
                                   price={foodItem.price}
-                                  color={header.textColor}
+                                  color={company.details.textColor}
                                   label={foodItem.label}
                                   description={foodItem.description}
                                   img={foodItem.img}
@@ -779,9 +853,9 @@ const Menu: React.FC = () => {
                                 <FoodCard
                                   category=""
                                   categoryIcon=""
-                                  bgColor={header.auxColor}
+                                  bgColor={company!.details.auxColor}
                                   price={foodItem.price}
-                                  color={header.textColor}
+                                  color={company!.details.textColor}
                                   label={foodItem.label}
                                   description={foodItem.description}
                                   img={foodItem.img}
@@ -792,11 +866,11 @@ const Menu: React.FC = () => {
                   </div>
                 </>
               }
-              outsideColor={header.mainColor}
-              insideColor={header.textColor}
+              outsideColor={company.details.mainColor}
+              insideColor={company.details.textColor}
             ></BorderPage>
 
-            {header.offers && (
+            {company.details.offers?.status && (
               <BorderPage
                 destop={undefined}
                 mobile={
@@ -807,11 +881,24 @@ const Menu: React.FC = () => {
                         marginTop: "4vh",
                       }}
                     >
-                      <Styled.LogoImg src={renOffers} alt="icone" />
+                      <Styled.LogoImg
+                        src={renOffers}
+                        alt="icone"
+                        style={{
+                          filter: `brightness(1000%) grayscale(100%) 
+                      opacity(0.1)
+                      contrast(1)
+                      drop-shadow(0 0 0 ${company.details.mainColor}) 
+                      drop-shadow(0 0 0 ${company.details.mainColor})
+                      drop-shadow(0 0 0 ${company.details.mainColor})
+                      drop-shadow(0 0 0 ${company.details.mainColor})
+                      drop-shadow(0 0 0 ${company.details.mainColor})`,
+                        }}
+                      />
                       <Styled.Title
                         style={{
-                          color: header.mainColor,
-                          fontFamily: header.fontStyleAux,
+                          color: company.details.mainColor,
+                          fontFamily: getFontStyle(company.details.fontStyle),
                           marginLeft: "0vw",
                           fontSize: theme.fontSize.xxlg,
                         }}
@@ -898,16 +985,16 @@ const Menu: React.FC = () => {
                     </div>
                   </>
                 }
-                outsideColor={header.textColor}
-                insideColor={header.textColor}
+                outsideColor={company!.details.textColor}
+                insideColor={company!.details.textColor}
                 hasZeroPadding
               ></BorderPage>
             )}
 
-            {header.socialMedia.address !== "" && (
+            {company.details.socialMedia.address !== "" && (
               <BorderPage
-                outsideColor={header.textColor}
-                insideColor={header.mainColor}
+                outsideColor={company!.details.textColor}
+                insideColor={company.details.mainColor}
                 destop={<></>}
                 mobile={
                   <>
@@ -917,11 +1004,24 @@ const Menu: React.FC = () => {
                         marginTop: "2vh",
                       }}
                     >
-                      <Styled.LogoImg src={renMarker} alt="icone" />
+                      <Styled.LogoImg
+                        src={renMarker}
+                        alt="icone"
+                        style={{
+                          filter: `brightness(1000%) grayscale(100%) 
+                        opacity(0.1)
+                        contrast(1)
+                        drop-shadow(0 0 0 ${company.details.textColor}) 
+                        drop-shadow(0 0 0 ${company.details.textColor})
+                        drop-shadow(0 0 0 ${company.details.textColor})
+                        drop-shadow(0 0 0 ${company.details.textColor})
+                        drop-shadow(0 0 0 ${company.details.textColor})`,
+                        }}
+                      />
                       <Styled.Title
                         style={{
-                          color: header.textColor,
-                          fontFamily: header.fontStyleAux,
+                          color: company!.details.textColor,
+                          fontFamily: getFontStyle(company.details.fontStyle),
                           marginLeft: "0vw",
                           fontSize: theme.fontSize.xxlg,
                         }}
@@ -930,7 +1030,7 @@ const Menu: React.FC = () => {
                       </Styled.Title>
                     </Styled.TitleAndLogo>
                     <Styled.MapContainer>
-                      {/*generateGoogleMaps(header.socialMedia.address)*/}
+                      {/*generateGoogleMaps(company.details.socialMedia.address)*/}
                       <iframe
                         title="Map"
                         src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d30571.286431759458!2d-49.280785039213846!3d-16.70634218493767!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x935ef12544136db3%3A0x1b20c322bbad1d83!2sGoi%C3%A2nia%20Shopping!5e0!3m2!1spt-BR!2sbr!4v1677269482432!5m2!1spt-BR!2sbr"
@@ -946,10 +1046,10 @@ const Menu: React.FC = () => {
               ></BorderPage>
             )}
 
-            {header.socialMedia.spotify && (
+            {company.details.socialMedia.spotify && (
               <BorderPage
-                outsideColor={header.mainColor}
-                insideColor={header.auxColor}
+                outsideColor={company.details.mainColor}
+                insideColor={company!.details.auxColor}
                 destop={<></>}
                 mobile={
                   <>
@@ -962,17 +1062,17 @@ const Menu: React.FC = () => {
                       <Styled.LogoImg src={spotify} alt="icone" />
                       <Styled.Title
                         style={{
-                          color: header.mainColor,
-                          fontFamily: header.fontStyleAux,
+                          color: company.details.mainColor,
+                          fontFamily: getFontStyle(company.details.fontStyle),
                           marginLeft: "0vw",
                           fontSize: theme.fontSize.xlg,
                         }}
                       >
-                        Esse é o som do {header.title}
+                        Esse é o som do {company.title}
                       </Styled.Title>
                     </Styled.TitleAndLogo>
                     <Styled.MapContainer>
-                      {generateSpotify(header.socialMedia.spotify)}
+                      {generateSpotify(company.details.socialMedia.spotify)}
                     </Styled.MapContainer>
                   </>
                 }
@@ -981,8 +1081,8 @@ const Menu: React.FC = () => {
 
             {header.reservation && (
               <BorderPage
-                outsideColor={header.auxColor}
-                insideColor={header.textColor}
+                outsideColor={company!.details.auxColor}
+                insideColor={company!.details.textColor}
                 destop={<></>}
                 mobile={
                   <>
@@ -994,13 +1094,13 @@ const Menu: React.FC = () => {
                       <Styled.LogoImg src={renReservation} alt="icone" />
                       <Styled.Title
                         style={{
-                          color: header.mainColor,
-                          fontFamily: header.fontStyleAux,
+                          color: company.details.mainColor,
+                          fontFamily: getFontStyle(company.details.fontStyle),
                           marginLeft: "0vw",
                           fontSize: theme.fontSize.xlg,
                         }}
                       >
-                        Faça sua reserva no {header.title}
+                        Faça sua reserva no {company.title}
                       </Styled.Title>
                     </Styled.TitleAndLogo>
                     <Styled.MapContainer>
@@ -1009,8 +1109,8 @@ const Menu: React.FC = () => {
                           setModalReservation(true);
                         }}
                         Label="clique e saiba mais."
-                        color={header.textColor}
-                        bgColor={header.mainColor}
+                        color={company!.details.textColor}
+                        bgColor={company.details.mainColor}
                       />
                     </Styled.MapContainer>
                   </>
