@@ -194,7 +194,7 @@ const Menu: React.FC = () => {
                 lat: 0,
                 lng: 0,
               },
-              instagram: "",
+              instagram: "https://www.instagram.com/filhojulio_/",
               youtube: "",
               whatsapp: "64996140938",
               address: "Goiânia Shopping, segundo piso.",
@@ -220,6 +220,14 @@ const Menu: React.FC = () => {
       } else {
         const urlRes = await CompanyService.GetCompanyByURL(empresa!);
         if (urlRes) {
+          const iframeData = document.getElementById("iframeId");
+          if (iframeData) {
+            const t = urlRes as TCompany;
+            iframeData.setAttribute(
+              "src",
+              `https://maps.google.com/maps?q=${t.details.socialMedia.localization.lat},${t.details.socialMedia.localization.lng}&hl=es;&output=embed`
+            );
+          }
           setCompany(urlRes);
         } else {
           message.error("erro ao acessar o cardápio, tente novamente");
@@ -231,8 +239,6 @@ const Menu: React.FC = () => {
     } else {
       navigate("/home");
     }
-
-    //os dois em estados TCompany;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -717,7 +723,7 @@ const Menu: React.FC = () => {
                   <Styled.Icon
                     src={whatsapp}
                     onClick={() => {
-                      window.location.href = `https://api.whatsapp.com/send?phone=55${header.reservationContactNumber}&text=Olá, quero conhecer melhor o ${company.title}!`;
+                      window.location.href = `https://api.whatsapp.com/send?phone=55${company.details.reservation?.reservationNumber}&text=Olá, quero conhecer melhor o ${company.title}!`;
                     }}
                     style={{
                       filter: `brightness(1000%) grayscale(100%) 
@@ -1030,16 +1036,31 @@ const Menu: React.FC = () => {
                       </Styled.Title>
                     </Styled.TitleAndLogo>
                     <Styled.MapContainer>
-                      {/*generateGoogleMaps(company.details.socialMedia.address)*/}
-                      <iframe
-                        title="Map"
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d30571.286431759458!2d-49.280785039213846!3d-16.70634218493767!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x935ef12544136db3%3A0x1b20c322bbad1d83!2sGoi%C3%A2nia%20Shopping!5e0!3m2!1spt-BR!2sbr!4v1677269482432!5m2!1spt-BR!2sbr"
-                        width={width - 25}
-                        height="400"
-                        style={{ border: "0", borderRadius: "25px" }}
-                        loading="lazy"
-                        referrerPolicy="no-referrer-when-downgrade"
-                      ></iframe>
+                      {company.title !== "Ren" ? (
+                        <>
+                          <iframe
+                            title="Map"
+                            id="iframeId"
+                            width={width - 25}
+                            height="400"
+                            style={{ border: "0", borderRadius: "25px" }}
+                            loading="lazy"
+                            referrerPolicy="no-referrer-when-downgrade"
+                          ></iframe>
+                        </>
+                      ) : (
+                        <>
+                          <iframe
+                            title="Map"
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d30571.286431759458!2d-49.280785039213846!3d-16.70634218493767!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x935ef12544136db3%3A0x1b20c322bbad1d83!2sGoi%C3%A2nia%20Shopping!5e0!3m2!1spt-BR!2sbr!4v1677269482432!5m2!1spt-BR!2sbr"
+                            width={width - 25}
+                            height="400"
+                            style={{ border: "0", borderRadius: "25px" }}
+                            loading="lazy"
+                            referrerPolicy="no-referrer-when-downgrade"
+                          ></iframe>
+                        </>
+                      )}
                     </Styled.MapContainer>
                   </>
                 }
@@ -1059,7 +1080,20 @@ const Menu: React.FC = () => {
                         marginTop: "2vh",
                       }}
                     >
-                      <Styled.LogoImg src={spotify} alt="icone" />
+                      <Styled.LogoImg
+                        src={spotify}
+                        alt="icone"
+                        style={{
+                          filter: `brightness(1000%) grayscale(100%) 
+                      opacity(0.1)
+                      contrast(1)
+                      drop-shadow(0 0 0 ${company.details.mainColor}) 
+                      drop-shadow(0 0 0 ${company.details.mainColor})
+                      drop-shadow(0 0 0 ${company.details.mainColor})
+                      drop-shadow(0 0 0 ${company.details.mainColor})
+                      drop-shadow(0 0 0 ${company.details.mainColor})`,
+                        }}
+                      />
                       <Styled.Title
                         style={{
                           color: company.details.mainColor,
@@ -1079,7 +1113,7 @@ const Menu: React.FC = () => {
               ></BorderPage>
             )}
 
-            {header.reservation && (
+            {company.details.reservation?.status && (
               <BorderPage
                 outsideColor={company!.details.auxColor}
                 insideColor={company!.details.textColor}
@@ -1091,7 +1125,20 @@ const Menu: React.FC = () => {
                         marginTop: "2vh",
                       }}
                     >
-                      <Styled.LogoImg src={renReservation} alt="icone" />
+                      <Styled.LogoImg
+                        src={renReservation}
+                        alt="icone"
+                        style={{
+                          filter: `brightness(1000%) grayscale(100%) 
+                      opacity(0.1)
+                      contrast(1)
+                      drop-shadow(0 0 0 ${company.details.auxColor}) 
+                      drop-shadow(0 0 0 ${company.details.auxColor})
+                      drop-shadow(0 0 0 ${company.details.auxColor})
+                      drop-shadow(0 0 0 ${company.details.auxColor})
+                      drop-shadow(0 0 0 ${company.details.auxColor})`,
+                        }}
+                      />
                       <Styled.Title
                         style={{
                           color: company.details.mainColor,
