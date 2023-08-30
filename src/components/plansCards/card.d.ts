@@ -14,4 +14,14 @@ export type TCardProps = {
   isLast?: boolean;
   customWidth?: boolean;
   url?: string;
+  status?: boolean;
+  solicitationDesc?: string;
+  requester?: string;
+};
+export type TCardPropsAux = {
+  docId: string;
+  status: boolean;
+  solicitationDesc: string;
+  requester: string;
+  title: string;
 };

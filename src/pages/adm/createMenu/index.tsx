@@ -47,7 +47,7 @@ const MenuMeuMenu: React.FC = () => {
                 if (foodRes) {
                   const parseFood = foodRes.data as TCardProps[];
                   const parseFoodAux = parseFood.filter(
-                    (food) => food.isDrink === false
+                    (food) => food.isDrink === false && food.status === true
                   );
                   parseFoodAux.push({
                     icon: categorias,
@@ -71,7 +71,7 @@ const MenuMeuMenu: React.FC = () => {
                 if (drinkRes) {
                   const parseDrink = drinkRes.data as TCardProps[];
                   const parseDrinkAux = parseDrink.filter(
-                    (food) => food.isDrink === true
+                    (food) => food.isDrink === true && food.status === true
                   );
                   parseDrinkAux.push({
                     icon: categorias,
@@ -105,6 +105,7 @@ const MenuMeuMenu: React.FC = () => {
     } else {
       navigate("/login");
     }
+    // eslint-disable-next-line
   }, [mainCategory]);
 
   const navigate = useNavigate();
@@ -155,15 +156,34 @@ const MenuMeuMenu: React.FC = () => {
   const drinkRows = dividirArray(drinkCategories, 3);
 
   const addCategory = async () => {
-    console.log(categoryTitle, categoryDesc);
-    //TODO: Criar um esquema para solicitar nova categoria
-    message.success({
-      content:
-        "Suceso ao solicitar de cadastro de categoria, aguarde retorno da equipe MEU MENU!",
-      duration: 10,
-    });
-
-    //chamar api para uma tabela com solicitaçoes de criação de categorias.
+    const unparsedUser = user as any;
+    console.log(unparsedUser);
+    if (categoryTitle && categoryDesc) {
+      try {
+        const resCategory: any = await CategoryService.setCategory({
+          status: false,
+          solicitationDesc: categoryDesc,
+          title: categoryTitle,
+          requester: unparsedUser.data.title,
+        });
+        if (resCategory.status === 200) {
+          handleCloseCategory();
+          message.success({
+            content:
+              "Suceso ao solicitar de cadastro de categoria, aguarde retorno da equipe MEU MENU!",
+            duration: 5,
+          });
+        }
+      } catch (error) {
+        message.error({
+          content: "verifique os campos e tente novamente",
+        });
+      }
+    } else {
+      message.error({
+        content: "verifique os campos e tente novamente",
+      });
+    }
   };
 
   return (

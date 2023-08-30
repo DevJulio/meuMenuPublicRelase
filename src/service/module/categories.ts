@@ -53,4 +53,28 @@ export class CategoryService {
       return false;
     }
   }
+  static async getCategorySolicitations() {
+    try {
+      const res = await api.get("/categories/solicitations");
+      console.log(res);
+      return res;
+    } catch (error) {
+      console.log(error);
+      console.log(error, (error as AxiosError).message);
+      return false;
+    }
+  }
+
+  static async deleteCategory(docId: string) {
+    console.log(docId);
+    
+    try {
+      const res = await api.delete(`/categories/delete/${docId}`, {});
+      if (res) {
+        return res.data;
+      }
+    } catch (error) {
+      message.error((error as AxiosError).message);
+    }
+  }
 }

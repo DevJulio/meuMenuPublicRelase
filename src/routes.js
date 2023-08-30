@@ -29,6 +29,7 @@ import StaffHome from "./pages/adm/staff";
 import JHome from "./pages/jAdm";
 import JSolicitations from "./pages/jAdm/pages/solicitations";
 import JCategories from "./pages/jAdm/pages/categories";
+import JCategoriesSolicitations from "./pages/jAdm/pages/categories/solicitations";
 
 function RoutesList() {
   return (
@@ -72,6 +73,10 @@ function RoutesList() {
         <Route path="/j/adm/home" element={<JHome />} />
         <Route path="/j/adm/solicitations" element={<JSolicitations />} />
         <Route path="/j/adm/categories" element={<JCategories />} />
+        <Route
+          path="/j/adm/categories/solicitations"
+          element={<JCategoriesSolicitations />}
+        />
       </Routes>
     </BrowserRouter>
   );

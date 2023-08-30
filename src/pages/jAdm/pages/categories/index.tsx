@@ -53,7 +53,7 @@ const JCategories: React.FC = () => {
                 if (foodRes) {
                   const parseFood = foodRes.data as TCardProps[];
                   const parseFoodAux = parseFood.filter(
-                    (food) => food.isDrink === false
+                    (food) => food.isDrink === false && food.status === true
                   );
                   parseFoodAux.push({
                     icon: categorias,
@@ -84,7 +84,7 @@ const JCategories: React.FC = () => {
                 if (drinkRes) {
                   const parseDrink = drinkRes.data as TCardProps[];
                   const parseDrinkAux = parseDrink.filter(
-                    (food) => food.isDrink === true
+                    (food) => food.isDrink === true && food.status === true
                   );
                   parseDrinkAux.push({
                     icon: categorias,
@@ -204,6 +204,7 @@ const JCategories: React.FC = () => {
           textColor,
           customWidth: true,
           isDrink: mainCategory === "beber" ? true : false,
+          status: true,
         };
         const resCategory: any = await CategoryService.setCategory(category);
         if (resCategory.status === 200) {
@@ -440,6 +441,17 @@ const JCategories: React.FC = () => {
         <Styled.CategoryContainer id="mainCategory">
           <Styled.ItemSpan>Categoria: </Styled.ItemSpan>
           <Styled.CardsContainer>
+            <div
+              style={{
+                width: isMobile() ? "80%" : "50%",
+                marginRight: "1vw",
+              }}
+              onClick={() => {
+                navigate("/j/adm/categories/solicitations");
+              }}
+            >
+              <Homecard {...mainCategories[2]} />
+            </div>
             <div
               style={{
                 width: isMobile() ? "80%" : "50%",

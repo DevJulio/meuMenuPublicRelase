@@ -32,7 +32,7 @@ const JSolicitations: React.FC = () => {
           console.log(resSolicitations.data);
           setSolicitations(
             resSolicitations.data.filter(
-              (req: TCompany) => req.isAproved !== false
+              (req: TCompany) => req.statusCadastro === false
             )
           );
         } else {
