@@ -6,7 +6,6 @@ import * as Styled from "./styles";
 import ren from "../../assets/icons/ren.png";
 import Category, { ICategory } from "../../components/category";
 
-import all from "../../assets/icons/categories/ios/all.png";
 import allAux from "../../assets/icons/categories/ios/allAux.png";
 import renEntradas from "../../assets/icons/categories/ios/renEntradas.png";
 import renPrincipal from "../../assets/icons/categories/ios/renPrincipal.png";
@@ -102,38 +101,6 @@ const Menu: React.FC = () => {
   const [modalReservation, setModalReservation] = useState<boolean>(false);
   const [company, setCompany] = useState<TCompany>();
 
-  const header = {
-    icon: ren,
-    title: "Ren.",
-    mainColor: "#F2E8CF",
-    auxColor: "#BC4749",
-    textColor: "#386641",
-    fontStyle: theme.fonts.hand,
-    fontStyleAux: theme.fonts.primary,
-    welcome: "Bem-vindo(a) ao Ren.",
-    banner: food,
-    offers: true,
-    hasHappyHour: true,
-    reservation: true,
-    reservationTextDetail:
-      "Evite filas de espera, faça sua reserva no Ren, entre em contato com o número a baixo e verifique a disponibilidade!",
-    reservationContactNumber: "64996140938",
-    offersText: "Confira as nossas promoções!",
-    happyHourText: "É dia de happy hour no Ren!",
-    happyHourTextDetail:
-      "O happy hour é oferecido de segunda a sexta-feira, das 17h às 20h, Durante o happy hour, nossos clientes podem desfrutar de bebidas com descontos especiais, como cervejas, vinhos e coquetéis.",
-    reservationText: "Reserve sua mesa!",
-    socialMedia: {
-      instagram: "//",
-      spotify:
-        "https://open.spotify.com/playlist/4ZlE96y3xaHLbycBFe4pWW?si=f759da23f8f84108",
-      youtube: "",
-      whatsapp: "//",
-      address:
-        "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d0!2d0!3d0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zM4wNTInNTcuNyJOIDDCsDI3JzE0LjUiVw!5e0!3m2!1spt-BR!2sbr!4v1628942353270!5m2!1spt-BR!2sbr",
-      //"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d30571.286431759458!2d-49.280785039213846!3d-16.70634218493767!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x935ef12544136db3%3A0x1b20c322bbad1d83!2sGoi%C3%A2nia%20Shopping!5e0!3m2!1spt-BR!2sbr!4v1677269482432!5m2!1spt-BR!2sbr",
-    },
-  };
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -363,28 +330,6 @@ const Menu: React.FC = () => {
     );
   };
 
-  const generateGoogleMaps = (link: string) => {
-    //Exibir mapa baseado na lat lon
-    return link;
-    // return (
-    //   <iframe
-    //     title="Map"
-    //     src={link}
-    //     width={width - 25}
-    //     height="400"
-    //     style={{ border: "0", borderRadius: "25px" }}
-    //     loading="lazy"
-    //     referrerPolicy="no-referrer-when-downgrade"
-    //   ></iframe>
-    // );
-  };
-  const parseColorTitle = (color: string) => {
-    if (color === "#ffffff") {
-      return "#000";
-    } else {
-      return color;
-    }
-  };
   return (
     <>
       {modal && modalIten && (

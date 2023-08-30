@@ -28,6 +28,7 @@ import Staff from "./pages/adm/adm/staff";
 import StaffHome from "./pages/adm/staff";
 import JHome from "./pages/jAdm";
 import JSolicitations from "./pages/jAdm/pages/solicitations";
+import JCategories from "./pages/jAdm/pages/categories";
 
 function RoutesList() {
   return (
@@ -70,6 +71,7 @@ function RoutesList() {
         {/* J-ADM */}
         <Route path="/j/adm/home" element={<JHome />} />
         <Route path="/j/adm/solicitations" element={<JSolicitations />} />
+        <Route path="/j/adm/categories" element={<JCategories />} />
       </Routes>
     </BrowserRouter>
   );

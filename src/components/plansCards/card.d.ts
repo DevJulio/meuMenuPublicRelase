@@ -4,6 +4,8 @@ export type TCardProps = {
   text: string;
   mainColor: string;
   auxColor: string;
+  docId?: string;
+  isDrink?: boolean;
   textColor?: string;
   price?: number;
   list?: string[];

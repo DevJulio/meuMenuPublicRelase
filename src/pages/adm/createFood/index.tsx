@@ -28,9 +28,8 @@ const CreateFood: React.FC = () => {
   const [grape, setGrape] = useState<string>("");
   const [cervejaEmbalagem, setCervejaEmbalagem] = useState<string>("");
 
-  const meuMenuFoodCategory = localStorage.getItem("meuMenuFoodCategory");
-  const meuMenuFoodType = localStorage.getItem("meuMenuFoodType");
-console.log(meuMenuFoodType);
+  const meuMenuFoodCategory = localStorage.getItem("@meumenu/foodcategory");
+  const meuMenuFoodType = localStorage.getItem("@meumenu/foodType");
 
   const [modal, setModal] = useState<boolean>(false);
   const [modalFail, setModalFail] = useState<boolean>(false);
@@ -55,7 +54,7 @@ console.log(meuMenuFoodType);
   const handleCloseFail = () => {
     setModalFail(false);
   };
-  console.log({ meuMenuFoodCategory });
+  console.log({ meuMenuFoodCategory, meuMenuFoodType });
   return (
     <>
       <Header />
@@ -194,8 +193,6 @@ console.log(meuMenuFoodType);
             </Styled.IconCentralize>
           </Styled.MenusRow>
 
-
-
           {meuMenuFoodType === "beber" && (
             <>
               <Styled.MenusRow>
@@ -219,12 +216,6 @@ console.log(meuMenuFoodType);
               </Styled.MenusRow>
             </>
           )}
-
-
-
-
-
-
 
           {meuMenuFoodType === "beber" && (
             <>

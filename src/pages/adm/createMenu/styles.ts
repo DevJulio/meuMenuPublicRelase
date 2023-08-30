@@ -145,6 +145,11 @@ export const ModalContainer = styled.div`
  display: flex;
  margin-bottom: 5vh;
  flex-direction: column;
+   .form-row {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 1vh;
+  }
 `;
 export const FormItemContainer = styled.div`
   margin-left: 40px;
