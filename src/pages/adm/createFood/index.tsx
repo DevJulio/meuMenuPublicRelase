@@ -16,6 +16,8 @@ import {
   TamanhosLatas,
   cervejaRefriEmbalagens,
 } from "./embalagems";
+import { CompanyService } from "../../../service/module/company";
+import { message } from "antd";
 
 const CreateFood: React.FC = () => {
   const [name, setName] = useState<string>("Seu prato");
@@ -39,14 +41,26 @@ const CreateFood: React.FC = () => {
     setBanner(localFile);
   };
 
-  const createRequest = () => {
-    if (name && price && descriptionText && harmonizacaoText && banner) {
-      setModal(true);
-      setModalFail(false);
-    } else {
-      setModal(false);
-      setModalFail(true);
-    }
+  const createRequest = async () => {
+    console.log({
+      meuMenuFoodCategory,
+      meuMenuFoodType,
+      name,
+      price,
+      descriptionText,
+      harmonizacaoText,
+      banner,
+    });
+
+    //Verificar se categoria meuMenuFoodCategory já existe, se não, cadastrar ela na raiz "categories" com icon e label ouu nova coleção (melhor ideia)
+
+    //if (name && price && descriptionText && harmonizacaoText && banner) {
+    //  setModal(true);
+    //  setModalFail(false);
+    //} else {
+    //  setModal(false);
+    //  setModalFail(true);
+    //}
   };
   const handleClose = () => {
     setModal(false);
@@ -389,7 +403,7 @@ const CreateFood: React.FC = () => {
               </Styled.MenusRow>
             </>
           )}
-          {meuMenuFoodCategory === "champagne/Espumantes" && (
+          {meuMenuFoodCategory === "Champagne/Espumantes" && (
             <>
               <Styled.MenusRow>
                 <Styled.FormItemContainer>

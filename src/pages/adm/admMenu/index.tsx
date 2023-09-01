@@ -203,7 +203,19 @@ const AdmMenu: React.FC = () => {
                 }}
               >
                 <Styled.CateItem>
-                  <Styled.CateIcon src={cateItem.icon} />
+                  <Styled.CateIcon
+                    src={cateItem.icon}
+                    style={{
+                      filter: `brightness(1000%) grayscale(100%) 
+                        opacity(0.1)
+                        drop-shadow(0 0 0 white) 
+                        drop-shadow(0 0 0 white)
+                        drop-shadow(0 0 0 white)
+                        drop-shadow(0 0 0 white)
+                        drop-shadow(0 0 0 white)`,
+                    }}
+                  />
+                  {/* mudar cores dos ícones*/}
                   <span>{cateItem.label}</span>
                 </Styled.CateItem>
               </a>

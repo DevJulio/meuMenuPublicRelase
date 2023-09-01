@@ -199,6 +199,27 @@ const SolicitationMeuMenu: React.FC = () => {
             const resCompany: any = await CompanyService.setCompany(company);
             if (resCompany.status === 200) {
               const companyDocId = resCompany.data;
+
+              try {
+                await CompanyService.setCompanySubCol({
+                  docId: companyDocId,
+                  mainColection: "company",
+                  subColection: "categories",
+                });
+              } catch (error) {
+                console.log(error);
+              }
+
+              try {
+                await CompanyService.setCompanySubCol({
+                  docId: companyDocId,
+                  mainColection: "company",
+                  subColection: "menu",
+                });
+              } catch (error) {
+                console.log(error);
+              }
+
               const user: TUser = {
                 name: nome,
                 statusCadastro: false,
@@ -657,7 +678,7 @@ const SolicitationMeuMenu: React.FC = () => {
                   <span className="placer">Localização</span>
                   <ButtonSecondary
                     action={() => {
-                      setModal(true);
+                      setModalAux(true);
                     }}
                     Label="Clique para abrir mapa"
                     color={theme.colors.yellow.palete}

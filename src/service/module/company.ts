@@ -39,6 +39,7 @@ export class CompanyService {
       const res = await api.get("/companies/url", {
         params: { URL },
       });
+      console.log(res);
       if (res) {
         return res.data;
       }
@@ -87,6 +88,16 @@ export class CompanyService {
       }
     } catch (error) {
       message.error((error as AxiosError).message);
+    }
+  }
+  static async setCompanySubCol(data: any) {
+    try {
+      const res = await api.post("/utils/create-sub", data, {});
+      return res;
+    } catch (error) {
+      console.log(error, " setCompany", (error as AxiosError).message);
+      message.error("Verifique os dados cadastrados e tente novamente");
+      return false;
     }
   }
 }

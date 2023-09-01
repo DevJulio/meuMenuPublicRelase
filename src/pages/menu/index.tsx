@@ -186,6 +186,7 @@ const Menu: React.FC = () => {
         setCompany(REN);
       } else {
         const urlRes = await CompanyService.GetCompanyByURL(empresa!);
+        console.log(urlRes);
         if (urlRes) {
           const iframeData = document.getElementById("iframeId");
           if (iframeData) {
