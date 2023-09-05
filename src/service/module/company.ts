@@ -36,7 +36,7 @@ export class CompanyService {
   }
   static async GetCompanyByURL(URL: string) {
     try {
-      const res = await api.get("/companies/url", {
+      const res = await api.get("/companies/data", {
         params: { URL },
       });
       console.log(res);
@@ -95,7 +95,7 @@ export class CompanyService {
       const res = await api.post("/utils/create-sub", data, {});
       return res;
     } catch (error) {
-      console.log(error, " setCompany", (error as AxiosError).message);
+      console.log(error, " setCompanySubCol", (error as AxiosError).message);
       message.error("Verifique os dados cadastrados e tente novamente");
       return false;
     }

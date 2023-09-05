@@ -10,7 +10,7 @@ import ButtonSecondary from "../../../../components/buttons/secondary";
 import Input from "../../../../components/input";
 import isMobile from "is-mobile";
 import foods, { renCategories } from "../../../menu/foods";
-import { ICategory } from "../../../../components/category";
+import { TCategory } from "../../../../components/category";
 import { TCounter } from "../../keepOffersCombo";
 import { message } from "antd";
 
@@ -249,10 +249,10 @@ const Comanda: React.FC = () => {
   };
 
   const renIndex = renCategories.findIndex(
-    (categoria) => categoria.label === "Todas"
+    (categoria) => categoria.title === "Todas"
   );
 
-  const getArraysExceptIndex = (list: ICategory[], index: number) => {
+  const getArraysExceptIndex = (list: TCategory[], index: number) => {
     return list.filter((_, i) => i !== index);
   };
 
@@ -424,13 +424,13 @@ const Comanda: React.FC = () => {
                   onClick={() => {
                     //setCounterStates([]);
                     handleCloseTableAdd();
-                    setFoodCategory(cateItem.label);
+                    setFoodCategory(cateItem.title);
                     setModalTableAddItem(true);
                   }}
                 >
                   <Styled.CategoriaLinhaImg src={cateItem.icon} />
                   <Styled.CategoriaLinhaSpan>
-                    {cateItem.label}
+                    {cateItem.title}
                   </Styled.CategoriaLinhaSpan>
                 </Styled.CategoriaLinha>
               ))}

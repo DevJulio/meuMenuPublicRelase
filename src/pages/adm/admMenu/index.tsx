@@ -12,14 +12,16 @@ import { TCardProps } from "../../../components/plansCards/card";
 import { useNavigate } from "react-router-dom";
 import atualizar from "../../../assets/icons/admIcons/atualizar.png";
 import create from "../../../assets/icons/admIcons/create.png";
-import foods, { renCategories } from "../../menu/foods";
 import FoodCard from "../../../components/foodCard";
 import Modal from "../../../components/modal";
 import FoodModalDetail from "../../../components/foodModalDetail";
 import { TProducts } from "../../menu";
-import { ICategory } from "../../../components/category";
+import { TCategory } from "../../../components/category";
 import { message } from "antd";
 import isMobile from "is-mobile";
+import { isAuth } from "../../../utils/security/isCrypto";
+import { CategoryService } from "../../../service/module/categories";
+import { FoodsService } from "../../../service/module/foods";
 
 export type TSwitch = {
   id: string;
@@ -33,6 +35,8 @@ const AdmMenu: React.FC = () => {
   const [modal, setModal] = useState<boolean>(false);
   const [modalIten, setmodalIten] = useState<TProducts>();
   const [switchStates, setSwitchStates] = useState<TSwitch[]>([]);
+  const [categories, setCategories] = useState<TCategory[]>([]);
+  const [foods, setFoods] = useState<TProducts[]>([]);
 
   const mainCategories: TCardProps[] = [
     {
@@ -58,39 +62,59 @@ const AdmMenu: React.FC = () => {
 
   const navigate = useNavigate();
 
-  const renIndex = renCategories.findIndex(
-    (categoria) => categoria.label === "Todas" //usa o método findIndex para acessar o index de um objeto dentro de um array que possua um valor especifico
-  );
-
-  const getArraysExceptIndex = (list: ICategory[], index: number) => {
-    return list.filter((_, i) => i !== index);
-  };
-
-  const parsedRenCategories = getArraysExceptIndex(renCategories, renIndex);
-
   useEffect(() => {
-    const mainCategoryDiv = document.getElementById("mainCategory");
-    const list = document.getElementById("list");
-    const listFoods = document.getElementById("listFoods");
+    const usr = isAuth();
+    if (usr && usr.userType === "admin") {
+      const mainCategoryDiv = document.getElementById("mainCategory");
+      const list = document.getElementById("list");
+      const listFoods = document.getElementById("listFoods");
 
-    if (mainCategoryDiv && list && listFoods) {
-      switch (mainCategory) {
-        case "listagem":
-          mainCategoryDiv.style.display = "none";
-          listFoods.style.display = "none";
-          list.style.display = "flex";
+      if (mainCategoryDiv && list && listFoods) {
+        switch (mainCategory) {
+          case "listagem":
+            mainCategoryDiv.style.display = "none";
+            listFoods.style.display = "none";
+            list.style.display = "flex";
 
-          break;
-        case "listagemCategorias":
-          mainCategoryDiv.style.display = "none";
-          list.style.display = "none";
-          listFoods.style.display = "flex";
-          break;
+            break;
+          case "listagemCategorias":
+            mainCategoryDiv.style.display = "none";
+            list.style.display = "none";
+            listFoods.style.display = "flex";
+            break;
 
-        default:
-          break;
+          default:
+            break;
+        }
       }
+      const fetchData = async () => {
+        try {
+          const categoryAndFood: any = await Promise.all([
+            await CategoryService.getMyCategories(usr.codCompany!),
+            await FoodsService.getMyFoods(usr.codCompany!),
+          ])
+            .then((results) => {
+              return results;
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+          if (categoryAndFood[0].length) {
+            setCategories(categoryAndFood[0] as TCategory[]);
+          }
+          if (categoryAndFood[1].length) {
+            setFoods(categoryAndFood[1] as TProducts[]);
+          }
+        } catch (error) {
+          console.log(error);
+          message.error("Erro ao recuperar categorias, verifique o log");
+        }
+      };
+      fetchData();
+    } else {
+      navigate("/login");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mainCategory]);
 
   useEffect(() => {
@@ -104,16 +128,48 @@ const AdmMenu: React.FC = () => {
           label: foodItem.label,
         })
       );
-    // console.log(switches);
     setSwitchStates(switches);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [foodCategory]);
 
   const handleSwitchChange = async (id: string) => {
+    const changedItem = foods.filter((cate) => cate.category === foodCategory);
     if (switchStates[Number(id)].checked) {
-      message.error("Item desativado.");
+      try {
+        const res = await FoodsService.updateFoods(isAuth()!.codCompany!, {
+          ...changedItem[Number(id)],
+          isEnable: false,
+          col: "company",
+          subcol: "menu",
+        });
+        if (res.status) {
+          message.error("Item desativado.");
+        } else {
+          message.error("Verifique os campos e tente novamente");
+        }
+      } catch (error) {
+        console.log(error);
+        message.error("Verifique os campos e tente novamente");
+      }
     } else {
-      message.success("Item ativado.");
+      try {
+        const res = await FoodsService.updateFoods(isAuth()!.codCompany!, {
+          ...changedItem[Number(id)],
+          isEnable: true,
+          col: "company",
+          subcol: "menu",
+        });
+        if (res.status) {
+          message.success("Item ativado.");
+        } else {
+          message.error("Verifique os campos e tente novamente");
+        }
+      } catch (error) {
+        console.log(error);
+        message.error("Verifique os campos e tente novamente");
+      }
     }
+    //genial
     setSwitchStates((prevSwitchStates) =>
       prevSwitchStates.map((switchState) =>
         switchState.id === id
@@ -121,8 +177,6 @@ const AdmMenu: React.FC = () => {
           : switchState
       )
     );
-    //Chamar Api.
-    //Alterar o elemento currentFoodItem[Number(id)] no banco de dados.
   };
 
   const handleClose = () => {
@@ -138,7 +192,7 @@ const AdmMenu: React.FC = () => {
           customWidth={isMobile() ? 90 : 60}
           title={modalIten.label}
           handleClose={handleClose}
-          titleFont={theme.fonts.hand}
+          titleFont={theme.fonts.primary}
         >
           <FoodModalDetail modalIten={modalIten} />
         </Modal>
@@ -172,7 +226,17 @@ const AdmMenu: React.FC = () => {
             </div>
           </Styled.CardsContainer>
         </Styled.CategoryContainer>
-
+        <Styled.BackBtnContainer style={{ marginTop: "3vh" }}>
+          <ButtonSecondary
+            action={() => {
+              navigate("/adm/home");
+            }}
+            Label={"← voltar ao menu principal"}
+            fontSize={theme.fontSize.md}
+            color={theme.colors.white.normal}
+            bgColor={theme.colors.red.normal}
+          />
+        </Styled.BackBtnContainer>
         {foodCategory && (
           <>
             <Styled.BackBtnContainer>
@@ -194,12 +258,12 @@ const AdmMenu: React.FC = () => {
             Selecione a categoria do prato:
           </Styled.ItemSpan>
           <Styled.CateRow>
-            {parsedRenCategories.map((cateItem, index) => (
+            {categories.map((cateItem, index) => (
               // eslint-disable-next-line jsx-a11y/anchor-is-valid
               <a
                 onClick={() => {
                   setMainCategory("listagemCategorias");
-                  setFoodCategory(cateItem.label); //Filter por esse valor.
+                  setFoodCategory(cateItem.title); //Filter por esse valor.
                 }}
               >
                 <Styled.CateItem>
@@ -215,8 +279,7 @@ const AdmMenu: React.FC = () => {
                         drop-shadow(0 0 0 white)`,
                     }}
                   />
-                  {/* mudar cores dos ícones*/}
-                  <span>{cateItem.label}</span>
+                  <span>{cateItem.title}</span>
                 </Styled.CateItem>
               </a>
             ))}
@@ -250,22 +313,24 @@ const AdmMenu: React.FC = () => {
                 foods
                   .filter((cate) => cate.category === foodCategory)
                   .map((foodItem, index) => (
-                    <Styled.FoodCategoryItem
-                      onClick={() => {
-                        // setModal(true);
-                        // setmodalIten(foodItem);
-                      }}
-                    >
-                      <FoodCard
-                        category=""
-                        categoryIcon=""
-                        bgColor={"#BC4749"}
-                        price={foodItem.price}
-                        color={"#386641"}
-                        label={foodItem.label}
-                        description={foodItem.description}
-                        img={foodItem.img}
-                      />
+                    <Styled.FoodCategoryItem>
+                      <div
+                        onClick={() => {
+                          setModal(true);
+                          setmodalIten(foodItem);
+                        }}
+                      >
+                        <FoodCard
+                          category=""
+                          categoryIcon=""
+                          bgColor={"#BC4749"}
+                          price={foodItem.price}
+                          color={"#386641"}
+                          label={foodItem.label}
+                          description={foodItem.description}
+                          img={foodItem.img}
+                        />
+                      </div>
                       <Styled.SwitchContainerRow>
                         <Styled.SwitchContainer>
                           <Styled.SwitchSpan
@@ -301,7 +366,7 @@ const AdmMenu: React.FC = () => {
                                 (cate) => cate.category === foodCategory
                               );
                               localStorage.setItem(
-                                "meuMenuFoodDetail",
+                                "@meumenu/foodDetail",
                                 JSON.stringify(currentFoodItem[Number(index)])
                               );
                               navigate("/adm/update/cardapio");

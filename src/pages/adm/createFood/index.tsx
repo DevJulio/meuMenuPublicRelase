@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Footer from "../../../components/footer";
 import Header from "../../../components/header";
 import Input from "../../../components/input";
@@ -6,7 +6,6 @@ import * as Styled from "./styles";
 
 import { theme } from "../../../theme/theme";
 import isMobile from "is-mobile";
-import InputMasked from "../../../components/MaskedIpunt";
 import ButtonSecondary from "../../../components/buttons/secondary";
 import Modal from "../../../components/modal";
 import {
@@ -18,23 +17,52 @@ import {
 } from "./embalagems";
 import { CompanyService } from "../../../service/module/company";
 import { message } from "antd";
+import { CategoryService } from "../../../service/module/categories";
+import { isAuth } from "../../../utils/security/isCrypto";
+import { useNavigate } from "react-router-dom";
+import { TCategory } from "../../../service/module/login";
+import { TCardProps } from "../../../components/plansCards/card";
+import CurrencyInput from "react-currency-input-field";
+import { fileUpload } from "../../../service/module/fileUpload";
+import { TProducts } from "../../menu";
+import loadingGif from "../../../assets/icons/loading.gif";
 
 const CreateFood: React.FC = () => {
   const [name, setName] = useState<string>("Seu prato");
   const [price, setPrice] = useState<string>("");
   const [descriptionText, setDescriptionText] = useState<string>("");
   const [harmonizacaoText, setHarmonizacaoText] = useState<string>("");
-  const [banner, setBanner] = useState();
+  const [banner, setBanner] = useState<File>();
   const [IBU, setIBU] = useState<string>("");
-  const [contry, setContry] = useState<string>("");
+  const [country, setCountry] = useState<string>("");
   const [grape, setGrape] = useState<string>("");
   const [cervejaEmbalagem, setCervejaEmbalagem] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
 
   const meuMenuFoodCategory = localStorage.getItem("@meumenu/foodcategory");
   const meuMenuFoodType = localStorage.getItem("@meumenu/foodType");
+  const categoryDetails: TCardProps = JSON.parse(
+    localStorage.getItem("@meumenu/categoryDetails")!
+  );
 
   const [modal, setModal] = useState<boolean>(false);
   const [modalFail, setModalFail] = useState<boolean>(false);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const usr = isAuth();
+    if (usr && usr.userType === "admin") {
+      //const fetchData = async () => {
+      //  const cateRes = await CategoryService.getMyCategories(usr.codCompany!);
+      //  console.log(cateRes);
+      //};
+      //fetchData();
+    } else {
+      navigate("/login");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const changeInput = (e: any) => {
     const localFile = e.target.files[0];
@@ -42,25 +70,104 @@ const CreateFood: React.FC = () => {
   };
 
   const createRequest = async () => {
-    console.log({
-      meuMenuFoodCategory,
-      meuMenuFoodType,
-      name,
-      price,
-      descriptionText,
-      harmonizacaoText,
-      banner,
-    });
+    if (
+      meuMenuFoodCategory &&
+      meuMenuFoodType &&
+      name &&
+      price &&
+      descriptionText &&
+      harmonizacaoText &&
+      banner
+    ) {
+      setLoading(true);
 
-    //Verificar se categoria meuMenuFoodCategory já existe, se não, cadastrar ela na raiz "categories" com icon e label ouu nova coleção (melhor ideia)
+      let imgUrl: any;
+      if (banner) {
+        const path = "/companies/imgs/";
+        imgUrl = await fileUpload(banner, path + "banner" + banner.name);
+      }
+      const newFood: TProducts = {
+        img: imgUrl!.data,
+        isEnable: true,
+        label: name,
+        qtd: 1,
+        harmoziation: harmonizacaoText,
+        description: descriptionText,
+        price,
+        category: meuMenuFoodCategory,
+        categoryIcon: "",
+        isDrink: meuMenuFoodType === "beber" ? true : false,
+        isDestaque: false,
+        isOffer: false,
+        IBU: IBU,
+        country,
+        grape: grape,
+      };
 
-    //if (name && price && descriptionText && harmonizacaoText && banner) {
-    //  setModal(true);
-    //  setModalFail(false);
-    //} else {
-    //  setModal(false);
-    //  setModalFail(true);
-    //}
+      const res = await CategoryService.getMyCategories(isAuth()!.codCompany!);
+      const categoryIndex = res.findIndex(
+        (cate: TCategory) => cate.title === meuMenuFoodCategory
+      );
+      if (categoryIndex >= 0) {
+        try {
+          await CompanyService.setCompanySubCol({
+            docId: isAuth()!.codCompany!,
+            mainColection: "company",
+            subColection: "menu",
+            subdata: newFood,
+          });
+          setLoading(false);
+          message.success("Cadastro realizado com sucesso!");
+          setTimeout(() => {
+            window.location.reload();
+          }, 1500);
+        } catch (error) {
+          setLoading(false);
+          console.log(error);
+          message.error("Verifique os campos e tente novamente.");
+        }
+      } else {
+        try {
+          const categoryAndFood = await Promise.all([
+            await CompanyService.setCompanySubCol({
+              docId: isAuth()!.codCompany!,
+              mainColection: "company",
+              subColection: "categories",
+              subdata: categoryDetails,
+            }),
+            await CompanyService.setCompanySubCol({
+              docId: isAuth()!.codCompany!,
+              mainColection: "company",
+              subColection: "menu",
+              subdata: newFood,
+            }),
+          ])
+            .then((results) => {
+              return results;
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+
+          const checkFoodAux = categoryAndFood as Array<any>;
+          const checkFood = checkFoodAux.every(
+            (data: any) => data.status === 200
+          );
+          if (checkFood) {
+            setLoading(false);
+            message.success("Cadastro realizado com sucesso!");
+            setTimeout(() => {
+              window.location.reload();
+            }, 1500);
+          } else {
+            setLoading(false);
+            message.error("Verifique os campos e tente novamente.");
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    }
   };
   const handleClose = () => {
     setModal(false);
@@ -68,7 +175,9 @@ const CreateFood: React.FC = () => {
   const handleCloseFail = () => {
     setModalFail(false);
   };
-  console.log({ meuMenuFoodCategory, meuMenuFoodType });
+  const handleCloseLoading = () => {
+    setLoading(false);
+  };
   return (
     <>
       <Header />
@@ -172,7 +281,31 @@ const CreateFood: React.FC = () => {
             </>
           </Modal>
         )}
-
+        {loading && (
+          <Modal
+            bannerColor={theme.colors.yellow.palete}
+            title={"Carregando..."}
+            handleClose={handleCloseLoading}
+            titleFont={theme.fonts.primary}
+          >
+            <div
+              style={{
+                display: "flex",
+                placeItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <img
+                src={loadingGif}
+                alt=""
+                style={{
+                  width: "4vw",
+                  padding: "3vh",
+                }}
+              />
+            </div>
+          </Modal>
+        )}
         <Styled.TitleSpan>Preencha todos os campos</Styled.TitleSpan>
         <Styled.Menus>
           <Styled.MenusRow>
@@ -181,7 +314,30 @@ const CreateFood: React.FC = () => {
             </Styled.FormItemContainer>
 
             <Styled.FormItemContainer>
-              <Input setValue={setPrice} label="Preço" />
+              <Styled.ItemSpan
+                style={{
+                  marginTop: "0px",
+                  paddingBottom: "2.5vh",
+                  alignSelf: "start",
+                }}
+              >
+                Preço
+              </Styled.ItemSpan>
+              <CurrencyInput
+                placeholder="Informe um preço válido"
+                defaultValue={price}
+                decimalsLimit={2}
+                prefix="R$ "
+                onValueChange={(value, name) => setPrice(value!)}
+                intlConfig={{ locale: "pt-BR", currency: "BRL" }}
+                style={{
+                  color: theme.colors.black.normal,
+                  fontSize: "25px",
+                  border: `2px solid ${theme.colors.black.normal}`,
+                  borderRadius: "5px",
+                  marginTop: "10px",
+                }}
+              />
             </Styled.FormItemContainer>
           </Styled.MenusRow>
 
@@ -211,31 +367,7 @@ const CreateFood: React.FC = () => {
             <>
               <Styled.MenusRow>
                 <Styled.FormItemContainer>
-                  <Input setValue={setContry} label="País de origem" />
-                </Styled.FormItemContainer>
-                <Styled.FormItemContainer>
-                  <Styled.ItemSpan>
-                    Selecione a foto para o cardápio.
-                  </Styled.ItemSpan>
-                  <Styled.Centralize>
-                    <Styled.FileInput
-                      type="file"
-                      id="mainBanner"
-                      onChange={(e: any) => {
-                        changeInput(e);
-                      }}
-                    />
-                  </Styled.Centralize>
-                </Styled.FormItemContainer>
-              </Styled.MenusRow>
-            </>
-          )}
-
-          {meuMenuFoodType === "beber" && (
-            <>
-              <Styled.MenusRow>
-                <Styled.FormItemContainer>
-                  <Input setValue={setContry} label="País de origem" />
+                  <Input setValue={setCountry} label="País de origem" />
                 </Styled.FormItemContainer>
                 <Styled.FormItemContainer>
                   <Styled.ItemSpan>

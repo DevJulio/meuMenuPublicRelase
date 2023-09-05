@@ -134,9 +134,13 @@ const MenuMeuMenu: React.FC = () => {
                   width: isMobile() ? "80%" : "50%",
                 }}
                 onClick={() => {
-                  console.log(item.title);
+                  console.log(item);
                   if (item.title !== "Nova categoria") {
                     localStorage.setItem("@meumenu/foodcategory", item.title);
+                    localStorage.setItem(
+                      "@meumenu/categoryDetails",
+                      JSON.stringify(item)
+                    );
                     navigate("/cadastro-item-cardapio");
                   } else {
                     setModalCategory(true);

@@ -13,7 +13,7 @@ import Input from "../../../components/input";
 import isMobile from "is-mobile";
 import { message } from "antd";
 import foods, { renCategories } from "../../menu/foods";
-import { ICategory } from "../../../components/category";
+import { TCategory } from "../../../components/category";
 import { TCounter } from "../keepOffersCombo";
 import Modal from "../../../components/modal";
 
@@ -42,10 +42,10 @@ const OffersEditCombo: React.FC = () => {
   const [descriptionText, setDescriptionText] = useState<string>("");
 
   const renIndex = renCategories.findIndex(
-    (categoria) => categoria.label === "Todas" //usa o método findIndex para acessar o index de um objeto dentro de um array que possua um valor especifico
+    (categoria) => categoria.title === "Todas" //usa o método findIndex para acessar o index de um objeto dentro de um array que possua um valor especifico
   );
 
-  const getArraysExceptIndex = (list: ICategory[], index: number) => {
+  const getArraysExceptIndex = (list: TCategory[], index: number) => {
     return list.filter((_, i) => i !== index);
   };
 
@@ -503,15 +503,15 @@ const OffersEditCombo: React.FC = () => {
                   onClick={() => {
                     localStorage.setItem(
                       "meuMenuOfferCategory",
-                      cateItem.label
+                      cateItem.title
                     );
-                    setFoodCategory(cateItem.label);
+                    setFoodCategory(cateItem.title);
                     setScreen("listagemPratos");
                   }}
                 >
                   <Styled.CateItem>
                     <Styled.CateIcon src={cateItem.icon} />
-                    <span>{cateItem.label}</span>
+                    <span>{cateItem.title}</span>
                   </Styled.CateItem>
                 </a>
               ))}

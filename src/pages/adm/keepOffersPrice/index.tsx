@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import ButtonSecondary from "../../../components/buttons/secondary";
 import { theme } from "../../../theme/theme";
 import foods, { renCategories } from "../../menu/foods";
-import { ICategory } from "../../../components/category";
+import { TCategory } from "../../../components/category";
 import FoodCard from "../../../components/foodCard";
 import { TProducts } from "../../menu";
 import Modal from "../../../components/modal";
@@ -58,10 +58,10 @@ const OffersMenuPrice: React.FC = () => {
     setModalFail(false);
   };
   const renIndex = renCategories.findIndex(
-    (categoria) => categoria.label === "Todas" //usa o método findIndex para acessar o index de um objeto dentro de um array que possua um valor especifico
+    (categoria) => categoria.title === "Todas" //usa o método findIndex para acessar o index de um objeto dentro de um array que possua um valor especifico
   );
 
-  const getArraysExceptIndex = (list: ICategory[], index: number) => {
+  const getArraysExceptIndex = (list: TCategory[], index: number) => {
     return list.filter((_, i) => i !== index);
   };
 
@@ -229,14 +229,14 @@ const OffersMenuPrice: React.FC = () => {
               // eslint-disable-next-line jsx-a11y/anchor-is-valid
               <a
                 onClick={() => {
-                  localStorage.setItem("meuMenuOfferCategory", cateItem.label);
-                  setFoodCategory(cateItem.label);
+                  localStorage.setItem("meuMenuOfferCategory", cateItem.title);
+                  setFoodCategory(cateItem.title);
                   setMainCategory("listagemPratos");
                 }}
               >
                 <Styled.CateItem>
                   <Styled.CateIcon src={cateItem.icon} />
-                  <span>{cateItem.label}</span>
+                  <span>{cateItem.title}</span>
                 </Styled.CateItem>
               </a>
             ))}

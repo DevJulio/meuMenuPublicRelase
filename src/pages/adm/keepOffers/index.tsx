@@ -45,6 +45,7 @@ const OffersMenu: React.FC = () => {
           break;
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mainCategory]);
 
   const createRows = (category: TCardProps[], qtd: number) => {
@@ -125,7 +126,7 @@ const OffersMenu: React.FC = () => {
               <ButtonSecondary
                 action={() => {
                   setBackOfferMenu(false);
-                  navigate("/home");
+                  navigate("/adm/home");
                 }}
                 Label={"← voltar ao menu principal"}
                 fontSize={theme.fontSize.md}

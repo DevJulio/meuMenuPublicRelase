@@ -6,7 +6,7 @@ export class UserService {
 
     static async GetUser(uid: string) {
         try {
-            const res = await api.get('/users/user/', {
+            const res = await api.get('/users/user', {
                 params: { uid }
             });
             if (res) {

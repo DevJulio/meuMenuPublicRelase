@@ -67,7 +67,7 @@ export class CategoryService {
 
   static async deleteCategory(docId: string) {
     console.log(docId);
-    
+
     try {
       const res = await api.delete(`/categories/delete/${docId}`, {});
       if (res) {
@@ -75,6 +75,23 @@ export class CategoryService {
       }
     } catch (error) {
       message.error((error as AxiosError).message);
+    }
+  }
+
+  static async getMyCategories(docId: string) {
+    try {
+      const res = await api.get("/categories/my-categories", {
+        params: {
+          docId,
+        },
+      });
+      if (res) {
+        return res.data;
+      }
+    } catch (error) {
+      console.log(error, " getMyCategories", (error as AxiosError).message);
+      message.error("Verifique os dados cadastrados e tente novamente");
+      return false;
     }
   }
 }

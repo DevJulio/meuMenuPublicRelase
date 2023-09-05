@@ -4,7 +4,7 @@ import HeaderCustom from "../../components/headerCustom";
 import { theme } from "../../theme/theme";
 import * as Styled from "./styles";
 import ren from "../../assets/icons/ren.png";
-import Category, { ICategory } from "../../components/category";
+import Category, { TCategory } from "../../components/category";
 
 import allAux from "../../assets/icons/categories/ios/allAux.png";
 import renEntradas from "../../assets/icons/categories/ios/renEntradas.png";
@@ -186,7 +186,6 @@ const Menu: React.FC = () => {
         setCompany(REN);
       } else {
         const urlRes = await CompanyService.GetCompanyByURL(empresa!);
-        console.log(urlRes);
         if (urlRes) {
           const iframeData = document.getElementById("iframeId");
           if (iframeData) {
@@ -220,10 +219,10 @@ const Menu: React.FC = () => {
     setModalReservation(false);
   };
 
-  const categories: ICategory[] = [
+  const categories: TCategory[] = [
     {
       icon: allAux,
-      label: "Todas",
+      title: "Todas",
       color: "white",
       bgColor: "#386641",
       auxColor: "white",
@@ -232,7 +231,7 @@ const Menu: React.FC = () => {
 
     {
       icon: drinks,
-      label: "Bebidas",
+      title: "Bebidas",
       color: "white",
       bgColor: "#386641",
       auxColor: "white",
@@ -240,7 +239,7 @@ const Menu: React.FC = () => {
     },
     {
       icon: renEntradas,
-      label: "Entradas",
+      title: "Entradas",
       color: "white",
       bgColor: "#386641",
       auxColor: "white",
@@ -249,7 +248,7 @@ const Menu: React.FC = () => {
 
     {
       icon: renPrimeiro,
-      label: "Primeiro Prato",
+      title: "Primeiro Prato",
       color: "white",
       bgColor: "#386641",
       auxColor: "white",
@@ -258,7 +257,7 @@ const Menu: React.FC = () => {
 
     {
       icon: renPrincipal,
-      label: "Prato Principal",
+      title: "Prato Principal",
       color: "white",
       bgColor: "#386641",
       auxColor: "white",
@@ -267,7 +266,7 @@ const Menu: React.FC = () => {
 
     {
       icon: sobremesa,
-      label: "Sobremesas",
+      title: "Sobremesas",
       color: "white",
       bgColor: "#386641",
       auxColor: "white",
@@ -497,14 +496,14 @@ const Menu: React.FC = () => {
                 // eslint-disable-next-line jsx-a11y/anchor-is-valid
                 <a
                   onClick={() => {
-                    setDefaultCategory(cateItem.label);
+                    setDefaultCategory(cateItem.title);
                   }}
                 >
                   <Category
                     fontColor={company.details.mainColor}
                     id={index + 1}
                     icon={cateItem.icon}
-                    label={cateItem.label}
+                    title={cateItem.title}
                     color={company.details.mainColor}
                     bgColor={company.details.textColor}
                     auxColor={company.details.auxColor}

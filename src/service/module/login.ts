@@ -83,25 +83,20 @@ export type TStaf = {
 
 export type TCategory = {
   icon: string;
-  label: string;
-  color: string;
-  bgColor: string;
-  auxColor: string;
-  fontStyle: string;
-  fontColor?: string;
+  title: string;
   id?: number;
 };
 
 export type TCompany = {
   URL: string;
   address: string;
-  categories: TCategory[];
+  categories: TCategory[]; //Tirar eim
   createdAt?: TAT;
   details: TCompanyDetail;
   docId?: string;
   icon: string;
   isAproved: boolean; //Caso seja false, a solicitação não foi aprovada.
-  menu: TProducts[];
+  menu: TProducts[]; //Tirar eim
   offers: TProductsOffers[];
   plan: string;
   staff: TStaf[];
