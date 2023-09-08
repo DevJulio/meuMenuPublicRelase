@@ -226,17 +226,7 @@ const AdmMenu: React.FC = () => {
             </div>
           </Styled.CardsContainer>
         </Styled.CategoryContainer>
-        <Styled.BackBtnContainer style={{ marginTop: "3vh" }}>
-          <ButtonSecondary
-            action={() => {
-              navigate("/adm/home");
-            }}
-            Label={"← voltar ao menu principal"}
-            fontSize={theme.fontSize.md}
-            color={theme.colors.white.normal}
-            bgColor={theme.colors.red.normal}
-          />
-        </Styled.BackBtnContainer>
+
         {foodCategory && (
           <>
             <Styled.BackBtnContainer>
@@ -284,6 +274,17 @@ const AdmMenu: React.FC = () => {
               </a>
             ))}
           </Styled.CateRow>
+          <Styled.BackBtnContainer style={{ marginTop: "3vh" }}>
+            <ButtonSecondary
+              action={() => {
+                navigate("/adm/home");
+              }}
+              Label={"← voltar ao menu principal"}
+              fontSize={theme.fontSize.md}
+              color={theme.colors.white.normal}
+              bgColor={theme.colors.red.normal}
+            />
+          </Styled.BackBtnContainer>
         </Styled.CategoryContainerAux>
 
         <Styled.CategoryContainerAux

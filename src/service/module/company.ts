@@ -39,7 +39,6 @@ export class CompanyService {
       const res = await api.get("/companies/data", {
         params: { URL },
       });
-      console.log(res);
       if (res) {
         return res.data;
       }

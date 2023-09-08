@@ -182,8 +182,6 @@ const SolicitationMeuMenu: React.FC = () => {
                   whatsapp: whatsAppLink,
                 },
               },
-              categories: [],
-              menu: [],
               offers: [],
               tables: [],
               staff: [],
@@ -215,6 +213,15 @@ const SolicitationMeuMenu: React.FC = () => {
                   docId: companyDocId,
                   mainColection: "company",
                   subColection: "menu",
+                });
+              } catch (error) {
+                console.log(error);
+              }
+              try {
+                await CompanyService.setCompanySubCol({
+                  docId: companyDocId,
+                  mainColection: "company",
+                  subColection: "offers",
                 });
               } catch (error) {
                 console.log(error);

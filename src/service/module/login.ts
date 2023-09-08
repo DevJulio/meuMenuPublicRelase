@@ -5,7 +5,7 @@ import { UserService } from "./users";
 import { decryptToAuth, encryptToAuth } from "../../utils/security/isAuth";
 import { CompanyService } from "./company";
 import { TLogin } from "../../pages/account/login";
-import { TProducts, TProductsOffers } from "../../pages/menu";
+import { TProductsOffers } from "../../pages/menu";
 import { TTable } from "../../pages/adm/adm/comanda";
 
 export type TLatLon = {
@@ -90,13 +90,11 @@ export type TCategory = {
 export type TCompany = {
   URL: string;
   address: string;
-  categories: TCategory[]; //Tirar eim
   createdAt?: TAT;
   details: TCompanyDetail;
   docId?: string;
   icon: string;
   isAproved: boolean; //Caso seja false, a solicitação não foi aprovada.
-  menu: TProducts[]; //Tirar eim
   offers: TProductsOffers[];
   plan: string;
   staff: TStaf[];

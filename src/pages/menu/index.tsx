@@ -42,6 +42,9 @@ import { CompanyService } from "../../service/module/company";
 import { message } from "antd";
 import { TCompany } from "../../service/module/login";
 import { getFontStyle } from "../../utils/getFontStyle";
+import { CategoryService } from "../../service/module/categories";
+import all from "../../assets/icons/categories/ios/all.png";
+import { FoodsService } from "../../service/module/foods";
 
 export type TAutomation = {
   daysWeek: [];
@@ -100,6 +103,8 @@ const Menu: React.FC = () => {
   const [modalHappy, setModalHappy] = useState<boolean>(false);
   const [modalReservation, setModalReservation] = useState<boolean>(false);
   const [company, setCompany] = useState<TCompany>();
+  const [categories, setCategories] = useState<TCategory[]>([]);
+  const [foodsState, setFoodsState] = useState<TProducts[]>([]);
 
   const navigate = useNavigate();
 
@@ -109,7 +114,6 @@ const Menu: React.FC = () => {
         const REN: TCompany = {
           URL: "ren",
           address: "",
-          categories: [],
           details: {
             icon: ren,
             title: "Ren.",
@@ -175,7 +179,6 @@ const Menu: React.FC = () => {
           },
           icon: ren,
           isAproved: true,
-          menu: [],
           offers: [],
           plan: "Ultimate",
           staff: [],
@@ -183,21 +186,110 @@ const Menu: React.FC = () => {
           tables: [],
           title: "Ren",
         };
+        const categoriesAux: TCategory[] = [
+          {
+            icon: allAux,
+            title: "Todas",
+            color: "white",
+            bgColor: "#386641",
+            auxColor: "white",
+            fontStyle: theme.fonts.hand, // getFontStyle(company!.details.fontStyle),
+          },
+
+          {
+            icon: drinks,
+            title: "Bebidas",
+            color: "white",
+            bgColor: "#386641",
+            auxColor: "white",
+            fontStyle: theme.fonts.hand, // getFontStyle(company!.details.fontStyle),
+          },
+          {
+            icon: renEntradas,
+            title: "Entradas",
+            color: "white",
+            bgColor: "#386641",
+            auxColor: "white",
+            fontStyle: theme.fonts.hand, // getFontStyle(company!.details.fontStyle),
+          },
+
+          {
+            icon: renPrimeiro,
+            title: "Primeiro Prato",
+            color: "white",
+            bgColor: "#386641",
+            auxColor: "white",
+            fontStyle: theme.fonts.hand, // getFontStyle(company!.details.fontStyle),
+          },
+
+          {
+            icon: renPrincipal,
+            title: "Prato Principal",
+            color: "white",
+            bgColor: "#386641",
+            auxColor: "white",
+            fontStyle: theme.fonts.hand, // getFontStyle(company!.details.fontStyle),
+          },
+
+          {
+            icon: sobremesa,
+            title: "Sobremesas",
+            color: "white",
+            bgColor: "#386641",
+            auxColor: "white",
+            fontStyle: theme.fonts.hand, // getFontStyle(company!.details.fontStyle),
+          },
+        ];
+        setFoodsState(foods);
+        setCategories(categoriesAux);
         setCompany(REN);
       } else {
-        const urlRes = await CompanyService.GetCompanyByURL(empresa!);
+        const urlRes: TCompany = await CompanyService.GetCompanyByURL(empresa!);
         if (urlRes) {
-          const iframeData = document.getElementById("iframeId");
-          if (iframeData) {
-            const t = urlRes as TCompany;
-            iframeData.setAttribute(
-              "src",
-              `https://maps.google.com/maps?q=${t.details.socialMedia.localization.lat},${t.details.socialMedia.localization.lng}&hl=es;&output=embed`
+          setCompany(urlRes);
+
+          try {
+            const categoryAndFood: any = await Promise.all([
+              await CategoryService.getMyCategories(urlRes.docId!),
+              await FoodsService.getMyFoods(urlRes.docId!),
+            ])
+              .then((results) => {
+                return results;
+              })
+              .catch((error) => {
+                console.error(error);
+              });
+
+            const iframeData = document.getElementById("iframeId");
+            if (iframeData) {
+              const t = urlRes as TCompany;
+              iframeData.setAttribute(
+                "src",
+                `https://maps.google.com/maps?q=${t.details.socialMedia.localization.lat},${t.details.socialMedia.localization.lng}&hl=es;&output=embed`
+              );
+            }
+            const allCategories = {
+              icon: all,
+              title: "Todas",
+              color: "white",
+              bgColor: "",
+              auxColor: "",
+              fontStyle: theme.fonts.primary,
+            };
+            const aux = categoryAndFood[0] as TCategory[];
+            aux.unshift(allCategories);
+            setCategories(aux);
+            setFoodsState(categoryAndFood[1] as TProducts[]);
+          } catch (error) {
+            console.log(error);
+            message.error(
+              "erro ao acessar o cardápio, tente novamente mais tarde"
             );
           }
-          setCompany(urlRes);
         } else {
-          message.error("erro ao acessar o cardápio, tente novamente");
+          message.error(
+            "erro ao acessar o cardápio, tente novamente mais tarde"
+          );
         }
       }
     };
@@ -218,61 +310,6 @@ const Menu: React.FC = () => {
   const handleCloseReservation = () => {
     setModalReservation(false);
   };
-
-  const categories: TCategory[] = [
-    {
-      icon: allAux,
-      title: "Todas",
-      color: "white",
-      bgColor: "#386641",
-      auxColor: "white",
-      fontStyle: theme.fonts.hand, // getFontStyle(company!.details.fontStyle),
-    },
-
-    {
-      icon: drinks,
-      title: "Bebidas",
-      color: "white",
-      bgColor: "#386641",
-      auxColor: "white",
-      fontStyle: theme.fonts.hand, // getFontStyle(company!.details.fontStyle),
-    },
-    {
-      icon: renEntradas,
-      title: "Entradas",
-      color: "white",
-      bgColor: "#386641",
-      auxColor: "white",
-      fontStyle: theme.fonts.hand, // getFontStyle(company!.details.fontStyle),
-    },
-
-    {
-      icon: renPrimeiro,
-      title: "Primeiro Prato",
-      color: "white",
-      bgColor: "#386641",
-      auxColor: "white",
-      fontStyle: theme.fonts.hand, // getFontStyle(company!.details.fontStyle),
-    },
-
-    {
-      icon: renPrincipal,
-      title: "Prato Principal",
-      color: "white",
-      bgColor: "#386641",
-      auxColor: "white",
-      fontStyle: theme.fonts.hand, // getFontStyle(company!.details.fontStyle),
-    },
-
-    {
-      icon: sobremesa,
-      title: "Sobremesas",
-      color: "white",
-      bgColor: "#386641",
-      auxColor: "white",
-      fontStyle: theme.fonts.hand, // getFontStyle(company!.details.fontStyle),
-    },
-  ];
 
   const width = window.screen.width;
 
@@ -490,38 +527,41 @@ const Menu: React.FC = () => {
                 </Styled.CarouselContainer>
               </Styled.MainContainer>
             </>
-
-            <Styled.ContainerCategories>
-              {categories.map((cateItem, index) => (
-                // eslint-disable-next-line jsx-a11y/anchor-is-valid
-                <a
-                  onClick={() => {
-                    setDefaultCategory(cateItem.title);
-                  }}
-                >
-                  <Category
-                    fontColor={company.details.mainColor}
-                    id={index + 1}
-                    icon={cateItem.icon}
-                    title={cateItem.title}
-                    color={company.details.mainColor}
-                    bgColor={company.details.textColor}
-                    auxColor={company.details.auxColor}
-                    fontStyle={getFontStyle(company.details.fontStyle)}
-                  />
-                </a>
-              ))}
-            </Styled.ContainerCategories>
-            {categories.length >= 3 && (
+            {categories.length > 0 && (
               <>
-                <Styled.Arrow
-                  style={{
-                    color: company.details.auxColor,
-                    fontFamily: getFontStyle(company.details.fontStyle),
-                  }}
-                >
-                  Confira todo nosso menu! ➜
-                </Styled.Arrow>
+                <Styled.ContainerCategories>
+                  {categories.map((cateItem, index) => (
+                    // eslint-disable-next-line jsx-a11y/anchor-is-valid
+                    <a
+                      onClick={() => {
+                        setDefaultCategory(cateItem.title);
+                      }}
+                    >
+                      <Category
+                        fontColor={company.details.mainColor}
+                        id={index + 1}
+                        icon={cateItem.icon}
+                        title={cateItem.title}
+                        color={company.details.mainColor}
+                        bgColor={company.details.textColor}
+                        auxColor={company.details.auxColor}
+                        fontStyle={getFontStyle(company.details.fontStyle)}
+                      />
+                    </a>
+                  ))}
+                </Styled.ContainerCategories>
+                {categories.length >= 3 && (
+                  <>
+                    <Styled.Arrow
+                      style={{
+                        color: company.details.auxColor,
+                        fontFamily: getFontStyle(company.details.fontStyle),
+                      }}
+                    >
+                      Confira todo nosso menu! ➜
+                    </Styled.Arrow>
+                  </>
+                )}
               </>
             )}
             <Styled.CarouselContainer>
@@ -541,7 +581,7 @@ const Menu: React.FC = () => {
                 }}
               >
                 {defaultCategory === "Todas"
-                  ? foods
+                  ? foodsState
                       .filter((cate) => cate.isMainDestaque)
                       .map((foodItem, index) => (
                         <div
@@ -563,7 +603,7 @@ const Menu: React.FC = () => {
                           />
                         </div>
                       ))
-                  : foods
+                  : foodsState
                       .filter(
                         (cate) =>
                           cate.category === defaultCategory && cate.isDestaque
@@ -769,7 +809,7 @@ const Menu: React.FC = () => {
                       }}
                     >
                       {defaultCategory === "Todas"
-                        ? foods
+                        ? foodsState
                             .filter((cate) => cate.isMainDestaque)
                             .map((foodItem, index) => (
                               <div
@@ -791,7 +831,7 @@ const Menu: React.FC = () => {
                                 />
                               </div>
                             ))
-                        : foods
+                        : foodsState
                             .filter((cate) => cate.category === defaultCategory)
                             .map((foodItem, index) => (
                               <div

@@ -30,6 +30,7 @@ import JHome from "./pages/jAdm";
 import JSolicitations from "./pages/jAdm/pages/solicitations";
 import JCategories from "./pages/jAdm/pages/categories";
 import JCategoriesSolicitations from "./pages/jAdm/pages/categories/solicitations";
+import DestaquesAll from "./pages/adm/destaquesAll";
 
 function RoutesList() {
   return (
@@ -63,6 +64,7 @@ function RoutesList() {
           element={<OffersEditCombo />}
         />
         <Route path="/adm/destaques" element={<Destaques />} />
+        <Route path="/adm/destaques/all" element={<DestaquesAll />} />
         <Route path="/adm/atualizar" element={<UpdateData />} />
         <Route path="/adm/suporte" element={<ContactAdm />} />
         <Route path="/adm/comanda" element={<Comanda />} />

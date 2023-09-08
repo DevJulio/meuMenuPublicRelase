@@ -13,7 +13,7 @@ import FoodCard from "../../../components/foodCard";
 import { TProducts } from "../../menu";
 import Modal from "../../../components/modal";
 import Input from "../../../components/input";
-import { message, Typography } from "antd";
+import { message } from "antd";
 
 const OffersMenuPrice: React.FC = () => {
   const [foodCategory, setFoodCategory] = useState<string>("");
