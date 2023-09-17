@@ -114,7 +114,7 @@ const Destaques: React.FC = () => {
     <>
       <Header />
       <Styled.MainContainer>
-        <Styled.TitleSpan>Ofertas</Styled.TitleSpan>
+        <Styled.TitleSpan>Destaques</Styled.TitleSpan>
         <Styled.MenuContainer id="mainContainer">
           <Styled.ItemSpan style={{ color: "white" }}>
             Selecione a categoria do prato:

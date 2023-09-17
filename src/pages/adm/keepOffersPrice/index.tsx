@@ -7,13 +7,16 @@ import * as Styled from "./styles";
 import { useNavigate } from "react-router-dom";
 import ButtonSecondary from "../../../components/buttons/secondary";
 import { theme } from "../../../theme/theme";
-import foods, { renCategories } from "../../menu/foods";
 import { TCategory } from "../../../components/category";
 import FoodCard from "../../../components/foodCard";
-import { TProducts } from "../../menu";
+import { TProducts, TProductsOffers } from "../../menu";
 import Modal from "../../../components/modal";
 import Input from "../../../components/input";
 import { message } from "antd";
+import { isAuth } from "../../../utils/security/isCrypto";
+import { CategoryService } from "../../../service/module/categories";
+import { FoodsService } from "../../../service/module/foods";
+import { CompanyService } from "../../../service/module/company";
 
 const OffersMenuPrice: React.FC = () => {
   const [foodCategory, setFoodCategory] = useState<string>("");
@@ -22,28 +25,60 @@ const OffersMenuPrice: React.FC = () => {
   const [modalAux, setModalAux] = useState<boolean>(false);
   const [modalIten, setmodalIten] = useState<TProducts>();
   const [modalFail, setModalFail] = useState<boolean>(false);
-
   const [newPrice, setNewPrice] = useState<string>("");
 
+  const [categories, setCategories] = useState<TCategory[]>([]);
+  const [foods, setFoods] = useState<TProducts[]>([]);
+
   useEffect(() => {
-    const mainContainer = document.getElementById("mainContainer");
-    const foodListContainer = document.getElementById("foodListContainer");
+    const usr = isAuth();
+    if (usr && usr.userType === "admin") {
+      const mainContainer = document.getElementById("mainContainer");
+      const foodListContainer = document.getElementById("foodListContainer");
 
-    if (mainContainer && foodListContainer) {
-      switch (mainCategory) {
-        case "listagemPratos":
-          mainContainer.style.display = "none";
-          foodListContainer.style.display = "flex";
-          break;
-        case "listagemCategorias":
-          mainContainer.style.display = "flex";
-          foodListContainer.style.display = "none";
-          break;
+      if (mainContainer && foodListContainer) {
+        switch (mainCategory) {
+          case "listagemPratos":
+            mainContainer.style.display = "none";
+            foodListContainer.style.display = "flex";
+            break;
+          case "listagemCategorias":
+            mainContainer.style.display = "flex";
+            foodListContainer.style.display = "none";
+            break;
 
-        default:
-          break;
+          default:
+            break;
+        }
       }
+      const fetchData = async () => {
+        try {
+          const categoryAndFood: any = await Promise.all([
+            await CategoryService.getMyCategories(usr.codCompany!),
+            await FoodsService.getMyFoods(usr.codCompany!),
+          ])
+            .then((results) => {
+              return results;
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+          if (categoryAndFood[0].length) {
+            setCategories(categoryAndFood[0] as TCategory[]);
+          }
+          if (categoryAndFood[1].length) {
+            setFoods(categoryAndFood[1] as TProducts[]);
+          }
+        } catch (error) {
+          console.log(error);
+          message.error("Erro ao recuperar categorias, verifique o log");
+        }
+      };
+      fetchData();
+    } else {
+      navigate("/login");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mainCategory]);
 
   const navigate = useNavigate();
@@ -57,20 +92,10 @@ const OffersMenuPrice: React.FC = () => {
   const handleCloseFail = () => {
     setModalFail(false);
   };
-  const renIndex = renCategories.findIndex(
-    (categoria) => categoria.title === "Todas" //usa o método findIndex para acessar o index de um objeto dentro de um array que possua um valor especifico
-  );
 
-  const getArraysExceptIndex = (list: TCategory[], index: number) => {
-    return list.filter((_, i) => i !== index);
-  };
-
-  const parsedRenCategories = getArraysExceptIndex(renCategories, renIndex);
-
-  const setNewPriceToIten = () => {
-    //Enviar para o bd.
+  const setNewPriceToIten = async () => {
     if (modalIten) {
-      const updatedValue: TProducts = {
+      const updatedValue: TProductsOffers = {
         img: modalIten.img,
         isEnable: modalIten.isEnable,
         label: modalIten.label,
@@ -85,7 +110,27 @@ const OffersMenuPrice: React.FC = () => {
         isOffer: true,
         offerPrice: newPrice,
       };
-      console.log(updatedValue);
+
+      try {
+        console.log(updatedValue);
+        const offerRes = await CompanyService.setCompanySubCol({
+          docId: isAuth()!.codCompany!,
+          mainColection: "company",
+          subColection: "offers",
+          subdata: updatedValue,
+        });
+        if (offerRes && offerRes.status === 200) {
+          message.success("Cadastro realizado com sucesso!");
+          setTimeout(() => {
+            window.location.reload();
+          }, 1500);
+        } else {
+          message.error("Verifique os campos e tente novamente.");
+        }
+      } catch (error) {
+        console.log(error);
+        message.error("Verifique todos os campos e tente novamente");
+      }
     }
   };
 
@@ -225,7 +270,7 @@ const OffersMenuPrice: React.FC = () => {
             Selecione a categoria do prato:
           </Styled.ItemSpan>
           <Styled.CateRow>
-            {parsedRenCategories.map((cateItem, index) => (
+            {categories.map((cateItem, index) => (
               // eslint-disable-next-line jsx-a11y/anchor-is-valid
               <a
                 onClick={() => {
@@ -235,7 +280,18 @@ const OffersMenuPrice: React.FC = () => {
                 }}
               >
                 <Styled.CateItem>
-                  <Styled.CateIcon src={cateItem.icon} />
+                  <Styled.CateIcon
+                    src={cateItem.icon}
+                    style={{
+                      filter: `brightness(1000%) grayscale(100%) 
+                        opacity(0.1)
+                        drop-shadow(0 0 0 white) 
+                        drop-shadow(0 0 0 white)
+                        drop-shadow(0 0 0 white)
+                        drop-shadow(0 0 0 white)
+                        drop-shadow(0 0 0 white)`,
+                    }}
+                  />
                   <span>{cateItem.title}</span>
                 </Styled.CateItem>
               </a>

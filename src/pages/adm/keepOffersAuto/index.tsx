@@ -1,4 +1,4 @@
-import { TimePicker } from "antd";
+import { TimePicker, message } from "antd";
 import React, { useEffect, useState } from "react";
 import Checkbox from "../../../components/CheckBox";
 import FoodCardOffer from "../../../components/foodCardOffer";
@@ -9,10 +9,13 @@ import * as Styled from "./styles";
 import dayjs from "dayjs";
 import ButtonSecondary from "../../../components/buttons/secondary";
 import { useNavigate } from "react-router-dom";
+import { TAutomation, TProductsOffers } from "../../menu";
+import { isAuth } from "../../../utils/security/isCrypto";
+import { OffersService } from "../../../service/module/offers";
 
 const OffersMenuAuto: React.FC = () => {
   const navigate = useNavigate();
-  
+
   const format = "HH:mm";
   const [domingo, setDomingo] = useState(false);
   const [segundaFeira, setSegundaFeira] = useState(false);
@@ -22,104 +25,131 @@ const OffersMenuAuto: React.FC = () => {
   const [sextaFeira, setSextaFeira] = useState(false);
   const [sabado, setSabado] = useState(false);
 
-  const offers = [
-    {
-      img: "https://www.comidaereceitas.com.br/wp-content/uploads/2008/09/Mimosa-freepik-780x521.jpg",
-      isEnable: true,
-      label: "Mimosa",
-      qtd: 1,
-      harmoziation:
-        "A Mimosa, uma clássica mistura de champanhe e suco de laranja, é um excelente acompanhamento para brunches. ",
-      description:
-        "Feito à base de espumante gelado e suco de laranja fresco, a Mimosa vai muito bem com queijos mais delicados, como a ricota. Saladas também são muito bem-vindas",
-      price: "30,00",
-      category: "Bebidas",
-      categoryIcon: "",
-      isDrink: true,
-      isDestaque: true,
-      offerPrice: "12,50",
-      isOffer: true,
-      automation: {
-        daysWeek: [4, 5, 6],
-        time: {
-          startAt: "17:00",
-          endAt: "20:00",
-        },
-      },
-    },
-    {
-      banner:
-        "https://static.vecteezy.com/ti/vetor-gratis/p3/8770068-combo-refeicoes-instagram-posts-template-food-social-media-background-yellow-background-for-banner-advertising-vetor.jpg",
-      price: "45,00",
-      title: "Combo 1",
-      automation: {
-        daysWeek: [1, 2, 6],
-        time: {
-          startAt: "17:00",
-          endAt: "20:00",
-        },
-      },
-      descriptionText:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut iaculis blandit magna, ac commodo tortor consectetur nec. Sed nec massa sapien. Proin eget sem et velit maximus gravida ac sit amet magna. Cras libero diam, consectetur ut fringilla quis, tempus tristique elit. Maecenas sem arcu, molestie viverra quam vitae, ",
-      comboItens: [
-        {
-          img: "https://www.comidaereceitas.com.br/wp-content/uploads/2008/09/Mimosa-freepik-780x521.jpg",
-          isEnable: true,
-          label: "Mimosa",
-          qtd: 1,
-          harmoziation:
-            "A Mimosa, uma clássica mistura de champanhe e suco de laranja, é um excelente acompanhamento para brunches. ",
-          description:
-            "Feito à base de espumante gelado e suco de laranja fresco, a Mimosa vai muito bem com queijos mais delicados, como a ricota. Saladas também são muito bem-vindas",
-          price: "30,00",
-          category: "Bebidas",
-          categoryIcon: "",
-          isDrink: true,
-          isDestaque: true,
-        },
-        {
-          img: "https://claudia.abril.com.br/wp-content/uploads/2020/02/receita-fritada-forno-abobrinha.jpg?quality=85",
-          isEnable: true,
-          label: "Frittata de abobrinha ao forno",
-          qtd: 1,
-          harmoziation:
-            "A Frittata de abobrinha ao forno é acompanhada por vinhos brancos com mais corpo, como um Viognier ou um Chenin Blanc.",
-          description:
-            "Uma omelete leve e fofa feita com abobrinhas, queijo e ervas. Perfeita para um café da manhã ou jantar saudável.",
-          price: "25,00",
-          category: "Prato Principal",
-          categoryIcon: "",
-          isOffer: true,
-          isDrink: false,
-          isDestaque: false,
-        },
-      ],
-    },
-  ];
+  // const offers = [
+  //   {
+  //     img: "https://www.comidaereceitas.com.br/wp-content/uploads/2008/09/Mimosa-freepik-780x521.jpg",
+  //     isEnable: true,
+  //     label: "Mimosa",
+  //     qtd: 1,
+  //     harmoziation:
+  //       "A Mimosa, uma clássica mistura de champanhe e suco de laranja, é um excelente acompanhamento para brunches. ",
+  //     description:
+  //       "Feito à base de espumante gelado e suco de laranja fresco, a Mimosa vai muito bem com queijos mais delicados, como a ricota. Saladas também são muito bem-vindas",
+  //     price: "30,00",
+  //     category: "Bebidas",
+  //     categoryIcon: "",
+  //     isDrink: true,
+  //     isDestaque: true,
+  //     offerPrice: "12,50",
+  //     isOffer: true,
+  //     automation: {
+  //       daysWeek: [4, 5, 6],
+  //       time: {
+  //         startAt: "17:00",
+  //         endAt: "20:00",
+  //       },
+  //     },
+  //   },
+  //   {
+  //     banner:
+  //       "https://static.vecteezy.com/ti/vetor-gratis/p3/8770068-combo-refeicoes-instagram-posts-template-food-social-media-background-yellow-background-for-banner-advertising-vetor.jpg",
+  //     price: "45,00",
+  //     title: "Combo 1",
+  //     automation: {
+  //       daysWeek: [1, 2, 6],
+  //       time: {
+  //         startAt: "17:00",
+  //         endAt: "20:00",
+  //       },
+  //     },
+  //     descriptionText:
+  //       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut iaculis blandit magna, ac commodo tortor consectetur nec. Sed nec massa sapien. Proin eget sem et velit maximus gravida ac sit amet magna. Cras libero diam, consectetur ut fringilla quis, tempus tristique elit. Maecenas sem arcu, molestie viverra quam vitae, ",
+  //     comboItens: [
+  //       {
+  //         img: "https://www.comidaereceitas.com.br/wp-content/uploads/2008/09/Mimosa-freepik-780x521.jpg",
+  //         isEnable: true,
+  //         label: "Mimosa",
+  //         qtd: 1,
+  //         harmoziation:
+  //           "A Mimosa, uma clássica mistura de champanhe e suco de laranja, é um excelente acompanhamento para brunches. ",
+  //         description:
+  //           "Feito à base de espumante gelado e suco de laranja fresco, a Mimosa vai muito bem com queijos mais delicados, como a ricota. Saladas também são muito bem-vindas",
+  //         price: "30,00",
+  //         category: "Bebidas",
+  //         categoryIcon: "",
+  //         isDrink: true,
+  //         isDestaque: true,
+  //       },
+  //       {
+  //         img: "https://claudia.abril.com.br/wp-content/uploads/2020/02/receita-fritada-forno-abobrinha.jpg?quality=85",
+  //         isEnable: true,
+  //         label: "Frittata de abobrinha ao forno",
+  //         qtd: 1,
+  //         harmoziation:
+  //           "A Frittata de abobrinha ao forno é acompanhada por vinhos brancos com mais corpo, como um Viognier ou um Chenin Blanc.",
+  //         description:
+  //           "Uma omelete leve e fofa feita com abobrinhas, queijo e ervas. Perfeita para um café da manhã ou jantar saudável.",
+  //         price: "25,00",
+  //         category: "Prato Principal",
+  //         categoryIcon: "",
+  //         isOffer: true,
+  //         isDrink: false,
+  //         isDestaque: false,
+  //       },
+  //     ],
+  //   },
+  // ];
 
   const [promoItem, setPromoItem] = useState();
   const [divChange, setDivChange] = useState("");
   const [startAt, setStartAt] = useState("00:00");
   const [endAt, setEndAt] = useState("00:00");
+  const [offers, setOffers] = useState<TProductsOffers[]>();
 
   useEffect(() => {
-    const dates = document.getElementById("dates");
-    const offers = document.getElementById("offers");
+    const usr = isAuth();
+    if (usr && usr.userType === "admin") {
+      const dates = document.getElementById("dates");
+      const offers = document.getElementById("offers");
 
-    if (dates && offers) {
-      switch (divChange) {
-        case "dates":
-          dates.style.display = "flex";
-          offers.style.display = "none";
-          break;
-        case "offers":
-          dates.style.display = "none";
-          offers.style.display = "flex";
-          break;
+      if (dates && offers) {
+        switch (divChange) {
+          case "dates":
+            dates.style.display = "flex";
+            offers.style.display = "none";
+            break;
+          case "offers":
+            dates.style.display = "none";
+            offers.style.display = "flex";
+            break;
 
-        default:
-          break;
+          default:
+            break;
+        }
       }
+      const fetchData = async () => {
+        try {
+          const offersAndFoods: any = await Promise.all([
+            await OffersService.getMyOffers(usr.codCompany!),
+          ])
+            .then((results) => {
+              return results;
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+          if (offersAndFoods[0].length) {
+            const offersRes = offersAndFoods[0] as TProductsOffers[];
+            setOffers(offersRes);
+          }
+        } catch (error) {
+          console.log(error);
+          message.error("Erro ao recuperar categorias, verifique o log");
+        }
+      };
+      fetchData();
+    } else {
+      navigate("/login");
     }
   }, [divChange]);
 
@@ -127,6 +157,14 @@ const OffersMenuAuto: React.FC = () => {
     if (promoItem) {
       const promoItemAux = promoItem as any;
       const time = promoItemAux.automation.time;
+
+      //setDomingo()
+      //setSegundaFeira()
+      //setTercaFeira()
+      //setQuartaFeira()
+      //setQuintaFeira()
+      //setSextaFeira()
+      //setSabado()
 
       setStartAt(time.startAt);
       setEndAt(time.endAt);
@@ -138,6 +176,13 @@ const OffersMenuAuto: React.FC = () => {
   }, [promoItem]);
 
   const createAutomation = () => {
+    const automation: TAutomation = {
+      daysWeek: [],
+      time: {
+        startAt: "",
+        endAt: "",
+      },
+    };
     console.log(
       domingo,
       segundaFeira,
@@ -169,10 +214,10 @@ const OffersMenuAuto: React.FC = () => {
             <Styled.CardsRow
               style={{
                 height: "fit-content",
-                overflowX: offers.length > 5 ? "scroll" : "auto",
+                // overflowX: offers!.length > 5 ? "scroll" : "auto",
               }}
             >
-              {offers.map((offer) => (
+              {offers!.map((offer) => (
                 <Styled.CardItem
                   onClick={() => {
                     setPromoItem(offer as any);
@@ -185,9 +230,11 @@ const OffersMenuAuto: React.FC = () => {
                         bgColor={"white"}
                         price={offer.price}
                         color={theme.colors.yellow.palete}
-                        label={offer.title}
-                        description={offer.descriptionText}
-                        img={offer.banner}
+                        label={offer.title ? offer.title : ""}
+                        description={
+                          offer.descriptionText ? offer.descriptionText : ""
+                        }
+                        img={offer.banner ? offer.banner : ""}
                         comboItens={offer.comboItens}
                       />
                     </>
@@ -197,11 +244,13 @@ const OffersMenuAuto: React.FC = () => {
                         isCombo={false}
                         bgColor={theme.colors.blue.palete}
                         oldPrice={offer.price}
-                        price={offer.offerPrice}
+                        price={offer.price}
                         color={"#386641"}
-                        label={offer.label}
-                        description={offer.description}
-                        img={offer.img}
+                        label={offer.title ? offer.title : ""}
+                        description={
+                          offer.descriptionText ? offer.descriptionText : ""
+                        }
+                        img={offer.img ? offer.img : ""}
                       />
                     </>
                   )}

@@ -5,7 +5,7 @@ import { UserService } from "./users";
 import { decryptToAuth, encryptToAuth } from "../../utils/security/isAuth";
 import { CompanyService } from "./company";
 import { TLogin } from "../../pages/account/login";
-import { TProductsOffers } from "../../pages/menu";
+import { TProducts, TProductsOffers } from "../../pages/menu";
 import { TTable } from "../../pages/adm/adm/comanda";
 
 export type TLatLon = {
@@ -95,7 +95,7 @@ export type TCompany = {
   docId?: string;
   icon: string;
   isAproved: boolean; //Caso seja false, a solicitação não foi aprovada.
-  offers: TProductsOffers[];
+  offers: TProductsOffers[];//Tirar eim
   plan: string;
   staff: TStaf[];
   statusCadastro: boolean;
@@ -112,17 +112,30 @@ export type TToken = {
   expirationTime: number;
 };
 
+export type TComboOffers = {
+  isEnable: boolean;
+  banner: string;
+  price: string;
+  label: string;
+  description: string;
+  comboItens: TProducts[];
+  docId?: string
+};
+
 export const sessionHandler = async (userP: TUser, token: TToken) => {
   message.success("Bem vindo, " + userP.name);
   const user = {
     ...userP,
     token,
   };
+
   if (user.userType === "admin") {
     const company = await CompanyService.GetCompany(user.codCompany!);
+    console.log(company.data);
+
     const adminUser = {
       ...user,
-      ...company,
+      company: company.data,
     };
     localStorage.setItem(
       "@meumenu/user",

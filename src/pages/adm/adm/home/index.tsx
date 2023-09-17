@@ -17,6 +17,9 @@ const RestaurantHome: React.FC = () => {
 
   useEffect(() => {
     const usr = isAuth();
+
+    console.log(usr);
+
     if (usr && usr.userType === "admin") {
       setUser(usr);
     } else {
@@ -44,7 +47,11 @@ const RestaurantHome: React.FC = () => {
                   width: isMobile() ? "80%" : "50%",
                 }}
                 onClick={() => {
-                  item.url && navigate(item.url);
+                  if (item.title === "Cardápio digital") {
+                    navigate(`/cardapio/${isAuth().company.URL}`);
+                  } else {
+                    item.url && navigate(item.url);
+                  }
                 }}
               >
                 <Homecard {...item} />

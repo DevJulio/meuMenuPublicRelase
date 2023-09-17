@@ -92,6 +92,8 @@ export type TProductsOffers = {
   banner?: string;
   title?: string;
   descriptionText?: string;
+  docId?: string;
+  automation?: TAutomation;
   comboItens?: TProducts[];
 };
 
@@ -450,7 +452,7 @@ const Menu: React.FC = () => {
           <Styled.MainContainer
             style={{
               backgroundColor: company.details.mainColor,
-              paddingTop: company.details.hideWelcome ? "0vh" : "3vh",
+              paddingTop: company.details.hideWelcome ? "3vh" : "6vh",
             }}
           >
             {company.details.hideWelcome ? (

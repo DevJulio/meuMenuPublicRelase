@@ -153,6 +153,8 @@ const AdmMenu: React.FC = () => {
       }
     } else {
       try {
+        console.log(changedItem[Number(id)]);
+
         const res = await FoodsService.updateFoods(isAuth()!.codCompany!, {
           ...changedItem[Number(id)],
           isEnable: true,

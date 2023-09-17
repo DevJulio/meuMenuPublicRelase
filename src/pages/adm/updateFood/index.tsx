@@ -65,6 +65,7 @@ const UpdateFood: React.FC = () => {
         setFoodType("comer");
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   let updatePic = false;

@@ -12,96 +12,101 @@ import Modal from "../../../components/modal";
 import Input from "../../../components/input";
 import { TSwitch } from "../admMenu";
 import { message } from "antd";
+import { isAuth } from "../../../utils/security/isCrypto";
+import { OffersService } from "../../../service/module/offers";
+import { TProductsOffers } from "../../menu";
+import { encryptToAuth } from "../../../utils/security/isAuth";
 
 const OffersMyOffers: React.FC = () => {
   const [modalUpdate, setModalUpdate] = useState<boolean>(false);
   const [switchStates, setSwitchStates] = useState<TSwitch[]>([]);
   const [newPrice, setNewPrice] = useState<string>("");
+  const [offers, setOffers] = useState<TProductsOffers[]>();
 
   const [modalItem, setModalItem] = useState<any>();
 
   const navigate = useNavigate();
 
-  const offers = [
-    {
-      img: "https://www.comidaereceitas.com.br/wp-content/uploads/2008/09/Mimosa-freepik-780x521.jpg",
-      isEnable: true,
-      label: "Mimosa",
-      qtd: 1,
-      harmoziation:
-        "A Mimosa, uma clássica mistura de champanhe e suco de laranja, é um excelente acompanhamento para brunches. ",
-      description:
-        "Feito à base de espumante gelado e suco de laranja fresco, a Mimosa vai muito bem com queijos mais delicados, como a ricota. Saladas também são muito bem-vindas",
-      price: "30,00",
-      category: "Bebidas",
-      categoryIcon: "",
-      isDrink: true,
-      isDestaque: true,
-      isOffer: true,
-      offerPrice: "12,50",
-    },
-    {
-      isEnable: true,
-      banner:
-        "https://static.vecteezy.com/ti/vetor-gratis/p3/8770068-combo-refeicoes-instagram-posts-template-food-social-media-background-yellow-background-for-banner-advertising-vetor.jpg",
-      price: "45,00",
-      label: "Combo 1",
-      descriptionText:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut iaculis blandit magna, ac commodo tortor consectetur nec. Sed nec massa sapien. Proin eget sem et velit maximus gravida ac sit amet magna. Cras libero diam, consectetur ut fringilla quis, tempus tristique elit. Maecenas sem arcu, molestie viverra quam vitae, ",
-      comboItens: [
-        {
-          img: "https://www.comidaereceitas.com.br/wp-content/uploads/2008/09/Mimosa-freepik-780x521.jpg",
-          isEnable: true,
-          label: "Mimosa",
-          qtd: 1,
-          harmoziation:
-            "A Mimosa, uma clássica mistura de champanhe e suco de laranja, é um excelente acompanhamento para brunches. ",
-          description:
-            "Feito à base de espumante gelado e suco de laranja fresco, a Mimosa vai muito bem com queijos mais delicados, como a ricota. Saladas também são muito bem-vindas",
-          price: "30,00",
-          category: "Bebidas",
-          categoryIcon: "",
-          isDrink: true,
-          isDestaque: true,
-        },
-        {
-          img: "https://claudia.abril.com.br/wp-content/uploads/2020/02/receita-fritada-forno-abobrinha.jpg?quality=85",
-          isEnable: true,
-          label: "Frittata de abobrinha ao forno",
-          qtd: 1,
-          harmoziation:
-            "A Frittata de abobrinha ao forno é acompanhada por vinhos brancos com mais corpo, como um Viognier ou um Chenin Blanc.",
-          description:
-            "Uma omelete leve e fofa feita com abobrinhas, queijo e ervas. Perfeita para um café da manhã ou jantar saudável.",
-          price: "25,00",
-          category: "Prato Principal",
-          categoryIcon: "",
-          isOffer: true,
-          isDrink: false,
-          isDestaque: false,
-        },
-      ],
-    },
-  ];
-
   useEffect(() => {
-    const switches: any[] = [];
-    offers.map((foodItem, index) =>
-      switches.push({
-        id: index.toString(),
-        checked: foodItem.isEnable,
-        label: foodItem.label,
-      })
-    );
-    setSwitchStates(switches);
+    const usr = isAuth();
+    if (usr && usr.userType === "admin") {
+      //const res = await CategoryService.getMyCategories(isAuth()!.codCompany!);
+
+      const fetchData = async () => {
+        try {
+          const offersAndFoods: any = await Promise.all([
+            await OffersService.getMyOffers(usr.codCompany!),
+          ])
+            .then((results) => {
+              return results;
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+          if (offersAndFoods[0].length) {
+            const offersRes = offersAndFoods[0] as TProductsOffers[];
+            setOffers(offersRes);
+            const switches: any[] = [];
+            offersRes.map((foodItem, index) =>
+              switches.push({
+                id: index.toString(),
+                checked: foodItem.isEnable,
+                label: foodItem.label,
+              })
+            );
+            setSwitchStates(switches);
+          }
+        } catch (error) {
+          console.log(error);
+          message.error("Erro ao recuperar categorias, verifique o log");
+        }
+    
+      };
+      fetchData();
+    } else {
+      navigate("/login");
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleSwitchChange = async (id: string) => {
+  const handleSwitchChange = async (id: any) => {
+    const changedItem = offers![id];
+    console.log(changedItem);
+
     if (switchStates[Number(id)].checked) {
-      message.error("Item desativado.");
+      try {
+        const res = await OffersService.updateOffers(isAuth()!.codCompany!, {
+          ...changedItem,
+          isEnable: false,
+          col: "company",
+          subcol: "offers",
+        });
+        if (res.status) {
+          message.error("Item desativado.");
+        } else {
+          message.error("Verifique os campos e tente novamente");
+        }
+      } catch (error) {
+        console.log(error);
+        message.error("Verifique os campos e tente novamente");
+      }
     } else {
-      message.success("Item ativado.");
+      try {
+        const res = await OffersService.updateOffers(isAuth()!.codCompany!, {
+          ...changedItem,
+          isEnable: true,
+          col: "company",
+          subcol: "offers",
+        });
+        if (res.status) {
+          message.success("Item ativado.");
+        } else {
+          message.error("Verifique os campos e tente novamente");
+        }
+      } catch (error) {
+        console.log(error);
+        message.error("Verifique os campos e tente novamente");
+      }
     }
     setSwitchStates((prevSwitchStates) =>
       prevSwitchStates.map((switchState) =>
@@ -116,9 +121,23 @@ const OffersMyOffers: React.FC = () => {
     setModalUpdate(false);
   };
 
-  const updatePrice = () => {
-    console.log("atualizar o " + modalItem + " com o preço " + newPrice);
-    //chamar api
+  const updatePrice = async () => {
+    try {
+      const res = await OffersService.updateOffers(isAuth()!.codCompany!, {
+        ...modalItem,
+        offerPrice: newPrice,
+        col: "company",
+        subcol: "offers",
+      });
+      if (res.status) {
+        message.success("Item ativado.");
+      } else {
+        message.error("Verifique os campos e tente novamente");
+      }
+    } catch (error) {
+      console.log(error);
+      message.error("Verifique os campos e tente novamente");
+    }
   };
 
   return (
@@ -188,23 +207,24 @@ const OffersMyOffers: React.FC = () => {
             <Styled.CardsRow
               style={{
                 height: "fit-content",
-                overflowX: offers.length > 5 ? "scroll" : "auto",
+                overflowX: offers && offers.length > 5 ? "scroll" : "auto",
               }}
             >
               {switchStates.length &&
+                offers &&
                 offers.map((offer, index) => (
                   <Styled.CardItem onClick={() => {}}>
-                    {offer.comboItens ? (
+                    {offer && offer?.comboItens && offer?.comboItens.length ? (
                       <>
                         <FoodCardOffer
                           isCombo={true}
                           bgColor={"white"}
                           price={offer.price}
                           color={theme.colors.yellow.palete}
-                          label={offer.label}
-                          description={offer.descriptionText}
-                          img={offer.banner}
-                          comboItens={offer.comboItens}
+                          label={offer.label!}
+                          description={offer.description!}
+                          img={offer.banner!}
+                          comboItens={offer.comboItens ? offer.comboItens : []}
                         />
                         <SwitchCard
                           handleSwitchChange={() => {
@@ -213,9 +233,10 @@ const OffersMyOffers: React.FC = () => {
                           id={index.toString()}
                           value={switchStates[index].checked}
                           updateFunc={() => {
+                            console.log(offer);
                             localStorage.setItem(
-                              "meuMenuEditOfferCombo",
-                              JSON.stringify(offer)
+                              "@meumenu/editOfferCombo",
+                              encryptToAuth(JSON.stringify(offer))
                             );
                             navigate("/adm/ofertas/minhas-ofertas/edicao");
                           }}
@@ -227,11 +248,11 @@ const OffersMyOffers: React.FC = () => {
                           isCombo={false}
                           bgColor={theme.colors.blue.palete}
                           oldPrice={offer.price}
-                          price={offer.offerPrice}
+                          price={offer.offerPrice!}
                           color={"#386641"}
-                          label={offer.label}
-                          description={offer.description}
-                          img={offer.img}
+                          label={offer.label!}
+                          description={offer.description!}
+                          img={offer.img!}
                         />
                         <SwitchCard
                           handleSwitchChange={() => {
@@ -251,10 +272,7 @@ const OffersMyOffers: React.FC = () => {
             </Styled.CardsRow>
           </Styled.Container>
         </Styled.MainCardsContainer>
-
-        {/* Lista com as ofertas, incluindo os novos cards */}
       </Styled.Container>
-      <Styled.Container id="dates"></Styled.Container>
       <Footer />
     </>
   );

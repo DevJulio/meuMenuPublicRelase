@@ -229,3 +229,18 @@ export const CounterSpan = styled.span`
   font-size: ${({ theme }) => theme.fontSize.lg};
   color: ${({ theme }) => theme.colors.blue.palete};
 `
+export const PlansDetailModal = styled.span`
+  display: flex;
+  justify-content: left;
+  width: 95%;
+  padding: 2vh;
+  justify-content: center;
+  font-family: ${({ theme }) => theme.fonts.secundary};
+  font-size: ${({ theme }) => theme.fontSize.mm};
+ 
+`;
+export const BtnContainer = styled.div`
+  display: flex;
+   margin-top: 4vw;
+  margin-bottom: 4vw; 
+`;

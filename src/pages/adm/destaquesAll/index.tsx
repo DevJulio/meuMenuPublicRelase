@@ -106,7 +106,7 @@ const DestaquesAll: React.FC = () => {
       {/* outro modal com: label: "oque deseja fazer agora?" botões de: novo cadastro nessa categoria, escolher outra categoria, voltar ao menu */}
 
       <Styled.MainContainer>
-        <Styled.TitleSpan>Ofertas</Styled.TitleSpan>
+        <Styled.TitleSpan>Destaques</Styled.TitleSpan>
         <Styled.MenuContainer id="mainContainer">
           <Styled.ItemSpan style={{ color: "white" }}>
             Selecione a categoria do prato:

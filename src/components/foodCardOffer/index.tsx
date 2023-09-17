@@ -35,15 +35,17 @@ const FoodCardOffer: React.FC<IFood> = ({
   const [comboItensState, setComboIensState] = useState<any>();
 
   useEffect(() => {
-    let itens = comboItens?.map((comboItem) => {
-      return comboItem.label + ", ";
-    });
-    if (itens) {
-      itens[itens.length - 1] = itens[itens.length - 1].slice(0, -2);
-    }
-    itens?.push(".");
+    if (comboItens) {
+      let itens = comboItens?.map((comboItem) => {
+        return comboItem.label + ", ";
+      });
+      if (itens) {
+        itens[itens.length - 1] = itens[itens.length - 1].slice(0, -2);
+      }
+      itens?.push(".");
 
-    setComboIensState(itens);
+      setComboIensState(itens);
+    }
   }, [comboItens]);
 
   return (
@@ -81,7 +83,6 @@ const FoodCardOffer: React.FC<IFood> = ({
                 }}
                 onClick={() => {}}
               >
-                {" "}
                 ver mais...
               </Styled.Anchor>
             </Styled.ComboParagrah>

@@ -10,7 +10,8 @@ import info from "../../../../assets/icons/admIcons/info.png";
 import estatisticas from "../../../../assets/icons/admIcons/estatisticas.png";
 import equipe from "../../../../assets/icons/admIcons/equipe.png";
 import outro from "../../../../assets/icons/categories/allCategories/outro.png";
-
+import menukkk from "../../../../assets/icons/categories/allCategories/menukkk.png";
+import { isAuth } from "../../../../utils/security/isCrypto";
 export const mainAdmCategories: TCardProps[] = [
   {
     icon: cardapio,
@@ -94,14 +95,14 @@ export const mainAdmCategories: TCardProps[] = [
     url: "/adm/time",
   },
   {
-    icon: outro,
-    title: "Meu cardápio",
-    text: "Acessar o meu menu",
+    icon: menukkk,
+    title: "Cardápio digital",
+    text: "Visualize o seu cardápio",
     mainColor: theme.colors.white.normal,
     auxColor: theme.colors.red.normal,
     textColor: "black",
     customWidth: true,
-    url: "/cardapio/",
+    url: "",
   },
   {
     icon: outro,

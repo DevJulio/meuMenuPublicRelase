@@ -1,15 +1,17 @@
 import { AxiosError } from "axios";
 import { api } from "../api";
 import { message } from "antd";
+import { isAuth } from "../../utils/security/isCrypto";
+import { getToken } from "../../utils/security/isAuth";
 
 export class CompanyService {
   static async setCompany(data: any) {
     console.log(data);
     try {
       const res = await api.post("/companies/create/", data, {
-        // headers: {
-        //     Authorization: `Bearer ${await genericToken()}`,
-        // },
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        },
       });
       return res;
     } catch (error) {
@@ -23,6 +25,9 @@ export class CompanyService {
       const res = await api.get("/companies/company", {
         params: {
           cod_company: cod,
+        },
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
         },
       });
       if (res) {

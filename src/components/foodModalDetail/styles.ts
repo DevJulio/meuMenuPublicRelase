@@ -6,7 +6,11 @@ export const MainContainer = styled.div`
   flex-direction: column;
   border-radius: 25px;
   margin-left: 2.5vw;
-  margin-right: 2.5vw;
+  margin-right: 2.5vw;  
+  max-height: 60vh;
+  overflow-x: hidden;
+  padding-bottom: 5vh;
+
  `;
 export const Harmozization = styled.span`
 font-size: ${({ theme }) => theme.fontSize.md};
