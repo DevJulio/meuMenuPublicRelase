@@ -46,14 +46,6 @@ const SwitchCard: React.FC<Props> = ({
             }}
             onClick={() => {
               updateFunc();
-              // const currentFoodItem = foods.filter(
-              //   (cate) => cate.category === foodCategory
-              // );
-              // localStorage.setItem(
-              //   "meuMenuFoodDetail",
-              //   JSON.stringify(currentFoodItem[Number(index)])
-              // );
-              // navigate("/adm/update/cardapio");
             }}
           >
             Editar

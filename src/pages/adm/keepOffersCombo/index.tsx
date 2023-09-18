@@ -201,6 +201,13 @@ const OffersMenuCombo: React.FC = () => {
             label,
             description: descriptionText,
             comboItens: comboState,
+            automation: {
+              daysWeek: [],
+              time: {
+                startAt: "00:00",
+                endAt: "00:00",
+              },
+            },
           };
 
           const offerRes = await CompanyService.setCompanySubCol({

@@ -45,9 +45,10 @@ import { getFontStyle } from "../../utils/getFontStyle";
 import { CategoryService } from "../../service/module/categories";
 import all from "../../assets/icons/categories/ios/all.png";
 import { FoodsService } from "../../service/module/foods";
+import { OffersService } from "../../service/module/offers";
 
 export type TAutomation = {
-  daysWeek: [];
+  daysWeek: string[];
   time: {
     startAt: string;
     endAt: string;
@@ -107,6 +108,7 @@ const Menu: React.FC = () => {
   const [company, setCompany] = useState<TCompany>();
   const [categories, setCategories] = useState<TCategory[]>([]);
   const [foodsState, setFoodsState] = useState<TProducts[]>([]);
+  const [offersState, setOffersState] = useState<TProductsOffers[]>([]);
 
   const navigate = useNavigate();
 
@@ -242,6 +244,154 @@ const Menu: React.FC = () => {
             fontStyle: theme.fonts.hand, // getFontStyle(company!.details.fontStyle),
           },
         ];
+        const renOffers: TProductsOffers[] = [
+          {
+            img: "https://www.comidaereceitas.com.br/wp-content/uploads/2008/09/Mimosa-freepik-780x521.jpg",
+            isEnable: true,
+            label: "Mimosa",
+            qtd: 1,
+            harmoziation:
+              "A Mimosa, uma clássica mistura de champanhe e suco de laranja, é um excelente acompanhamento para brunches. ",
+            description:
+              "Feito à base de espumante gelado e suco de laranja fresco, a Mimosa vai muito bem com queijos mais delicados, como a ricota. Saladas também são muito bem-vindas",
+            price: "30,00",
+            category: "Bebidas",
+            categoryIcon: "",
+            isDrink: true,
+            isDestaque: true,
+            isOffer: true,
+            offerPrice: "12,50",
+          },
+          {
+            img: "https://www.receiteria.com.br/wp-content/uploads/pate-de-ricota-com-ervas.jpg",
+            isEnable: true,
+            label: "Pate de ricota com ervas",
+            qtd: 1,
+            harmoziation:
+              "Para harmonizar com o pate de ricota com ervas, um vinho branco seco como um Sauvignon Blanc ou um Chardonnay não carvalhado é uma ótima escolha.",
+            description:
+              "Este pâté cremoso é feito com ricota fresca e temperado com ervas finas, como manjericão e tomilho. Perfeito como entrada ou como acompanhamento de pães crocantes",
+            price: "20,00",
+            category: "Entradas",
+            categoryIcon: "",
+            isDrink: false,
+            isDestaque: true,
+            isOffer: true,
+            offerPrice: "15,50",
+          },
+          {
+            img: "https://melepimenta.com/wp-content/uploads/2013/02/Antepasto-a-espanhola-Baixa-1024x683.jpg",
+            isEnable: true,
+            label: "Antepasto de tomate",
+            qtd: 1,
+            harmoziation:
+              "Para Antepasto de tomate, um vinho tinto jovem e frutado como um Pinot Noir ou um Merlot são ideais.",
+            description:
+              "Uma combinação saudável e saborosa de tomates frescos, mussarela de búfala, azeitonas pretas e um toque de azeite extra-virgem. Ideal para compartilhar com amigos ou familiares.",
+            price: "25,00",
+            category: "Entradas",
+            categoryIcon: "",
+            isDrink: false,
+            isDestaque: true,
+            isOffer: true,
+            offerPrice: "20,50",
+          },
+          {
+            img: "https://claudia.abril.com.br/wp-content/uploads/2020/02/receita-fritada-forno-abobrinha.jpg?quality=85",
+            isEnable: true,
+            label: "Frittata de abobrinha ao forno",
+            qtd: 1,
+            harmoziation:
+              "A Frittata de abobrinha ao forno é acompanhada por vinhos brancos com mais corpo, como um Viognier ou um Chenin Blanc.",
+            description:
+              "Uma omelete leve e fofa feita com abobrinhas, queijo e ervas. Perfeita para um café da manhã ou jantar saudável.",
+            price: "25,00",
+            category: "Prato Principal",
+            categoryIcon: "",
+            isOffer: true,
+            isDrink: false,
+            isDestaque: false,
+            offerPrice: "19,00",
+          },
+          {
+            img: "https://cooknenjoy.com/wp-content/uploads/2021/10/torta-de-limao-01-1800x1286.jpg",
+            isEnable: true,
+            label: "Torta de limão",
+            qtd: 1,
+            harmoziation:
+              "A Torta de limão pede por um vinho branco mais doce, como um Riesling ou um Gewürztraminer.",
+            description:
+              "Uma crosta crocante recheada com uma mistura cítrica e refrescante de limão, açúcar e creme de leite. (Torta com 8 fatias)",
+            price: "30,00",
+            category: "Sobremesas",
+            isOffer: true,
+            categoryIcon: "",
+            isDrink: false,
+            isDestaque: true,
+            offerPrice: "20,00",
+          },
+          {
+            img: "https://i1.wp.com/files.agro20.com.br/uploads/2020/01/Caf%C3%A9-expresso-1.jpg?fit=1024%2C618&ssl=1",
+            isEnable: true,
+            label: "Café expresso",
+            qtd: 1,
+            harmoziation:
+              "Café expresso forte é perfeito para acompanhar sobremesas doces",
+            description:
+              "Um expresso perfeito é a mistura da química e da física, um produto da união entre ciência e arte, uma bebida que ressalta os cinco sentidos e toda a riqueza do café.",
+            price: "30,00",
+            category: "Bebidas",
+            categoryIcon: "",
+            isDrink: true,
+            isDestaque: false,
+            isOffer: true,
+            offerPrice: "2,00",
+          },
+          {
+            isEnable: true,
+            banner:
+              "https://static.vecteezy.com/ti/vetor-gratis/p3/8770068-combo-refeicoes-instagram-posts-template-food-social-media-background-yellow-background-for-banner-advertising-vetor.jpg",
+            price: "45,00",
+            label: "Combo 1",
+            isOffer: true,
+            descriptionText:
+              "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut iaculis blandit magna, ac commodo tortor consectetur nec. Sed nec massa sapien. Proin eget sem et velit maximus gravida ac sit amet magna. Cras libero diam, consectetur ut fringilla quis, tempus tristique elit. Maecenas sem arcu, molestie viverra quam vitae, ",
+            comboItens: [
+              {
+                img: "https://www.comidaereceitas.com.br/wp-content/uploads/2008/09/Mimosa-freepik-780x521.jpg",
+                isEnable: true,
+                label: "Mimosa",
+                qtd: 1,
+                harmoziation:
+                  "A Mimosa, uma clássica mistura de champanhe e suco de laranja, é um excelente acompanhamento para brunches. ",
+                description:
+                  "Feito à base de espumante gelado e suco de laranja fresco, a Mimosa vai muito bem com queijos mais delicados, como a ricota. Saladas também são muito bem-vindas",
+                price: "30,00",
+                category: "Bebidas",
+                categoryIcon: "",
+                isDrink: true,
+                isDestaque: true,
+              },
+              {
+                img: "https://claudia.abril.com.br/wp-content/uploads/2020/02/receita-fritada-forno-abobrinha.jpg?quality=85",
+                isEnable: true,
+                label: "Frittata de abobrinha ao forno",
+                qtd: 1,
+                harmoziation:
+                  "A Frittata de abobrinha ao forno é acompanhada por vinhos brancos com mais corpo, como um Viognier ou um Chenin Blanc.",
+                description:
+                  "Uma omelete leve e fofa feita com abobrinhas, queijo e ervas. Perfeita para um café da manhã ou jantar saudável.",
+                price: "25,00",
+                category: "Prato Principal",
+                categoryIcon: "",
+                isOffer: true,
+                isDrink: false,
+                isDestaque: false,
+              },
+            ],
+          },
+        ];
+        setOffersState(renOffers);
         setFoodsState(foods);
         setCategories(categoriesAux);
         setCompany(REN);
@@ -249,11 +399,13 @@ const Menu: React.FC = () => {
         const urlRes: TCompany = await CompanyService.GetCompanyByURL(empresa!);
         if (urlRes) {
           setCompany(urlRes);
+          console.log(urlRes);
 
           try {
             const categoryAndFood: any = await Promise.all([
               await CategoryService.getMyCategories(urlRes.docId!),
               await FoodsService.getMyFoods(urlRes.docId!),
+              await OffersService.getMyOffers(urlRes.docId!),
             ])
               .then((results) => {
                 return results;
@@ -282,6 +434,7 @@ const Menu: React.FC = () => {
             aux.unshift(allCategories);
             setCategories(aux);
             setFoodsState(categoryAndFood[1] as TProducts[]);
+            setOffersState(categoryAndFood[2] as TProductsOffers[]);
           } catch (error) {
             console.log(error);
             message.error(
@@ -367,6 +520,26 @@ const Menu: React.FC = () => {
         loading="lazy"
       ></iframe>
     );
+  };
+
+  const checkOfferStatus = (offer: TProductsOffers) => {
+    const today = new Date();
+    const dayOfWeek = today.getDay();
+    const { daysWeek, time } = offer.automation!;
+    if (daysWeek.find((d) => d === dayOfWeek.toString())) {
+      const { endAt, startAt } = time;
+      const now = today.toLocaleTimeString("pt-BR", {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+      if (now >= startAt && now <= endAt) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
   };
 
   return (
@@ -863,7 +1036,7 @@ const Menu: React.FC = () => {
               insideColor={company.details.textColor}
             ></BorderPage>
 
-            {company.details.offers?.status && (
+            {offersState.length > 0 && (
               <BorderPage
                 destop={undefined}
                 mobile={
@@ -912,7 +1085,7 @@ const Menu: React.FC = () => {
                           height: "fit-content",
                         }}
                       >
-                        {offersData
+                        {offersState
                           .filter((cate) => cate.isOffer)
                           .map((offerItem, index) => (
                             <div
@@ -921,7 +1094,7 @@ const Menu: React.FC = () => {
                                 setmodalIten(offerItem);
                               }}
                             >
-                              {offerItem && (
+                              {offerItem && checkOfferStatus(offerItem) && (
                                 <>
                                   {offerItem.comboItens ? (
                                     <>

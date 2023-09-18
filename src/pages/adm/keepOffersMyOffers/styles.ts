@@ -78,3 +78,20 @@ export const FormItemContainer = styled.div`
     align-self: center;
   }
 `;
+export const ItemSpan = styled.span`
+  color: white;
+  margin-top: 4vh;
+  font-size: ${({ theme }) => theme.fontSize.md2};
+  align-self: center;
+  padding-bottom: 3vh;
+  padding-inline: 10px;
+  font-family: ${({ theme }) => theme.fonts.primary};
+  @media ${({ theme }) => theme.devices.tablet} {
+    text-align-last: left;
+  }
+`;
+export const BtnContainer = styled.div`
+  display: flex;
+  margin-top: 4vw;
+  margin-bottom: 4vw;
+`;

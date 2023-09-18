@@ -1,6 +1,8 @@
 import { message } from "antd";
 import { api } from "../api";
 import { AxiosError } from "axios";
+import { isAuth } from "../../utils/security/isCrypto";
+import { getToken } from "../../utils/security/isAuth";
 
 export class OffersService {
   static async getMyOffers(docId: string) {
@@ -29,6 +31,25 @@ export class OffersService {
     } catch (error) {
       console.log(error, " updateOffers", (error as AxiosError).message);
       message.error("Verifique os dados enviados e tente novamente");
+    }
+  }
+
+  static async deleteOffers(docId: string) {
+    try {
+      const usr = isAuth();
+      const res = await api.delete(
+        `/offers/delete/${usr.codCompany}/${docId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${getToken()}`,
+          },
+        }
+      );
+      if (res) {
+        return res.data;
+      }
+    } catch (error) {
+      message.error((error as AxiosError).message);
     }
   }
 }

@@ -100,7 +100,7 @@ const OffersMenuAuto: React.FC = () => {
   //   },
   // ];
 
-  const [promoItem, setPromoItem] = useState();
+  const [promoItem, setPromoItem] = useState<TProductsOffers>();
   const [divChange, setDivChange] = useState("");
   const [startAt, setStartAt] = useState("00:00");
   const [endAt, setEndAt] = useState("00:00");
@@ -129,7 +129,7 @@ const OffersMenuAuto: React.FC = () => {
       }
       const fetchData = async () => {
         try {
-          const offersAndFoods: any = await Promise.all([
+          const offersRes: any = await Promise.all([
             await OffersService.getMyOffers(usr.codCompany!),
           ])
             .then((results) => {
@@ -138,9 +138,13 @@ const OffersMenuAuto: React.FC = () => {
             .catch((error) => {
               console.error(error);
             });
-          if (offersAndFoods[0].length) {
-            const offersRes = offersAndFoods[0] as TProductsOffers[];
-            setOffers(offersRes);
+          console.log(offersRes);
+
+          if (offersRes[0].length) {
+            const offersParsed = offersRes[0] as TProductsOffers[];
+            console.log(offersParsed);
+
+            setOffers(offersParsed);
           }
         } catch (error) {
           console.log(error);
@@ -155,16 +159,32 @@ const OffersMenuAuto: React.FC = () => {
 
   useEffect(() => {
     if (promoItem) {
-      const promoItemAux = promoItem as any;
-      const time = promoItemAux.automation.time;
+      console.log(promoItem);
 
-      //setDomingo()
-      //setSegundaFeira()
-      //setTercaFeira()
-      //setQuartaFeira()
-      //setQuintaFeira()
-      //setSextaFeira()
-      //setSabado()
+      const { time, daysWeek } = promoItem.automation!;
+      console.log(daysWeek);
+
+      if (daysWeek.find((day) => day === "0")) {
+        setDomingo(true);
+      }
+      if (daysWeek.find((day) => day === "1")) {
+        setSegundaFeira(true);
+      }
+      if (daysWeek.find((day) => day === "2")) {
+        setTercaFeira(true);
+      }
+      if (daysWeek.find((day) => day === "3")) {
+        setQuartaFeira(true);
+      }
+      if (daysWeek.find((day) => day === "4")) {
+        setQuintaFeira(true);
+      }
+      if (daysWeek.find((day) => day === "5")) {
+        setSextaFeira(true);
+      }
+      if (daysWeek.find((day) => day === "6")) {
+        setSabado(true);
+      }
 
       setStartAt(time.startAt);
       setEndAt(time.endAt);
@@ -175,102 +195,138 @@ const OffersMenuAuto: React.FC = () => {
     }
   }, [promoItem]);
 
-  const createAutomation = () => {
+  const createAutomation = async () => {
+    const daysWeek = [];
+    if (domingo) {
+      daysWeek.push("0");
+    }
+    if (segundaFeira) {
+      daysWeek.push("1");
+    }
+    if (tercaFeira) {
+      daysWeek.push("2");
+    }
+    if (quartaFeira) {
+      daysWeek.push("3");
+    }
+    if (quintaFeira) {
+      daysWeek.push("4");
+    }
+    if (sextaFeira) {
+      daysWeek.push("5");
+    }
+    if (sabado) {
+      daysWeek.push("6");
+    }
     const automation: TAutomation = {
-      daysWeek: [],
+      daysWeek,
       time: {
-        startAt: "",
-        endAt: "",
+        startAt,
+        endAt,
       },
     };
-    console.log(
-      domingo,
-      segundaFeira,
-      tercaFeira,
-      quartaFeira,
-      quintaFeira,
-      sextaFeira,
-      sabado,
-      startAt,
-      endAt,
-      promoItem
-    );
+    try {
+      const res = await OffersService.updateOffers(isAuth()!.codCompany!, {
+        ...promoItem,
+        automation: automation,
+        col: "company",
+        subcol: "offers",
+      });
+      if (res.status) {
+        message.success("Automação criada!");
+      } else {
+        message.error("Verifique os campos e tente novamente");
+      }
+    } catch (error) {
+      console.log(error);
+      message.error("Verifique os campos e tente novamente");
+    }
   };
 
+  const formatDateJs = (val: any) => {
+    return `${dayjs(val, format).hour().toString()}:${dayjs(val, format)
+      .minute()
+      .toString()}`;
+  };
   return (
     <>
       <Header />
       <Styled.Container id="offers">
         <Styled.TitleSpan>selecione a oferta:</Styled.TitleSpan>
-        <Styled.MainCardsContainer>
-          <Styled.Container
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              width: "100%",
-              justifyContent: "center",
-            }}
-          >
-            <Styled.CardsRow
+        {offers && (
+          <Styled.MainCardsContainer>
+            <Styled.Container
               style={{
-                height: "fit-content",
-                // overflowX: offers!.length > 5 ? "scroll" : "auto",
+                display: "flex",
+                flexDirection: "row",
+                width: "100%",
+                justifyContent: "center",
               }}
             >
-              {offers!.map((offer) => (
-                <Styled.CardItem
-                  onClick={() => {
-                    setPromoItem(offer as any);
-                  }}
-                >
-                  {offer.comboItens ? (
-                    <>
-                      <FoodCardOffer
-                        isCombo={true}
-                        bgColor={"white"}
-                        price={offer.price}
-                        color={theme.colors.yellow.palete}
-                        label={offer.title ? offer.title : ""}
-                        description={
-                          offer.descriptionText ? offer.descriptionText : ""
-                        }
-                        img={offer.banner ? offer.banner : ""}
-                        comboItens={offer.comboItens}
-                      />
-                    </>
-                  ) : (
-                    <>
-                      <FoodCardOffer
-                        isCombo={false}
-                        bgColor={theme.colors.blue.palete}
-                        oldPrice={offer.price}
-                        price={offer.price}
-                        color={"#386641"}
-                        label={offer.title ? offer.title : ""}
-                        description={
-                          offer.descriptionText ? offer.descriptionText : ""
-                        }
-                        img={offer.img ? offer.img : ""}
-                      />
-                    </>
-                  )}
-                </Styled.CardItem>
-              ))}
-            </Styled.CardsRow>
-          </Styled.Container>
-          <Styled.BtnContainer>
-            <ButtonSecondary
-              action={() => {
-                navigate("/adm/ofertas");
-              }}
-              Label={"Voltar"}
-              fontSize={theme.fontSize.md}
-              color={theme.colors.white.normal}
-              bgColor={theme.colors.red.normal}
-            />
-          </Styled.BtnContainer>
-        </Styled.MainCardsContainer>
-
+              <Styled.CardsRow
+                style={{
+                  height: "fit-content",
+                  // overflowX: offers!.length > 5 ? "scroll" : "auto",
+                }}
+              >
+                {offers!.map((offer) => (
+                  <Styled.CardItem
+                    onClick={() => {
+                      setPromoItem(offer as TProductsOffers);
+                    }}
+                  >
+                    {offer.comboItens ? (
+                      <>
+                        <FoodCardOffer
+                          isCombo={true}
+                          bgColor={"white"}
+                          price={offer.price}
+                          color={theme.colors.yellow.palete}
+                          label={offer.title ? offer.title : ""}
+                          description={
+                            offer.descriptionText
+                              ? offer.descriptionText
+                              : offer.description!
+                          }
+                          img={offer.banner ? offer.banner : ""}
+                          comboItens={offer.comboItens}
+                        />
+                      </>
+                    ) : (
+                      <>
+                        <FoodCardOffer
+                          isCombo={false}
+                          bgColor={theme.colors.blue.palete}
+                          oldPrice={offer.price}
+                          price={offer.offerPrice!}
+                          color={"#386641"}
+                          label={offer.title ? offer.title : ""}
+                          description={
+                            offer.descriptionText
+                              ? offer.descriptionText
+                              : offer.description!
+                          }
+                          img={offer.img ? offer.img : ""}
+                        />
+                      </>
+                    )}
+                  </Styled.CardItem>
+                ))}
+              </Styled.CardsRow>
+            </Styled.Container>
+            <Styled.BtnContainer style={{ marginTop: "0vh" }}>
+              <ButtonSecondary
+                action={() => {
+                  navigate("/adm/ofertas");
+                }}
+                Label={"Voltar"}
+                fontSize={theme.fontSize.md}
+                color={theme.colors.white.normal}
+                bgColor={theme.colors.red.normal}
+              />
+            </Styled.BtnContainer>
+          </Styled.MainCardsContainer>
+        )}
         {/* Lista com as ofertas, incluindo os novos cards */}
       </Styled.Container>
       <>
@@ -348,7 +404,7 @@ const OffersMenuAuto: React.FC = () => {
               <TimePicker
                 value={dayjs(startAt, format)}
                 onChange={(value: any) => {
-                  setStartAt(value);
+                  setStartAt(formatDateJs(value));
                 }}
                 format={format}
               />
@@ -359,7 +415,7 @@ const OffersMenuAuto: React.FC = () => {
                 value={dayjs(endAt, format)}
                 format={format}
                 onChange={(value: any) => {
-                  setEndAt(value);
+                  setEndAt(formatDateJs(value));
                 }}
               />
             </Styled.ClockContainerCol>

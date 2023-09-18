@@ -9,19 +9,22 @@ import ButtonSecondary from "../../../components/buttons/secondary";
 import { useNavigate } from "react-router-dom";
 import SwitchCard from "../../../components/SwitchCard";
 import Modal from "../../../components/modal";
-import Input from "../../../components/input";
 import { TSwitch } from "../admMenu";
 import { message } from "antd";
 import { isAuth } from "../../../utils/security/isCrypto";
 import { OffersService } from "../../../service/module/offers";
 import { TProductsOffers } from "../../menu";
 import { encryptToAuth } from "../../../utils/security/isAuth";
+import CurrencyInput from "react-currency-input-field";
 
 const OffersMyOffers: React.FC = () => {
   const [modalUpdate, setModalUpdate] = useState<boolean>(false);
   const [switchStates, setSwitchStates] = useState<TSwitch[]>([]);
   const [newPrice, setNewPrice] = useState<string>("");
   const [offers, setOffers] = useState<TProductsOffers[]>();
+  const [offerDocId, setOfferDocId] = useState<string>("");
+
+  const [confirmModal, setConfirmModal] = useState<boolean>(false);
 
   const [modalItem, setModalItem] = useState<any>();
 
@@ -60,7 +63,6 @@ const OffersMyOffers: React.FC = () => {
           console.log(error);
           message.error("Erro ao recuperar categorias, verifique o log");
         }
-    
       };
       fetchData();
     } else {
@@ -120,7 +122,9 @@ const OffersMyOffers: React.FC = () => {
   const handleClose = () => {
     setModalUpdate(false);
   };
-
+  const handleCloseConfirmModal = () => {
+    setConfirmModal(false);
+  };
   const updatePrice = async () => {
     try {
       const res = await OffersService.updateOffers(isAuth()!.codCompany!, {
@@ -140,22 +144,55 @@ const OffersMyOffers: React.FC = () => {
     }
   };
 
+  const deleteOffer = async () => {
+    try {
+      await OffersService.deleteOffers(offerDocId);
+      message.success("Item excluido.");
+      handleCloseConfirmModal();
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500);
+    } catch (error) {
+      console.log(error);
+      message.error("Verifique os campos e tente novamente");
+    }
+  };
+
   return (
     <>
       <Header />
       {modalUpdate && (
         <Modal
-          bannerColor={"#BC4749"} //AuxColor
+          bannerColor={theme.colors.blue.palete} //AuxColor
           title={"Edição de promoção"}
           handleClose={handleClose}
-          titleFont={theme.fonts.hand}
+          titleFont={theme.fonts.primary}
         >
           <Styled.ModalContainer>
             <Styled.FormItemContainer>
-              <Input
-                setValue={setNewPrice}
-                labelColor={theme.colors.blue.palete}
-                label="Novo preço: "
+              <Styled.ItemSpan
+                style={{
+                  marginTop: "0px",
+                  paddingBottom: "2.5vh",
+                  alignSelf: "start",
+                }}
+              >
+                Novo preço:
+              </Styled.ItemSpan>
+              <CurrencyInput
+                placeholder="Informe um preço válido"
+                defaultValue={newPrice}
+                decimalsLimit={2}
+                prefix="R$ "
+                onValueChange={(value, name) => setNewPrice(value!)}
+                intlConfig={{ locale: "pt-BR", currency: "BRL" }}
+                style={{
+                  color: theme.colors.black.normal,
+                  fontSize: "25px",
+                  border: `2px solid ${theme.colors.black.normal}`,
+                  borderRadius: "5px",
+                  marginTop: "10px",
+                }}
               />
             </Styled.FormItemContainer>
             <Styled.BackBtnContainer>
@@ -179,7 +216,56 @@ const OffersMyOffers: React.FC = () => {
           {/* redirecionar para outro modal */}
         </Modal>
       )}
+      {confirmModal && (
+        <Modal
+          bannerColor={theme.colors.yellow.palete}
+          title={"Atenção"}
+          handleClose={handleCloseConfirmModal}
+          titleFont={theme.fonts.primary}
+        >
+          <div
+            style={{
+              display: "flex",
+              placeItems: "center",
+              justifyContent: "center",
+              flexDirection: "column",
+            }}
+          >
+            <span
+              style={{
+                fontSize: theme.fontSize.lg,
+                marginTop: "5vh",
+                marginBottom: "5vh",
+              }}
+            >
+              Deseja continuar?
+            </span>
+            <Styled.BtnContainer
+              style={{
+                marginTop: "1vh",
+                justifyContent: "center",
+                marginBottom: "2vh",
+              }}
+            >
+              <ButtonSecondary
+                action={deleteOffer}
+                Label={"Sim"}
+                fontSize={theme.fontSize.md}
+                color={theme.colors.white.normal}
+                bgColor={theme.colors.blue.palete}
+              />
 
+              <ButtonSecondary
+                action={handleCloseConfirmModal}
+                Label={"Não"}
+                fontSize={theme.fontSize.md}
+                color={theme.colors.white.normal}
+                bgColor={theme.colors.red.normal}
+              />
+            </Styled.BtnContainer>
+          </div>
+        </Modal>
+      )}
       <Styled.Container id="offers">
         <Styled.TitleSpan>selecione a oferta:</Styled.TitleSpan>
         <>
@@ -210,7 +296,7 @@ const OffersMyOffers: React.FC = () => {
                 overflowX: offers && offers.length > 5 ? "scroll" : "auto",
               }}
             >
-              {switchStates.length &&
+              {switchStates.length ? (
                 offers &&
                 offers.map((offer, index) => (
                   <Styled.CardItem onClick={() => {}}>
@@ -241,6 +327,21 @@ const OffersMyOffers: React.FC = () => {
                             navigate("/adm/ofertas/minhas-ofertas/edicao");
                           }}
                         />
+                        <div
+                          style={{
+                            marginTop: "2vh",
+                          }}
+                        >
+                          <ButtonSecondary
+                            Label="Excluir promoção"
+                            action={() => {
+                              setOfferDocId(offer.docId!);
+                              setConfirmModal(true);
+                            }}
+                            bgColor={theme.colors.white.normal}
+                            color={theme.colors.blue.palete}
+                          />
+                        </div>
                       </>
                     ) : (
                       <>
@@ -265,10 +366,36 @@ const OffersMyOffers: React.FC = () => {
                             setModalUpdate(true);
                           }}
                         />
+                        <div
+                          style={{
+                            marginTop: "2vh",
+                          }}
+                        >
+                          <ButtonSecondary
+                            Label="Excluir promoção"
+                            action={() => {
+                              setOfferDocId(offer.docId!);
+                              setConfirmModal(true);
+                            }}
+                            bgColor={theme.colors.white.normal}
+                            color={theme.colors.blue.palete}
+                          />
+                        </div>
                       </>
                     )}
                   </Styled.CardItem>
-                ))}
+                ))
+              ) : (
+                <>
+                  <Styled.TitleSpan
+                    style={{
+                      color: "#fff",
+                    }}
+                  >
+                    Sem ofertas para serem exibidas
+                  </Styled.TitleSpan>
+                </>
+              )}
             </Styled.CardsRow>
           </Styled.Container>
         </Styled.MainCardsContainer>

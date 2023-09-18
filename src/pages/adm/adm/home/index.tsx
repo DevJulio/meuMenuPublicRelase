@@ -17,9 +17,6 @@ const RestaurantHome: React.FC = () => {
 
   useEffect(() => {
     const usr = isAuth();
-
-    console.log(usr);
-
     if (usr && usr.userType === "admin") {
       setUser(usr);
     } else {

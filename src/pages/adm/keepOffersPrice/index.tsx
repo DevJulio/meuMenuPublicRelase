@@ -17,6 +17,7 @@ import { isAuth } from "../../../utils/security/isCrypto";
 import { CategoryService } from "../../../service/module/categories";
 import { FoodsService } from "../../../service/module/foods";
 import { CompanyService } from "../../../service/module/company";
+import CurrencyInput from "react-currency-input-field";
 
 const OffersMenuPrice: React.FC = () => {
   const [foodCategory, setFoodCategory] = useState<string>("");
@@ -109,6 +110,13 @@ const OffersMenuPrice: React.FC = () => {
         isDestaque: modalIten.isDestaque,
         isOffer: true,
         offerPrice: newPrice,
+        automation: {
+          daysWeek: [],
+          time: {
+            startAt: "00:00",
+            endAt: "00:00",
+          },
+        },
       };
 
       try {
@@ -121,9 +129,9 @@ const OffersMenuPrice: React.FC = () => {
         });
         if (offerRes && offerRes.status === 200) {
           message.success("Cadastro realizado com sucesso!");
-          setTimeout(() => {
-            window.location.reload();
-          }, 1500);
+          // setTimeout(() => {
+          //   window.location.reload();
+          // }, 1500);
         } else {
           message.error("Verifique os campos e tente novamente.");
         }
@@ -146,12 +154,32 @@ const OffersMenuPrice: React.FC = () => {
         >
           <Styled.ModalContainer>
             <Styled.FormItemContainer>
-              <Input
-                setValue={setNewPrice}
-                labelColor={theme.colors.blue.palete}
-                label="Novo preço: "
+              <Styled.ItemSpan
+                style={{
+                  marginTop: "0px",
+                  paddingBottom: "2.5vh",
+                  alignSelf: "start",
+                }}
+              >
+                Novo preço:
+              </Styled.ItemSpan>
+              <CurrencyInput
+                placeholder="Informe um preço válido"
+                defaultValue={newPrice}
+                decimalsLimit={2}
+                prefix="R$ "
+                onValueChange={(value, name) => setNewPrice(value!)}
+                intlConfig={{ locale: "pt-BR", currency: "BRL" }}
+                style={{
+                  color: theme.colors.black.normal,
+                  fontSize: "25px",
+                  border: `2px solid ${theme.colors.black.normal}`,
+                  borderRadius: "5px",
+                  marginTop: "10px",
+                }}
               />
-            </Styled.FormItemContainer>{" "}
+            </Styled.FormItemContainer>
+
             <Styled.BackBtnContainer>
               <ButtonSecondary
                 action={() => {
@@ -197,7 +225,7 @@ const OffersMenuPrice: React.FC = () => {
                 action={() => {
                   handleCloseAux();
                 }}
-                Label={"Novo cadastro na mesma categoria"}
+                Label={"Nova oferta na mesma categoria"}
                 fontSize={theme.fontSize.md}
                 color={theme.colors.white.normal}
                 bgColor={theme.colors.green.normal}
@@ -207,7 +235,7 @@ const OffersMenuPrice: React.FC = () => {
                   handleCloseAux();
                   setMainCategory("listagemCategorias");
                 }}
-                Label={"novo Cadastro em outra categoria"}
+                Label={"Nova oferta em outra categoria"}
                 fontSize={theme.fontSize.md}
                 color={theme.colors.white.normal}
                 bgColor={theme.colors.blue.palete}
