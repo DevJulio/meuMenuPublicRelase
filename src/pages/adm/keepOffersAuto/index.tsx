@@ -155,6 +155,7 @@ const OffersMenuAuto: React.FC = () => {
     } else {
       navigate("/login");
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [divChange]);
 
   useEffect(() => {
@@ -186,8 +187,8 @@ const OffersMenuAuto: React.FC = () => {
         setSabado(true);
       }
 
-      setStartAt(time.startAt);
-      setEndAt(time.endAt);
+      setStartAt(formatDateJs(time.startAt));
+      setEndAt(formatDateJs(time.endAt));
 
       setTimeout(() => {
         setDivChange("dates");

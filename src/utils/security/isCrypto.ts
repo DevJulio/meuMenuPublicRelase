@@ -107,22 +107,22 @@ const fetch = async (setFoods: Function, setCategories: Function) => {
 };
 export const myCompany = async (
   setFoods: Function,
-  setCategories: Function,
-  needAll: boolean = false
+  setCategories: Function
 ) => {
+  await fetch(setFoods, setCategories);
   //se a resposta for true a versão do banco é mais atual que a local, fazer fetch.
   // se atualizar cardápio, atualizar apenas a versão do menu no localstorage, se atualizar a empresa, atualizar todo o localstorage da empre
-  if (await myCompanyCheck()) {
-    await fetch(setFoods, setCategories);
-  } else {
-    const foods = JSON.parse(
-      decryptToAuth(localStorage.getItem("@meumenu/myFoods"))
-    );
-    const categories = JSON.parse(
-      decryptToAuth(localStorage.getItem("@meumenu/myCategories"))
-    );
+  //if (await myCompanyCheck()) {
+  //  await fetch(setFoods, setCategories);
+  //} else {
+  //  const foods = JSON.parse(
+  //    decryptToAuth(localStorage.getItem("@meumenu/myFoods"))
+  //  );
+  //  const categories = JSON.parse(
+  //    decryptToAuth(localStorage.getItem("@meumenu/myCategories"))
+  //  );
 
-    setFoods(foods as TProducts[]);
-    setCategories(categories as TCategory[]);
-  }
+  //  setFoods(foods as TProducts[]);
+  //  setCategories(categories as TCategory[]);
+  //}
 };

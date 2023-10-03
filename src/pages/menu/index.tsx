@@ -114,6 +114,8 @@ const Menu: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      console.log(empresa);
+
       if (empresa === "ren") {
         const REN: TCompany = {
           URL: "ren",
@@ -262,6 +264,13 @@ const Menu: React.FC = () => {
             isDestaque: true,
             isOffer: true,
             offerPrice: "12,50",
+            automation: {
+              daysWeek: ["0", "1", "2", "3", "4", "5", "6"],
+              time: {
+                startAt: "00:01",
+                endAt: "23:59",
+              },
+            },
           },
           {
             img: "https://www.receiteria.com.br/wp-content/uploads/pate-de-ricota-com-ervas.jpg",
@@ -279,6 +288,13 @@ const Menu: React.FC = () => {
             isDestaque: true,
             isOffer: true,
             offerPrice: "15,50",
+            automation: {
+              daysWeek: ["0", "1", "2", "3", "4", "5", "6"],
+              time: {
+                startAt: "00:01",
+                endAt: "23:59",
+              },
+            },
           },
           {
             img: "https://melepimenta.com/wp-content/uploads/2013/02/Antepasto-a-espanhola-Baixa-1024x683.jpg",
@@ -296,6 +312,13 @@ const Menu: React.FC = () => {
             isDestaque: true,
             isOffer: true,
             offerPrice: "20,50",
+            automation: {
+              daysWeek: ["0", "1", "2", "3", "4", "5", "6"],
+              time: {
+                startAt: "00:01",
+                endAt: "23:59",
+              },
+            },
           },
           {
             img: "https://claudia.abril.com.br/wp-content/uploads/2020/02/receita-fritada-forno-abobrinha.jpg?quality=85",
@@ -313,6 +336,13 @@ const Menu: React.FC = () => {
             isDrink: false,
             isDestaque: false,
             offerPrice: "19,00",
+            automation: {
+              daysWeek: ["0", "1", "2", "3", "4", "5", "6"],
+              time: {
+                startAt: "00:01",
+                endAt: "23:59",
+              },
+            },
           },
           {
             img: "https://cooknenjoy.com/wp-content/uploads/2021/10/torta-de-limao-01-1800x1286.jpg",
@@ -330,6 +360,13 @@ const Menu: React.FC = () => {
             isDrink: false,
             isDestaque: true,
             offerPrice: "20,00",
+            automation: {
+              daysWeek: ["0", "1", "2", "3", "4", "5", "6"],
+              time: {
+                startAt: "00:01",
+                endAt: "23:59",
+              },
+            },
           },
           {
             img: "https://i1.wp.com/files.agro20.com.br/uploads/2020/01/Caf%C3%A9-expresso-1.jpg?fit=1024%2C618&ssl=1",
@@ -347,6 +384,13 @@ const Menu: React.FC = () => {
             isDestaque: false,
             isOffer: true,
             offerPrice: "2,00",
+            automation: {
+              daysWeek: ["0", "1", "2", "3", "4", "5", "6"],
+              time: {
+                startAt: "00:01",
+                endAt: "23:59",
+              },
+            },
           },
           {
             isEnable: true,
@@ -390,6 +434,13 @@ const Menu: React.FC = () => {
                 isDestaque: false,
               },
             ],
+            automation: {
+              daysWeek: ["0", "1", "2", "3", "4", "5", "6"],
+              time: {
+                startAt: "00:01",
+                endAt: "23:59",
+              },
+            },
           },
         ];
         setOffersState(renOffers);
@@ -534,9 +585,43 @@ const Menu: React.FC = () => {
         minute: "2-digit",
       });
       if (now >= startAt && now <= endAt) {
+        console.log("1");
         return true;
       } else {
+        console.log("2");
         return false;
+      }
+    } else {
+      console.log(3);
+      return false;
+    }
+  };
+
+  const checkAllOfferStatus = () => {
+    if (offersState) {
+      const allSts = offersState.map((offer) => {
+        const today = new Date();
+        const dayOfWeek = today.getDay();
+        const { daysWeek, time } = offer.automation!;
+        if (daysWeek.find((d) => d === dayOfWeek.toString())) {
+          const { endAt, startAt } = time;
+          const now = today.toLocaleTimeString("pt-BR", {
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+          if (now >= startAt && now <= endAt) {
+            return true;
+          } else {
+            return false;
+          }
+        } else {
+          return false;
+        }
+      });
+      if (allSts.every((val) => val === false)) {
+        return false;
+      } else {
+        return true;
       }
     } else {
       return false;
@@ -1037,7 +1122,7 @@ const Menu: React.FC = () => {
               insideColor={company.details.textColor}
             ></BorderPage>
 
-            {offersState.length > 0 && (
+            {checkAllOfferStatus() && (
               <BorderPage
                 destop={undefined}
                 mobile={
@@ -1097,7 +1182,7 @@ const Menu: React.FC = () => {
                             >
                               {offerItem && checkOfferStatus(offerItem) && (
                                 <>
-                                  {offerItem.comboItens ? (
+                                  {offerItem?.comboItens ? (
                                     <>
                                       <FoodCardOffer
                                         isCombo={true}

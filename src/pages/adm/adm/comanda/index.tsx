@@ -14,10 +14,9 @@ import { TCounter } from "../../keepOffersCombo";
 import { message } from "antd";
 import { TAT, TUser } from "../../../../service/module/login";
 import { CompanyService } from "../../../../service/module/company";
-import { isAuth } from "../../../../utils/security/isCrypto";
+import { isAuth, myCompany } from "../../../../utils/security/isCrypto";
 import { useNavigate } from "react-router-dom";
 import { TabsService } from "../../../../service/module/tabs";
-import { CategoryService } from "../../../../service/module/categories";
 import { FoodsService } from "../../../../service/module/foods";
 import { TProducts } from "../../../menu";
 
@@ -67,18 +66,16 @@ const Comanda: React.FC = () => {
   const [foods, setFoods] = useState<TProducts[]>();
 
   const navigate = useNavigate();
-  //criar método para verificar qual é o atual versão do cardápio e decidir se vai fazer o fetch ou não
-  //atualizar versão do menu a cada atualização de cardápio, seja de categoria ou de disponibilidade.
+
   useEffect(() => {
     const usr = isAuth();
     if (usr && (usr.userType === "admin" || usr.userType === "staff")) {
       setUser(usr);
       const fetchData = async () => {
+        await myCompany(setFoods, setCategories);
         try {
           const categoryTabs: any = await Promise.all([
-            await CategoryService.getMyCategories(usr.codCompany!),
             await TabsService.getMyTabs(true),
-            await FoodsService.getMyFoods(usr.codCompany!),
           ])
             .then((results) => {
               return results;
@@ -86,19 +83,14 @@ const Comanda: React.FC = () => {
             .catch((error) => {
               console.error(error);
             });
+
           if (categoryTabs[0].length) {
-            setCategories(categoryTabs[0] as TCategory[]);
-          }
-          if (categoryTabs[1].length) {
             const arrayDividido = dividirArray(
-              categoryTabs[1],
+              categoryTabs[0],
               isMobile() ? 3 : 4
             );
             setTablesToBeRender(arrayDividido);
-            setTables(categoryTabs[1] as TTable[]);
-          }
-          if (categoryTabs[2].length) {
-            setFoods(categoryTabs[2] as TProducts[]);
+            setTables(categoryTabs[0] as TTable[]);
           }
         } catch (error) {
           console.log(error);
