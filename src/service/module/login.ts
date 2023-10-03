@@ -55,7 +55,7 @@ export type TCompanyDetail = {
   hideWelcome: boolean;
   centerIcon: boolean;
 };
-type TAT = {
+export type TAT = {
   nanoseconds: number;
   seconds: number;
 };
@@ -95,7 +95,7 @@ export type TCompany = {
   docId?: string;
   icon: string;
   isAproved: boolean; //Caso seja false, a solicitação não foi aprovada.
-  offers: TProductsOffers[];//Tirar eim
+  offers: TProductsOffers[]; //Tirar eim
   plan: string;
   staff: TStaf[];
   statusCadastro: boolean;
@@ -104,6 +104,7 @@ export type TCompany = {
   updatedAt?: TAT;
   adminsUids?: TUids[];
   stafsUids?: TUids[];
+  menuVersion: number;
   //sales:
 };
 export type TToken = {
@@ -119,7 +120,7 @@ export type TComboOffers = {
   label: string;
   description: string;
   comboItens: TProducts[];
-  docId?: string
+  docId?: string;
 };
 
 export const sessionHandler = async (userP: TUser, token: TToken) => {
@@ -137,10 +138,16 @@ export const sessionHandler = async (userP: TUser, token: TToken) => {
       ...user,
       company: company.data,
     };
+
+    localStorage.setItem(
+      "@meumenu/company",
+      encryptToAuth(JSON.stringify(company.data))
+    );
     localStorage.setItem(
       "@meumenu/user",
       encryptToAuth(JSON.stringify(adminUser))
     );
+
     window.location.replace("/adm/home");
   } else if (user.userType === "admin-j") {
     localStorage.setItem("@meumenu/j", encryptToAuth(JSON.stringify(user)));

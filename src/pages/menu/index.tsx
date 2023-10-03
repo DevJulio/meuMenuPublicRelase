@@ -31,7 +31,7 @@ import marker from "../../assets/icons/socialMedia/ios/marker.png";
 import BorderPage from "../../components/borderPage";
 import FoodCard from "../../components/foodCard";
 import HomeBanner from "../../components/homeBanner";
-import foods, { offers as offersData } from "./foods";
+import foods from "./foods";
 import ButtonSecondary from "../../components/buttons/secondary";
 import Modal from "../../components/modal";
 import FoodModalDetail from "../../components/foodModalDetail";
@@ -189,6 +189,7 @@ const Menu: React.FC = () => {
           statusCadastro: true,
           tables: [],
           title: "Ren",
+          menuVersion: 0,
         };
         const categoriesAux: TCategory[] = [
           {

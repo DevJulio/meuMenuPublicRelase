@@ -126,16 +126,16 @@ const FoodCardOffer: React.FC<IFood> = ({
               style={{
                 color: color,
                 fontFamily: fontStyle,
-                fontSize:
-                  label.length <= 19 ? theme.fontSize.lg : theme.fontSize.md2,
+                // fontSize:
+                //   label.length <= 19 ? theme.fontSize.lg : theme.fontSize.md2,
               }}
             >
               {label}
             </Styled.Title>
             <Styled.Description
-              style={{
-                marginBottom: label.length >= 19 ? "1vh" : "0.1vh",
-              }}
+              // style={{
+              //   marginBottom: label.length >= 19 ? "1vh" : "0.1vh",
+              // }}
             >
               {description.substring(0, 120)}...
               <Styled.Anchor

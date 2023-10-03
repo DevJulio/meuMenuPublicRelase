@@ -253,7 +253,7 @@ const OffersMenuAuto: React.FC = () => {
       <Header />
       <Styled.Container id="offers">
         <Styled.TitleSpan>selecione a oferta:</Styled.TitleSpan>
-        {offers && (
+        {offers ? (
           <Styled.MainCardsContainer>
             <Styled.Container
               style={{
@@ -326,6 +326,16 @@ const OffersMenuAuto: React.FC = () => {
               />
             </Styled.BtnContainer>
           </Styled.MainCardsContainer>
+        ) : (
+          <>
+            <Styled.TitleSpan
+              style={{
+                color: "#fff",
+              }}
+            >
+              Sem ofertas para serem exibidas
+            </Styled.TitleSpan>
+          </>
         )}
         {/* Lista com as ofertas, incluindo os novos cards */}
       </Styled.Container>

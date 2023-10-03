@@ -14,6 +14,9 @@ import { isAuth } from "../../../utils/security/isCrypto";
 import { message } from "antd";
 import { TProducts } from "../../menu";
 import { fileUpload } from "../../../service/module/fileUpload";
+import CurrencyInput from "react-currency-input-field";
+import { CompanyService } from "../../../service/module/company";
+import { encryptToAuth } from "../../../utils/security/isAuth";
 
 const UpdateFood: React.FC = () => {
   const [name, setName] = useState<string>("");
@@ -65,7 +68,7 @@ const UpdateFood: React.FC = () => {
         setFoodType("comer");
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   let updatePic = false;
@@ -105,6 +108,8 @@ const UpdateFood: React.FC = () => {
         country: country, //
         grape: grape,
       };
+      localStorage.setItem("@meumenu/menu-version", "true");
+
       try {
         const res = await FoodsService.updateFoods(isAuth()!.codCompany!, {
           ...newFood,
@@ -235,7 +240,30 @@ const UpdateFood: React.FC = () => {
             </Styled.FormItemContainer>
 
             <Styled.FormItemContainer>
-              <Input setValue={setPrice} value={price} label="Preço" />
+              <Styled.ItemSpan
+                style={{
+                  marginTop: "0px",
+                  paddingBottom: "2.5vh",
+                  alignSelf: "start",
+                }}
+              >
+                Preço
+              </Styled.ItemSpan>
+              <CurrencyInput
+                placeholder="Informe um preço válido"
+                defaultValue={price}
+                decimalsLimit={2}
+                prefix="R$ "
+                onValueChange={(value, name) => setPrice(value!)}
+                intlConfig={{ locale: "pt-BR", currency: "BRL" }}
+                style={{
+                  color: theme.colors.black.normal,
+                  fontSize: "25px",
+                  border: `2px solid ${theme.colors.black.normal}`,
+                  borderRadius: "5px",
+                  marginTop: "10px",
+                }}
+              />
             </Styled.FormItemContainer>
           </Styled.MenusRow>
 

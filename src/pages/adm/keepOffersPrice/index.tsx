@@ -11,11 +11,8 @@ import { TCategory } from "../../../components/category";
 import FoodCard from "../../../components/foodCard";
 import { TProducts, TProductsOffers } from "../../menu";
 import Modal from "../../../components/modal";
-import Input from "../../../components/input";
 import { message } from "antd";
-import { isAuth } from "../../../utils/security/isCrypto";
-import { CategoryService } from "../../../service/module/categories";
-import { FoodsService } from "../../../service/module/foods";
+import { isAuth, myCompany } from "../../../utils/security/isCrypto";
 import { CompanyService } from "../../../service/module/company";
 import CurrencyInput from "react-currency-input-field";
 
@@ -53,27 +50,7 @@ const OffersMenuPrice: React.FC = () => {
         }
       }
       const fetchData = async () => {
-        try {
-          const categoryAndFood: any = await Promise.all([
-            await CategoryService.getMyCategories(usr.codCompany!),
-            await FoodsService.getMyFoods(usr.codCompany!),
-          ])
-            .then((results) => {
-              return results;
-            })
-            .catch((error) => {
-              console.error(error);
-            });
-          if (categoryAndFood[0].length) {
-            setCategories(categoryAndFood[0] as TCategory[]);
-          }
-          if (categoryAndFood[1].length) {
-            setFoods(categoryAndFood[1] as TProducts[]);
-          }
-        } catch (error) {
-          console.log(error);
-          message.error("Erro ao recuperar categorias, verifique o log");
-        }
+        await myCompany(setFoods, setCategories);
       };
       fetchData();
     } else {

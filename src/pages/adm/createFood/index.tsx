@@ -167,6 +167,7 @@ const CreateFood: React.FC = () => {
           console.log(error);
         }
       }
+      localStorage.setItem("@meumenu/menu-version", "true");
     }
   };
   const handleClose = () => {

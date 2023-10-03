@@ -19,10 +19,8 @@ import { TProducts } from "../../menu";
 import { TCategory } from "../../../components/category";
 import { message } from "antd";
 import isMobile from "is-mobile";
-import { isAuth } from "../../../utils/security/isCrypto";
-import { CategoryService } from "../../../service/module/categories";
+import { isAuth, myCompany } from "../../../utils/security/isCrypto";
 import { FoodsService } from "../../../service/module/foods";
-
 export type TSwitch = {
   id: string;
   checked: boolean;
@@ -87,28 +85,9 @@ const AdmMenu: React.FC = () => {
             break;
         }
       }
+
       const fetchData = async () => {
-        try {
-          const categoryAndFood: any = await Promise.all([
-            await CategoryService.getMyCategories(usr.codCompany!),
-            await FoodsService.getMyFoods(usr.codCompany!),
-          ])
-            .then((results) => {
-              return results;
-            })
-            .catch((error) => {
-              console.error(error);
-            });
-          if (categoryAndFood[0].length) {
-            setCategories(categoryAndFood[0] as TCategory[]);
-          }
-          if (categoryAndFood[1].length) {
-            setFoods(categoryAndFood[1] as TProducts[]);
-          }
-        } catch (error) {
-          console.log(error);
-          message.error("Erro ao recuperar categorias, verifique o log");
-        }
+        await myCompany(setFoods, setCategories);
       };
       fetchData();
     } else {
@@ -153,8 +132,6 @@ const AdmMenu: React.FC = () => {
       }
     } else {
       try {
-        console.log(changedItem[Number(id)]);
-
         const res = await FoodsService.updateFoods(isAuth()!.codCompany!, {
           ...changedItem[Number(id)],
           isEnable: true,
@@ -179,6 +156,7 @@ const AdmMenu: React.FC = () => {
           : switchState
       )
     );
+    localStorage.setItem("@meumenu/menu-version", "true");
   };
 
   const handleClose = () => {

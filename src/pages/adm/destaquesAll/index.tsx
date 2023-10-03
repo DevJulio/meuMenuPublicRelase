@@ -10,7 +10,7 @@ import { theme } from "../../../theme/theme";
 import { TCategory } from "../../../components/category";
 import FoodCard from "../../../components/foodCard";
 import { TProducts } from "../../menu";
-import { isAuth } from "../../../utils/security/isCrypto";
+import { isAuth, myCompany } from "../../../utils/security/isCrypto";
 import { CategoryService } from "../../../service/module/categories";
 import { FoodsService } from "../../../service/module/foods";
 import { message } from "antd";
@@ -45,27 +45,7 @@ const DestaquesAll: React.FC = () => {
         }
       }
       const fetchData = async () => {
-        try {
-          const categoryAndFood: any = await Promise.all([
-            await CategoryService.getMyCategories(usr.codCompany!),
-            await FoodsService.getMyFoods(usr.codCompany!),
-          ])
-            .then((results) => {
-              return results;
-            })
-            .catch((error) => {
-              console.error(error);
-            });
-          if (categoryAndFood[0].length) {
-            setCategories(categoryAndFood[0]);
-          }
-          if (categoryAndFood[1].length) {
-            setFoods(categoryAndFood[1] as TProducts[]);
-          }
-        } catch (error) {
-          console.log(error);
-          message.error("Erro ao recuperar categorias, verifique o log");
-        }
+        await myCompany(setFoods, setCategories);
       };
       fetchData();
     } else {
@@ -183,7 +163,13 @@ const DestaquesAll: React.FC = () => {
                 }}
               >
                 {foodCategory &&
-                  foods.filter((cate) => plus ? cate.category === foodCategory : cate.category === foodCategory && cate.isMainDestaque === true)
+                  foods
+                    .filter((cate) =>
+                      plus
+                        ? cate.category === foodCategory
+                        : cate.category === foodCategory &&
+                          cate.isMainDestaque === true
+                    )
                     .map((foodItem) => (
                       <Styled.FoodCategoryItem>
                         <>

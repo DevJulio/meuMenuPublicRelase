@@ -193,11 +193,12 @@ const SolicitationMeuMenu: React.FC = () => {
                 seconds: 0,
                 nanoseconds: 0,
               },
+              menuVersion: 0,
             };
             const resCompany: any = await CompanyService.setCompany(company);
             if (resCompany.status === 200) {
               const companyDocId = resCompany.data;
-
+              //Toda subcoll tem que ser criada aqui
               try {
                 await CompanyService.setCompanySubCol({
                   docId: companyDocId,
@@ -222,6 +223,15 @@ const SolicitationMeuMenu: React.FC = () => {
                   docId: companyDocId,
                   mainColection: "company",
                   subColection: "offers",
+                });
+              } catch (error) {
+                console.log(error);
+              }
+              try {
+                await CompanyService.setCompanySubCol({
+                  docId: companyDocId,
+                  mainColection: "company",
+                  subColection: "tabs",
                 });
               } catch (error) {
                 console.log(error);

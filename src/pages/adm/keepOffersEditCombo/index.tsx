@@ -22,6 +22,7 @@ import { useNavigate } from "react-router-dom";
 import { fileUpload } from "../../../service/module/fileUpload";
 import { CategoryService } from "../../../service/module/categories";
 import { FoodsService } from "../../../service/module/foods";
+import CurrencyInput from "react-currency-input-field";
 
 const OffersEditCombo: React.FC = () => {
   const comboItens: TProductsOffers = JSON.parse(
@@ -556,7 +557,30 @@ const OffersEditCombo: React.FC = () => {
                 </Styled.FormItemContainer>
 
                 <Styled.FormItemContainer>
-                  <Input setValue={setPrice} value={price} label="Preço" />
+                  <Styled.ItemSpan
+                    style={{
+                      marginTop: "0px",
+                      paddingBottom: "2.5vh",
+                      alignSelf: "start",
+                    }}
+                  >
+                    Preço
+                  </Styled.ItemSpan>
+                  <CurrencyInput
+                    placeholder="Informe um preço válido"
+                    defaultValue={price}
+                    decimalsLimit={2}
+                    prefix="R$ "
+                    onValueChange={(value, name) => setPrice(value!)}
+                    intlConfig={{ locale: "pt-BR", currency: "BRL" }}
+                    style={{
+                      color: theme.colors.black.normal,
+                      fontSize: "25px",
+                      border: `2px solid ${theme.colors.black.normal}`,
+                      borderRadius: "5px",
+                      marginTop: "10px",
+                    }}
+                  />
                 </Styled.FormItemContainer>
                 <Styled.FormItemContainer>
                   <Styled.ItemSpan

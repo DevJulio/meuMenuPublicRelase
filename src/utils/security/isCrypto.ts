@@ -1,5 +1,10 @@
+import { TCategory } from "../../components/category";
+import { TProducts } from "../../pages/menu";
+import { CategoryService } from "../../service/module/categories";
+import { CompanyService } from "../../service/module/company";
+import { FoodsService } from "../../service/module/foods";
 import { TUser, logoutForce } from "../../service/module/login";
-import { decryptToAuth } from "./isAuth";
+import { decryptToAuth, encryptToAuth } from "./isAuth";
 
 export type authPayload = {
   hourExpiration: number; // hourExpiration: hora expiração token,
@@ -58,5 +63,66 @@ export const isStaff = () => {
     let stringjson = decryptToAuth(usrData);
     let obj = JSON.parse(stringjson) as authPayload;
     return obj;
+  }
+};
+const myCompanyCheck = async () => {
+  const menuVersion = localStorage.getItem("@meumenu/menu-version");
+  if (menuVersion === "false") {
+    return false;
+  } else {
+    return true;
+  }
+};
+const fetch = async (setFoods: Function, setCategories: Function) => {
+  try {
+    const usr = isAuth();
+    const categoryAndFood: any = await Promise.all([
+      await CategoryService.getMyCategories(usr.codCompany!),
+      await FoodsService.getMyFoods(usr.codCompany!),
+    ])
+      .then((results) => {
+        return results;
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+    if (categoryAndFood[0].length) {
+      localStorage.setItem(
+        "@meumenu/myCategories",
+        encryptToAuth(JSON.stringify(categoryAndFood[0]))
+      );
+      setCategories(categoryAndFood[0] as TCategory[]);
+    }
+    if (categoryAndFood[1].length) {
+      localStorage.setItem(
+        "@meumenu/myFoods",
+        encryptToAuth(JSON.stringify(categoryAndFood[1]))
+      );
+      setFoods(categoryAndFood[1] as TProducts[]);
+    }
+    localStorage.setItem("@meumenu/menu-version", "false");
+  } catch (error) {
+    console.log(error);
+  }
+};
+export const myCompany = async (
+  setFoods: Function,
+  setCategories: Function,
+  needAll: boolean = false
+) => {
+  //se a resposta for true a versão do banco é mais atual que a local, fazer fetch.
+  // se atualizar cardápio, atualizar apenas a versão do menu no localstorage, se atualizar a empresa, atualizar todo o localstorage da empre
+  if (await myCompanyCheck()) {
+    await fetch(setFoods, setCategories);
+  } else {
+    const foods = JSON.parse(
+      decryptToAuth(localStorage.getItem("@meumenu/myFoods"))
+    );
+    const categories = JSON.parse(
+      decryptToAuth(localStorage.getItem("@meumenu/myCategories"))
+    );
+
+    setFoods(foods as TProducts[]);
+    setCategories(categories as TCategory[]);
   }
 };

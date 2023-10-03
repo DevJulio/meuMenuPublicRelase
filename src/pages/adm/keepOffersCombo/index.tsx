@@ -14,12 +14,11 @@ import Modal from "../../../components/modal";
 import Input from "../../../components/input";
 import isMobile from "is-mobile";
 import { message } from "antd";
-import { isAuth } from "../../../utils/security/isCrypto";
-import { CategoryService } from "../../../service/module/categories";
-import { FoodsService } from "../../../service/module/foods";
+import { isAuth, myCompany } from "../../../utils/security/isCrypto";
 import { fileUpload } from "../../../service/module/fileUpload";
 import { CompanyService } from "../../../service/module/company";
 import loadingGif from "../../../assets/icons/loading.gif";
+import CurrencyInput from "react-currency-input-field";
 
 export type TCounter = {
   id: string;
@@ -83,27 +82,7 @@ const OffersMenuCombo: React.FC = () => {
         }
       }
       const fetchData = async () => {
-        try {
-          const categoryAndFood: any = await Promise.all([
-            await CategoryService.getMyCategories(usr.codCompany!),
-            await FoodsService.getMyFoods(usr.codCompany!),
-          ])
-            .then((results) => {
-              return results;
-            })
-            .catch((error) => {
-              console.error(error);
-            });
-          if (categoryAndFood[0].length) {
-            setCategories(categoryAndFood[0] as TCategory[]);
-          }
-          if (categoryAndFood[1].length) {
-            setFoods(categoryAndFood[1] as TProducts[]);
-          }
-        } catch (error) {
-          console.log(error);
-          message.error("Erro ao recuperar categorias, verifique o log");
-        }
+        await myCompany(setFoods, setCategories);
       };
       fetchData();
     } else {
@@ -667,8 +646,32 @@ const OffersMenuCombo: React.FC = () => {
               </Styled.FormItemContainer>
 
               <Styled.FormItemContainer>
-                <Input setValue={setPrice} value={price} label="Preço" />
+                <Styled.ItemSpan
+                  style={{
+                    marginTop: "0px",
+                    paddingBottom: "2.5vh",
+                    alignSelf: "start",
+                  }}
+                >
+                  Preço
+                </Styled.ItemSpan>
+                <CurrencyInput
+                  placeholder="Informe um preço válido"
+                  defaultValue={price}
+                  decimalsLimit={2}
+                  prefix="R$ "
+                  onValueChange={(value, name) => setPrice(value!)}
+                  intlConfig={{ locale: "pt-BR", currency: "BRL" }}
+                  style={{
+                    color: theme.colors.black.normal,
+                    fontSize: "25px",
+                    border: `2px solid ${theme.colors.black.normal}`,
+                    borderRadius: "5px",
+                    marginTop: "10px",
+                  }}
+                />
               </Styled.FormItemContainer>
+
               <Styled.FormItemContainer>
                 <Styled.ItemSpan
                   style={{ color: "white", marginBottom: "-5vh" }}

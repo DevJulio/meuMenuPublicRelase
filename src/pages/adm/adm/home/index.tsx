@@ -45,6 +45,7 @@ const RestaurantHome: React.FC = () => {
                 }}
                 onClick={() => {
                   if (item.title === "Cardápio digital") {
+                    console.log(isAuth());
                     navigate(`/cardapio/${isAuth().company.URL}`);
                   } else {
                     item.url && navigate(item.url);
@@ -67,6 +68,9 @@ const RestaurantHome: React.FC = () => {
       <Styled.MainContainer>
         <Styled.CategoryContainer>
           <Styled.ItemSpan> Bem vindo, {user?.name}.</Styled.ItemSpan>
+          <Styled.CompanyDataContainer>
+            <Styled.CompanyCard>teste</Styled.CompanyCard>
+          </Styled.CompanyDataContainer>
           {optionsRows}
         </Styled.CategoryContainer>
       </Styled.MainContainer>
