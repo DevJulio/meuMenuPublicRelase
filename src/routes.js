@@ -28,6 +28,9 @@ import Staff from "./pages/adm/adm/staff";
 import StaffHome from "./pages/adm/staff";
 import JHome from "./pages/jAdm";
 import JSolicitations from "./pages/jAdm/pages/solicitations";
+import JCategories from "./pages/jAdm/pages/categories";
+import JCategoriesSolicitations from "./pages/jAdm/pages/categories/solicitations";
+import DestaquesAll from "./pages/adm/destaquesAll";
 
 function RoutesList() {
   return (
@@ -38,7 +41,7 @@ function RoutesList() {
         <Route path="/planos" element={<Plans />} />
         <Route path="/login" element={<Login />} />
         <Route path="/contato" element={<Contact />} />
-        <Route path="/cardapio" element={<Menu />} />
+        <Route path="/cardapio/:empresa" element={<Menu />} />
         <Route path="/cardapios" element={<PreMenu />} />
         <Route path="/cadastro" element={<SolicitationMeuMenu />} />
         <Route path="/cadastro-cardapio" element={<MenuMeuMenu />} />
@@ -61,6 +64,7 @@ function RoutesList() {
           element={<OffersEditCombo />}
         />
         <Route path="/adm/destaques" element={<Destaques />} />
+        <Route path="/adm/destaques/all" element={<DestaquesAll />} />
         <Route path="/adm/atualizar" element={<UpdateData />} />
         <Route path="/adm/suporte" element={<ContactAdm />} />
         <Route path="/adm/comanda" element={<Comanda />} />
@@ -70,6 +74,11 @@ function RoutesList() {
         {/* J-ADM */}
         <Route path="/j/adm/home" element={<JHome />} />
         <Route path="/j/adm/solicitations" element={<JSolicitations />} />
+        <Route path="/j/adm/categories" element={<JCategories />} />
+        <Route
+          path="/j/adm/categories/solicitations"
+          element={<JCategoriesSolicitations />}
+        />
       </Routes>
     </BrowserRouter>
   );

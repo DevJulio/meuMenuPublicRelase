@@ -1,3 +1,4 @@
+/*Júlio, melhora esse código. ta bom? */
 import React, { useEffect, useState } from "react";
 import Footer from "../../../components/footer";
 import Header from "../../../components/header";
@@ -9,7 +10,13 @@ import spotify from "../../../assets/icons/socialMedia/gif/spotify.gif";
 import whatsapp from "../../../assets/icons/socialMedia/gif/whatsapp.gif";
 import youtube from "../../../assets/icons/socialMedia/gif/youtube.gif";
 import happy from "../../../assets/icons/socialMedia/gif/happy.gif";
+import latlon from "../../../assets/icons/socialMedia/gif/latlon.gif";
 import resevation from "../../../assets/icons/socialMedia/gif/resevation.png";
+import venda from "../../../assets/icons/socialMedia/gif/venda.gif";
+import onlinevenda from "../../../assets/icons/socialMedia/gif/onlinevenda.gif";
+
+import loadingGif from "../../../assets/icons/loading.gif";
+import dayjs from "dayjs";
 
 import { theme } from "../../../theme/theme";
 import isMobile from "is-mobile";
@@ -17,29 +24,184 @@ import Checkbox from "../../../components/CheckBox";
 import InputMasked from "../../../components/MaskedIpunt";
 import ButtonSecondary from "../../../components/buttons/secondary";
 import Modal from "../../../components/modal";
+import { isAuth } from "../../../utils/security/isCrypto";
+import { useNavigate } from "react-router-dom";
+import {
+  TCompany,
+  TLatLon,
+  TMenuFeatures,
+  TUser,
+} from "../../../service/module/login";
+import { CompanyService } from "../../../service/module/company";
+import { TimePicker, message, ColorPicker } from "antd";
+import MapComponent from "../../../components/googleMap";
+import { fileUpload } from "../../../service/module/fileUpload";
+import { Color } from "antd/es/color-picker";
 
 const UpdateData: React.FC = () => {
-  const [brandName, setBrandName] = useState<string>("Sua empresa");
-  const [email, setEmail] = useState<string>("");
-  const [contact, setContact] = useState<string>("");
+  const [title, setTitle] = useState<string>("");
 
   const [welcome, setWelcome] = useState<string>("");
   const [instagramLink, setinstagramLink] = useState<string>("");
-  const [localizacao, setLocalizacao] = useState<string>("");
+  const [endereco, setEndereco] = useState<string>("");
   const [spotifyLink, setSpotifyLink] = useState<string>("");
   const [whatsAppLink, setWhatsAppLink] = useState<string>("");
   const [youtubeLink, setYoutubeLink] = useState<string>("");
-  const [reservationText, setReservationText] = useState<string>("");
-  const [happyHourText, setHappyHourText] = useState<string>("");
+  const [happyHourModal, setHappyHourModal] = useState<boolean>(false);
+  const [promoModal, setPromoModal] = useState<boolean>(false);
 
   const [logo, setLogo] = useState<string>("");
   const [banner, setBanner] = useState<string>("");
-  const [logoUpdated, setLogoUpdated] = useState<string>("");
-  const [bannerUpdated, setBannerUpdated] = useState<string>("");
+  const [logoUpdated, setLogoUpdated] = useState<File>();
+  const [bannerUpdated, setBannerUpdated] = useState<File>();
+  const [bannerModal, setBannerModal] = useState<File>();
+
   const [fontStyle, setFontStyle] = useState<string>("");
+  const [fontStyleAux, setFontStyleAux] = useState<string>("");
 
   const [modal, setModal] = useState<boolean>(false);
   const [modalFail, setModalFail] = useState<boolean>(false);
+  const [featureUpdate, setFeatureUpdate] = useState<boolean>(false);
+  const [featureUpdateAux, setFeatureUpdateAux] = useState<boolean>(false);
+  const [user, setUser] = useState<TUser>();
+  const [company, setCompany] = useState<TCompany>();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [contactEmail, setContactEmail] = useState<string>("");
+
+  const [nome, setNome] = useState<string>("");
+  const [cidade, setCidade] = useState<string>("");
+  const [URL, setURL] = useState<string>("");
+  const [contactReservationNumber, setContactReservationNumber] =
+    useState<string>("");
+
+  const [contactNumber, setContactNumber] = useState<string>("");
+
+  const [disponiility, setDisponiility] = useState<boolean>(false);
+  const [originalUrl, setOriginalUrl] = useState<string>("");
+  const [localization, setLocalization] = useState<TLatLon>({ lat: 0, lng: 0 });
+
+  const [offers, setOffers] = useState<TMenuFeatures>();
+  const [reservation, setReservation] = useState<TMenuFeatures>();
+  const [happyHour, setHappyHour] = useState<TMenuFeatures>();
+
+  const [domingo, setDomingo] = useState(false);
+  const [segundaFeira, setSegundaFeira] = useState(false);
+  const [tercaFeira, setTercaFeira] = useState(false);
+  const [quartaFeira, setQuartaFeira] = useState(false);
+  const [quintaFeira, setQuintaFeira] = useState(false);
+  const [sextaFeira, setSextaFeira] = useState(false);
+  const [sabado, setSabado] = useState(false);
+  const [startAt, setStartAt] = useState("00:10");
+  const [endAt, setEndAt] = useState("00:00");
+  const [bannerText, setBannerText] = useState<string>("");
+  const [bannerTitle, setBannerTitle] = useState<string>("");
+  const [confirmModal, setConfirmModal] = useState<boolean>(false);
+
+  const [mainColor, setMainColor] = useState<string>("");
+  const [auxColor, setAuxColor] = useState<string>("");
+  const [textColor, setTextColor] = useState<string>("");
+  const [hideLogo, setHideLogo] = useState<boolean>(false);
+  const [hideTitle, setHideTitle] = useState<boolean>(false);
+  const [hideWelcome, setHideWelcome] = useState<boolean>(false);
+  const [centerIcon, setCenterIcon] = useState<boolean>(false);
+
+  const navigate = useNavigate();
+
+  const format = "HH:mm";
+
+  useEffect(() => {
+    const usr = isAuth();
+    if (usr && usr.userType === "admin") {
+      const fetchData = async () => {
+        setUser(usr);
+        const resCompany: any = await CompanyService.GetCompany(
+          usr.codCompany!
+        );
+
+        if (resCompany && resCompany.status) {
+          const data: TCompany = resCompany.data;
+          if (data.URL.length > 0) {
+            setDisponiility(true);
+          }
+          console.log(data);
+
+          setTitle(data.title);
+          setLogo(data.details.icon);
+          setBanner(data.details.banner);
+          setWelcome(data.details.welcome);
+          setURL(data.URL);
+          setOriginalUrl(data.URL);
+          setFontCheckBox(data.details.fontStyle);
+          setFontCheckBox(data.details.fontStyleAux, false);
+          setinstagramLink(data.details.socialMedia.instagram);
+          setLocalization(data.details.socialMedia.localization);
+          setOffers(data.details.offers);
+          setReservation(data.details.reservation);
+          setHappyHour(data.details.happyHour);
+          setStartAt(
+            data.details.happyHour!.startAt
+              ? data.details.happyHour!.startAt
+              : "00:00"
+          );
+          setEndAt(
+            data.details.happyHour!.endAt
+              ? data.details.happyHour!.endAt
+              : "00:00"
+          );
+          setEndereco(data.details.socialMedia.address);
+          setSpotifyLink(data.details.socialMedia.spotify);
+          setWhatsAppLink(data.details.socialMedia.whatsapp);
+          setYoutubeLink(data.details.socialMedia.youtube);
+          setContactEmail(data.details.contactEmail);
+          setNome(data.details.contactName);
+          setCidade(data.details.city);
+          setContactNumber(data.details.contactNumber);
+          setMainColor(data.details.mainColor);
+          setAuxColor(data.details.auxColor);
+          setTextColor(data.details.textColor);
+          setHideLogo(data.details.hideLogo);
+          setHideTitle(data.details.hideTitle);
+          setHideWelcome(data.details.hideWelcome);
+          setCenterIcon(data.details.centerIcon);
+          setFontStyle(data.details.fontStyle);
+          setFontStyleAux(data.details.fontStyleAux);
+          if (data.details.happyHour!.daysOfWeek?.find((days) => days === 0)) {
+            setContactReservationNumber(
+              data.details.reservation!.reservationNumber!
+            );
+          }
+          if (data.details.happyHour!.daysOfWeek?.find((days) => days === 0)) {
+            setDomingo(true);
+          }
+          if (data.details.happyHour!.daysOfWeek?.find((days) => days === 1)) {
+            setSegundaFeira(true);
+          }
+          if (data.details.happyHour!.daysOfWeek?.find((days) => days === 2)) {
+            setTercaFeira(true);
+          }
+          if (data.details.happyHour!.daysOfWeek?.find((days) => days === 3)) {
+            setQuartaFeira(true);
+          }
+          if (data.details.happyHour!.daysOfWeek?.find((days) => days === 4)) {
+            setQuintaFeira(true);
+          }
+          if (data.details.happyHour!.daysOfWeek?.find((days) => days === 5)) {
+            setSextaFeira(true);
+          }
+          if (data.details.happyHour!.daysOfWeek?.find((days) => days === 6)) {
+            setSabado(true);
+          }
+          setContactReservationNumber(
+            data.details.reservation!.reservationNumber!
+          );
+        }
+      };
+      fetchData();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    } else {
+      navigate("/login");
+    }
+  }, []);
 
   const changeInput = (e: any, isBanner: boolean = false) => {
     const localFile = e.target.files[0];
@@ -49,54 +211,99 @@ const UpdateData: React.FC = () => {
       setLogoUpdated(localFile);
     }
   };
-  const header = {
-    icon: "ren",
-    title: "Ren.",
-    mainColor: "#F2E8CF",
-    auxColor: "#BC4749",
-    textColor: "#386641",
-    fontStyle: theme.fonts.hand,
-    fontStyleAux: theme.fonts.primary,
-    welcome: "Bem-vindo(a) ao Ren.",
-    banner: "food",
-    offers: true,
-    hasHappyHour: true,
-    reservation: true,
-    reservationTextDetail:
-      "Evite filas de espera, faça sua reserva no Ren, entre em contato com o número a baixo e verifique a disponibilidade!",
-    reservationContactNumber: "64996140938",
-    offersText: "Confira as promoções do Ren!",
-    happyHourText: "É dia de happy hour no Ren!",
-    happyHourTextDetail:
-      "O happy hour é oferecido de segunda a sexta-feira, das 17h às 20h, Durante o happy hour, nossos clientes podem desfrutar de bebidas com descontos especiais, como cervejas, vinhos e coquetéis.",
-    reservationText: "Reserve sua mesa!",
-    socialMedia: {
-      instagram: { icon: instagram, link: "//" },
-      spotify: {
-        icon: spotify,
-        link: "https://open.spotify.com/embed/playlist/0usD50UnpFtLPEMYsy3s62?utm_source=generator",
-      },
-      youtube: { icon: youtube, link: "" },
-      whatsapp: { icon: whatsapp, link: "//" },
-      address: { icon: marker, link: "//" },
-    },
+  const changeInputModal = (e: any) => {
+    const localFile = e.target.files[0];
+    setBannerModal(localFile);
   };
-
-  const createRequest = () => {
+  const updateCompany = async () => {
     if (
-      brandName &&
-      email &&
-      contact &&
+      title &&
+      contactEmail &&
+      contactNumber &&
       welcome &&
-      logo &&
       banner &&
-      fontStyle
+      fontStyle &&
+      nome &&
+      URL
     ) {
-      //       logoUpdated
-      // bannerUpdated
-      //criar if para verificar se as fotos foram alteradas.
-      setModal(true);
-      setModalFail(false);
+      let logoURl: any;
+      if (logoUpdated) {
+        const path = "/companies/imgs/";
+        logoURl = await fileUpload(
+          logoUpdated,
+          path + "icon" + logoUpdated.name
+        );
+      }
+      let bannerUrl: any;
+      if (bannerUpdated) {
+        const path = "/companies/imgs/";
+        bannerUrl = await fileUpload(
+          bannerUpdated,
+          path + "banner" + bannerUpdated.name
+        );
+      }
+
+      await CompanyService.GetCompany(user!.codCompany!).then(
+        async (resCompany) => {
+          const iconRelease = logoURl
+            ? logoURl.data
+            : resCompany.data.details.icon;
+          const bannerRelease = bannerUrl
+            ? bannerUrl.data
+            : resCompany.data.details.banner;
+
+          const { data } = resCompany;
+          const updateCompany = {
+            ...data,
+            URL,
+            address: endereco,
+            details: {
+              ...data!.details,
+              auxColor,
+              banner: bannerRelease,
+              city: cidade,
+              contactEmail,
+              contactName: nome,
+              contactNumber,
+              fontStyle,
+              fontStyleAux,
+              hideLogo,
+              hideTitle,
+              hideWelcome,
+              centerIcon,
+              icon: iconRelease,
+              mainColor,
+              happyHour: data.details.happyHour,
+              offers: data.details.offers,
+              reservation: data.details.reservation,
+              socialMedia: {
+                localization,
+                instagram: instagramLink,
+                youtube: youtubeLink,
+                whatsapp: whatsAppLink,
+                address: endereco,
+                spotify: spotifyLink,
+              },
+
+              textColor,
+              title,
+              welcome,
+            },
+            title,
+            icon: iconRelease,
+          };
+
+          const res = await CompanyService.updateCompany(user!.codCompany!, {
+            ...updateCompany,
+          });
+          if (res.status) {
+            message.success("Empresa atualizada com sucesso!");
+            handleCloseFeatureUpdate();
+          } else {
+            message.error("Verifique os campos e tente novamente");
+          }
+        }
+      );
     } else {
       setModal(false);
       setModalFail(true);
@@ -109,30 +316,7 @@ const UpdateData: React.FC = () => {
     setModalFail(false);
   };
 
-  useEffect(() => {
-    //chamar api
-    setBrandName("teste");
-    setWelcome("teste");
-    setBanner(
-      "https://meu-menu-public-relase-pkprjispv-devjulio.vercel.app/static/media/food.cf115d2f839bce6feab3.png"
-    );
-    setLogo(
-      "data:image/png;base64,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"
-    );
-
-    setinstagramLink("teste");
-    setLocalizacao("teste");
-    setSpotifyLink("teste");
-    setWhatsAppLink("teste");
-    setYoutubeLink("teste");
-    setHappyHourText("teste");
-    setReservationText("teste");
-    setContact("1140029822");
-    setEmail("teste");
-    setFontCheckBox("hand"); //método para definir qual é a fonte
-  }, []);
-
-  const setFontCheckBox = (fontName: string) => {
+  const setFontCheckBox = (fontName: string, isPrimary: boolean = true) => {
     const fonts = [
       "AlwaysSmile",
       "Bachelorette",
@@ -147,13 +331,25 @@ const UpdateData: React.FC = () => {
       "secundary",
       "hand",
     ];
-    const fontIndex = fonts.findIndex((font) => font === fontName);
-    const indexFinal = fontIndex + 1;
-    const checkbox = document.getElementById(
-      indexFinal.toString()
-    ) as HTMLInputElement | null;
-    if (checkbox != null) {
-      checkbox.checked = true;
+
+    if (isPrimary) {
+      const fontIndex = fonts.findIndex((font) => font === fontName);
+      const indexFinal = fontIndex + 1;
+      const checkbox = document.getElementById(
+        indexFinal.toString()
+      ) as HTMLInputElement | null;
+      if (checkbox != null) {
+        checkbox.checked = true;
+      }
+    } else {
+      const fontIndex = fonts.findIndex((font) => font === fontName);
+      const indexFinal = fontIndex + 13;
+      const checkbox = document.getElementById(
+        indexFinal.toString()
+      ) as HTMLInputElement | null;
+      if (checkbox != null) {
+        checkbox.checked = true;
+      }
     }
   };
 
@@ -173,6 +369,298 @@ const UpdateData: React.FC = () => {
       checkbox.checked = true;
     }
   };
+  const handleSwitchAux = (id: string) => {
+    for (var i = 13; i <= 24; i++) {
+      const checkbox = document.getElementById(
+        i.toString()
+      ) as HTMLInputElement | null;
+      if (checkbox != null) {
+        checkbox.checked = false;
+      }
+    }
+    const checkbox = document.getElementById(
+      id.toString()
+    ) as HTMLInputElement | null;
+    if (checkbox != null) {
+      checkbox.checked = true;
+    }
+  };
+
+  const handleCloseLoading = () => {
+    setLoading(false);
+  };
+  const handleCloseFeatureUpdate = () => {
+    setFeatureUpdate(false);
+    setHappyHourModal(false);
+  };
+
+  const handleCloseFeatureAux = () => {
+    setFeatureUpdateAux(false);
+  };
+  const checkURL = async () => {
+    if (URL.length > 0) {
+      if (originalUrl === URL) {
+        message.success("URL igual!");
+        setDisponiility(true);
+      } else {
+        const urlRes = await CompanyService.CheckUrl(URL);
+        if (urlRes) {
+          message.success("URL disponível!");
+          setDisponiility(true);
+        } else {
+          message.error("URL já em uso, tente novamente");
+        }
+      }
+    } else {
+      message.error("uma URL personalizada precisa ser informada!");
+    }
+  };
+
+  const checkDays = () => {
+    const days = [];
+    if (domingo) {
+      days.push(0);
+    }
+    if (segundaFeira) {
+      days.push(1);
+    }
+    if (tercaFeira) {
+      days.push(2);
+    }
+    if (quartaFeira) {
+      days.push(3);
+    }
+    if (quintaFeira) {
+      days.push(4);
+    }
+    if (sextaFeira) {
+      days.push(5);
+    }
+    if (sabado) {
+      days.push(6);
+    }
+    return days;
+  };
+
+  const saveHpAndReservation = async () => {
+    if (happyHourModal) {
+      let isBannerURLAux;
+      if (bannerModal) {
+        const path = "/companies/imgs/";
+        isBannerURLAux = await fileUpload(
+          bannerModal,
+          path + "banner" + bannerModal.name
+        );
+      }
+
+      const isBannerText = bannerText ? bannerText : happyHour!.bannerText;
+      const isBannerTitle = bannerTitle ? bannerTitle : happyHour!.bannerTitle;
+      const isBannerURL = isBannerURLAux?.data
+        ? isBannerURLAux.data
+        : happyHour!.bannerURL;
+      const days = checkDays();
+
+      if (
+        isBannerText &&
+        isBannerTitle &&
+        startAt &&
+        endAt &&
+        days.length > 0
+      ) {
+        setHappyHour({
+          bannerText: isBannerText,
+          bannerTitle: isBannerTitle,
+          status: true,
+          daysOfWeek: days,
+          startAt: startAt,
+          bannerURL: isBannerURL,
+          endAt: endAt,
+        });
+
+        const res = await CompanyService.updateCompany(user!.codCompany!, {
+          "details.happyHour": {
+            bannerText: isBannerText,
+            bannerTitle: isBannerTitle,
+            status: true,
+            daysOfWeek: days,
+            bannerURL: isBannerURL,
+            startAt: startAt,
+            endAt: endAt,
+          },
+        });
+        if (res.status) {
+          message.success("Happy Hour atualizado com sucesso!");
+          handleCloseFeatureUpdate();
+        } else {
+          message.error("Verifique os campos e tente novamente");
+        }
+      } else {
+        message.error("Verifique os campos e tente novamente");
+      }
+    } else {
+      let isBannerURLAux;
+      if (bannerModal) {
+        const path = "/companies/imgs/";
+        isBannerURLAux = await fileUpload(
+          bannerModal,
+          path + "banner" + bannerModal.name
+        );
+      }
+
+      const isBannerText = bannerText ? bannerText : reservation!.bannerText;
+      const isBannerTitle = bannerTitle
+        ? bannerTitle
+        : reservation!.bannerTitle;
+      const isBannerURL = isBannerURLAux?.data
+        ? isBannerURLAux.data
+        : reservation!.bannerURL;
+
+      if (isBannerText && isBannerTitle) {
+        setReservation({
+          bannerText: isBannerText,
+          bannerTitle: isBannerTitle,
+          bannerURL: isBannerURL,
+
+          status: true,
+        });
+
+        const res = await CompanyService.updateCompany(user!.codCompany!, {
+          "details.reservation": {
+            bannerText: isBannerText,
+            bannerTitle: isBannerTitle,
+            bannerURL: isBannerURL,
+            reservationNumber: contactReservationNumber,
+            status: true,
+          },
+        });
+        if (res.status) {
+          message.success("Detalhes de reserva atualizado com sucesso!");
+          handleCloseFeatureUpdate();
+        } else {
+          message.error("Verifique os campos e tente novamente");
+        }
+      } else {
+        message.error("Verifique os campos e tente novamente");
+      }
+    }
+    setBannerModal(undefined);
+  };
+
+  const savePromo = async () => {
+    let isBannerURLAux;
+    if (bannerModal) {
+      const path = "/companies/imgs/";
+      isBannerURLAux = await fileUpload(
+        bannerModal,
+        path + "banner" + bannerModal.name
+      );
+    }
+
+    const isBannerTitle = bannerTitle ? bannerTitle : offers!.bannerTitle;
+    const isBannerURL = isBannerURLAux?.data
+      ? isBannerURLAux.data
+      : offers!.bannerURL;
+
+    if (isBannerTitle) {
+      setOffers({
+        bannerTitle: isBannerTitle,
+        bannerURL: isBannerURL,
+        status: true,
+        bannerText: "",
+      });
+
+      const res = await CompanyService.updateCompany(user!.codCompany!, {
+        "details.offers": {
+          bannerTitle: isBannerTitle,
+          bannerURL: isBannerURL,
+          status: true,
+        },
+      });
+      if (res.status) {
+        message.success("Detalhes de promoção atualizado com sucesso!");
+        handleCloseFeatureUpdate();
+      } else {
+        message.error("Verifique os campos e tente novamente");
+      }
+    } else {
+      message.error("Verifique os campos e tente novamente");
+    }
+  };
+
+  const disableFeatures = async () => {
+    if (happyHourModal) {
+      await disableHp();
+    } else if (promoModal) {
+      await disableOffers();
+    } else {
+      await disableReservation();
+    }
+    handleCloseConfirmModal();
+  };
+  const disableHp = async () => {
+    setHappyHour({
+      ...happyHour!,
+      status: false,
+    });
+
+    const res = await CompanyService.updateCompany(user!.codCompany!, {
+      "details.happyHour": {
+        ...happyHour!,
+        status: false,
+      },
+    });
+    if (res.status) {
+      message.success("Happy hour desabilitado com sucesso");
+      handleCloseFeatureUpdate();
+    } else {
+      message.error("Verifique os campos e tente novamente");
+    }
+  };
+
+  const disableReservation = async () => {
+    setReservation({
+      ...reservation!,
+      status: false,
+    });
+    const res = await CompanyService.updateCompany(user!.codCompany!, {
+      "details.reservation": {
+        ...reservation!,
+        status: false,
+      },
+    });
+    if (res.status) {
+      message.success("Reserva desabilitado com sucesso!");
+      handleCloseFeatureUpdate();
+    } else {
+      message.error("Verifique os campos e tente novamente");
+    }
+  };
+  const disableOffers = async () => {
+    setOffers({
+      ...offers!,
+      status: false,
+    });
+    const res = await CompanyService.updateCompany(user!.codCompany!, {
+      "details.offers": {
+        ...offers!,
+        status: false,
+      },
+    });
+    if (res.status) {
+      message.success("Ofertas desabilitadas com sucesso!");
+      handleCloseFeatureUpdate();
+    } else {
+      message.error("Verifique os campos e tente novamente");
+    }
+  };
+  const handleCloseConfirmModal = () => {
+    setConfirmModal(false);
+  };
+  const formatDateJs = (val: any) => {
+    return `${dayjs(val, format).hour().toString()}:${dayjs(val, format)
+      .minute()
+      .toString()}`;
+  };
 
   return (
     <>
@@ -180,39 +668,16 @@ const UpdateData: React.FC = () => {
       <Styled.MainContainer>
         {modal && (
           <Modal
-            bannerColor={theme.colors.green.normal}
-            title={"Sucesso!"}
+            bannerColor={theme.colors.red.normal}
+            title={`Onde fica ${title}?`}
             handleClose={handleClose}
             titleFont={theme.fonts.primary}
           >
             <>
-              <Styled.PlansDetailModal>
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                  }}
-                >
-                  O seu cadastro foi realizado, em breve a equipe do Meu Menu
-                  entrará em contato para finalizar o processo de adesão e para
-                  começar o cadastro do seu cardápio!
-                  <p>
-                    Use as credenciais de login e senha para acessar o Meu Menu
-                    e acompanhar o andamento do cardápio.
-                  </p>
-                  <p>
-                    Entraremos em contato apresentando uma prévia do seu novo
-                    cardápio em breve!
-                  </p>
-                  <p
-                    style={{
-                      textAlignLast: "center",
-                    }}
-                  >
-                    Caso tenha dúvidas, entre em contato com o Meu Menu!
-                  </p>
-                </div>
-              </Styled.PlansDetailModal>
+              <MapComponent
+                localization={localization}
+                setLocalization={setLocalization}
+              />
               <Styled.BtnContainer
                 style={{
                   marginTop: "0px",
@@ -221,9 +686,15 @@ const UpdateData: React.FC = () => {
                 }}
               >
                 <ButtonSecondary
-                  //TODO: COLOCAR NUMERO DO ZAP
-                  action={() => {}}
-                  Label={"Entrar em contato com o Meu Menu!"}
+                  action={() => {
+                    if (localization.lat === 0) {
+                      message.error("Você precisa escolher um local");
+                    } else {
+                      handleClose();
+                      message.success("Localização adicionada com sucesso!");
+                    }
+                  }}
+                  Label={"Salvar"}
                   fontSize={theme.fontSize.md}
                   color={theme.colors.white.normal}
                   bgColor={theme.colors.green.normal}
@@ -236,7 +707,7 @@ const UpdateData: React.FC = () => {
         {modalFail && (
           <Modal
             bannerColor={theme.colors.red.normal}
-            title={"Verifique os campos e tente novamente!"}
+            title={"Verifique os campos e tente novamente 3!"}
             handleClose={handleCloseFail}
             titleFont={theme.fonts.primary}
           >
@@ -277,25 +748,526 @@ const UpdateData: React.FC = () => {
           </Modal>
         )}
 
+        {loading && (
+          <Modal
+            bannerColor={theme.colors.yellow.palete}
+            title={"Carregando..."}
+            handleClose={handleCloseLoading}
+            titleFont={theme.fonts.primary}
+          >
+            <div
+              style={{
+                display: "flex",
+                placeItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <img
+                src={loadingGif}
+                alt=""
+                style={{
+                  width: "4vw",
+                  padding: "3vh",
+                }}
+              />
+            </div>
+          </Modal>
+        )}
+
+        {featureUpdate && (
+          <Modal
+            bannerColor={theme.colors.blue.palete}
+            title={
+              happyHourModal
+                ? "Intruções e regras do happy hour"
+                : "Instruções e detalhes de reserva"
+            }
+            handleClose={handleCloseFeatureUpdate}
+            titleFont={theme.fonts.primary}
+          >
+            <div
+              style={{
+                display: "flex",
+                placeItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Styled.UpdateModalContainer>
+                {happyHourModal ? (
+                  <div className="HP">
+                    <span className="HP-title">
+                      Marque os dias da semana que o Happy hour funciona!
+                    </span>
+                    <Styled.CheckBoxRow>
+                      <Styled.CheckBoxItem>
+                        <Checkbox
+                          lblColor="black"
+                          label="Domingo"
+                          setValue={() => {
+                            setDomingo(!domingo);
+                          }}
+                          value={domingo}
+                        />
+                      </Styled.CheckBoxItem>
+                      <Styled.CheckBoxItem>
+                        <Checkbox
+                          lblColor="black"
+                          label={"Segunda Feira"}
+                          setValue={() => {
+                            setSegundaFeira(!segundaFeira);
+                          }}
+                          value={segundaFeira}
+                        />
+                      </Styled.CheckBoxItem>
+                      <Styled.CheckBoxItem>
+                        <Checkbox
+                          lblColor="black"
+                          label={"Terça Feira"}
+                          setValue={() => {
+                            setTercaFeira(!tercaFeira);
+                          }}
+                          value={tercaFeira}
+                        />
+                      </Styled.CheckBoxItem>
+                      <Styled.CheckBoxItem>
+                        <Checkbox
+                          lblColor="black"
+                          label={"Quarta Feira"}
+                          setValue={() => {
+                            setQuartaFeira(!quartaFeira);
+                          }}
+                          value={quartaFeira}
+                        />
+                      </Styled.CheckBoxItem>
+                      <Styled.CheckBoxItem>
+                        <Checkbox
+                          lblColor="black"
+                          label={"Quinta Feira"}
+                          setValue={() => {
+                            setQuintaFeira(!quintaFeira);
+                          }}
+                          value={quintaFeira}
+                        />
+                      </Styled.CheckBoxItem>
+                      <Styled.CheckBoxItem>
+                        <Checkbox
+                          lblColor="black"
+                          label={"Sexta Feira"}
+                          setValue={() => {
+                            setSextaFeira(!sextaFeira);
+                          }}
+                          value={sextaFeira}
+                        />
+                      </Styled.CheckBoxItem>
+                      <Styled.CheckBoxItem>
+                        <Checkbox
+                          lblColor="black"
+                          label={"Sábado"}
+                          setValue={() => {
+                            setSabado(!sabado);
+                          }}
+                          value={sabado}
+                        />
+                      </Styled.CheckBoxItem>
+                    </Styled.CheckBoxRow>
+
+                    <span className="HP-title">
+                      Infome a hora de início e de fim.
+                    </span>
+                    <div className="clock-row">
+                      <Styled.ClockContainerCol>
+                        <Styled.ClockSpan>Começo</Styled.ClockSpan>
+                        <TimePicker
+                          value={dayjs(startAt, format)}
+                          onChange={(value: any) => {
+                            setStartAt(formatDateJs(value));
+                          }}
+                          format={format}
+                        />
+                      </Styled.ClockContainerCol>
+                      <Styled.ClockContainerCol>
+                        <Styled.ClockSpan>Final</Styled.ClockSpan>
+                        <TimePicker
+                          value={dayjs(endAt, format)}
+                          format={format}
+                          onChange={(value: any) => {
+                            setEndAt(formatDateJs(value));
+                          }}
+                        />
+                      </Styled.ClockContainerCol>
+                    </div>
+                    <div className="text-container">
+                      <Styled.FormItemContainer>
+                        <Input
+                          value={happyHour?.bannerTitle}
+                          setValue={setBannerTitle}
+                          label="Titulo do happy hour"
+                          labelColor={theme.colors.blue.palete}
+                        />
+                        <span className="span-lbl" style={{ color: "black" }}>
+                          ex: É dia de Happy Hour!
+                        </span>
+                      </Styled.FormItemContainer>
+                      <Styled.FormItemContainer>
+                        <Input
+                          labelColor={theme.colors.blue.palete}
+                          value={happyHour?.bannerText}
+                          setValue={setBannerText}
+                          label="Descrição"
+                          isTextArea
+                          customWidth="500px"
+                        />
+                        <span className="span-lbl" style={{ color: "black" }}>
+                          Dê maiores detalhes a respeito do happy hour
+                        </span>
+                      </Styled.FormItemContainer>
+                    </div>
+                    <div className="clock-row">
+                      <Styled.FormItemContainer>
+                        <Styled.ItemSpan
+                          style={{
+                            color: theme.colors.blue.palete,
+                            paddingBottom: "0px",
+                            marginTop: "5px",
+                          }}
+                        >
+                          Selecione o banner:
+                        </Styled.ItemSpan>
+                        <Styled.Centralize>
+                          <Styled.FileInput
+                            style={{
+                              color: theme.colors.blue.palete,
+                            }}
+                            type="file"
+                            id="mainBanner"
+                            onChange={(e: any) => {
+                              changeInputModal(e);
+                            }}
+                          />
+                        </Styled.Centralize>
+                      </Styled.FormItemContainer>
+                      <Styled.FormItemContainer>
+                        <Styled.ItemSpan
+                          style={{
+                            color: theme.colors.blue.palete,
+                            paddingBottom: "0px",
+                            marginTop: "5px",
+                          }}
+                        >
+                          Banner atual:
+                        </Styled.ItemSpan>
+                        <Styled.Centralize>
+                          <Styled.MenuBanner
+                            src={happyHour?.bannerURL}
+                            alt=""
+                          />
+                        </Styled.Centralize>
+                      </Styled.FormItemContainer>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <div className="HP">
+                      <div className="text-container">
+                        <Styled.FormItemContainer>
+                          <Input
+                            value={reservation?.bannerTitle}
+                            setValue={setBannerTitle}
+                            label="Titulo da reserva"
+                            labelColor={theme.colors.blue.palete}
+                          />
+                          <span className="span-lbl" style={{ color: "black" }}>
+                            ex: Faça sua reserva para hoje!
+                          </span>
+                        </Styled.FormItemContainer>
+                        <Styled.FormItemContainer>
+                          <Input
+                            labelColor={theme.colors.blue.palete}
+                            value={reservation?.bannerText}
+                            setValue={setBannerText}
+                            label="Descrição"
+                            isTextArea
+                            customWidth="500px"
+                          />
+                          <span className="span-lbl" style={{ color: "black" }}>
+                            Dê maiores detalhes a respeito das reservas
+                          </span>
+                        </Styled.FormItemContainer>
+                      </div>
+                      <div className="clock-row">
+                        <Styled.FormItemContainer>
+                          <Styled.ItemSpan
+                            style={{
+                              color: theme.colors.blue.palete,
+                              paddingBottom: "0px",
+                              marginTop: "5px",
+                            }}
+                          >
+                            Selecione o banner:
+                          </Styled.ItemSpan>
+                          <Styled.Centralize>
+                            <Styled.FileInput
+                              style={{
+                                color: theme.colors.blue.palete,
+                              }}
+                              type="file"
+                              id="mainBanner"
+                              onChange={(e: any) => {
+                                changeInputModal(e);
+                              }}
+                            />
+                          </Styled.Centralize>
+                        </Styled.FormItemContainer>
+                        <Styled.FormItemContainer>
+                          <Styled.ItemSpan
+                            style={{
+                              color: theme.colors.blue.palete,
+                              paddingBottom: "0px",
+                              marginTop: "5px",
+                            }}
+                          >
+                            Banner atual:
+                          </Styled.ItemSpan>
+                          <Styled.Centralize>
+                            <Styled.MenuBanner
+                              src={reservation?.bannerURL}
+                              alt=""
+                            />
+                          </Styled.Centralize>
+                        </Styled.FormItemContainer>
+                      </div>
+                    </div>
+                  </>
+                )}
+                <Styled.BtnContainer
+                  style={{
+                    marginTop: "1vh",
+                    justifyContent: "center",
+                    marginBottom: "2vh",
+                  }}
+                >
+                  <ButtonSecondary
+                    action={saveHpAndReservation}
+                    Label={"Salvar"}
+                    fontSize={theme.fontSize.md}
+                    color={theme.colors.white.normal}
+                    bgColor={theme.colors.green.normal}
+                  />
+                  {happyHourModal ? (
+                    <ButtonSecondary
+                      action={() => {
+                        setConfirmModal(true);
+                      }}
+                      Label={"Desabilitar Happy Hour"}
+                      fontSize={theme.fontSize.md}
+                      color={theme.colors.white.normal}
+                      bgColor={theme.colors.red.normal}
+                    />
+                  ) : (
+                    <ButtonSecondary
+                      action={() => {
+                        setConfirmModal(true);
+                      }}
+                      Label={"Desabilitar reservas"}
+                      fontSize={theme.fontSize.md}
+                      color={theme.colors.white.normal}
+                      bgColor={theme.colors.red.normal}
+                    />
+                  )}
+                </Styled.BtnContainer>
+              </Styled.UpdateModalContainer>
+            </div>
+          </Modal>
+        )}
+
+        {featureUpdateAux && (
+          <Modal
+            bannerColor={theme.colors.blue.palete}
+            title={"Instruções e detalhes de promoção"}
+            handleClose={handleCloseFeatureAux}
+            titleFont={theme.fonts.primary}
+          >
+            <div
+              style={{
+                display: "flex",
+                placeItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Styled.UpdateModalContainer
+                style={{
+                  width: "100%",
+                }}
+              >
+                <>
+                  <div className="HP">
+                    <div
+                      className="text-container"
+                      style={{
+                        width: "58%",
+                      }}
+                    >
+                      <Styled.FormItemContainer
+                        style={{
+                          marginRight: "0px",
+                          marginLeft: "7vw",
+                        }}
+                      >
+                        <Input
+                          value={offers?.bannerTitle}
+                          setValue={setBannerTitle}
+                          label="Titulo da promoção"
+                          labelColor={theme.colors.blue.palete}
+                        />
+                        <span className="span-lbl" style={{ color: "black" }}>
+                          ex: Confira nossas promoções!
+                        </span>
+                      </Styled.FormItemContainer>
+                      <div className="clock-row">
+                        <Styled.FormItemContainer
+                          style={{
+                            marginLeft: "2vw",
+                            marginRight: "2vw",
+                          }}
+                        >
+                          <Styled.ItemSpan
+                            style={{
+                              color: theme.colors.blue.palete,
+                              paddingBottom: "0px",
+                              marginTop: "5px",
+                            }}
+                          >
+                            Selecione o banner:
+                          </Styled.ItemSpan>
+                          <Styled.Centralize>
+                            <Styled.FileInput
+                              style={{
+                                color: theme.colors.blue.palete,
+                              }}
+                              type="file"
+                              id="mainBanner"
+                              onChange={(e: any) => {
+                                changeInputModal(e);
+                              }}
+                            />
+                          </Styled.Centralize>
+                        </Styled.FormItemContainer>
+                        <Styled.FormItemContainer>
+                          <Styled.ItemSpan
+                            style={{
+                              color: theme.colors.blue.palete,
+                              paddingBottom: "0px",
+                              marginTop: "5px",
+                            }}
+                          >
+                            Banner atual:
+                          </Styled.ItemSpan>
+                          <Styled.Centralize>
+                            <Styled.MenuBanner src={offers?.bannerURL} alt="" />
+                          </Styled.Centralize>
+                        </Styled.FormItemContainer>
+                      </div>
+                    </div>
+                  </div>
+                </>
+                <Styled.BtnContainer
+                  style={{
+                    marginTop: "1vh",
+                    justifyContent: "center",
+                    marginBottom: "2vh",
+                  }}
+                >
+                  <ButtonSecondary
+                    action={savePromo}
+                    Label={"Salvar"}
+                    fontSize={theme.fontSize.md}
+                    color={theme.colors.white.normal}
+                    bgColor={theme.colors.green.normal}
+                  />
+                  <ButtonSecondary
+                    action={() => {
+                      setPromoModal(true);
+                      setConfirmModal(true);
+                    }}
+                    Label={"Desabilitar Promoções"}
+                    fontSize={theme.fontSize.md}
+                    color={theme.colors.white.normal}
+                    bgColor={theme.colors.red.normal}
+                  />
+                </Styled.BtnContainer>
+              </Styled.UpdateModalContainer>
+            </div>
+          </Modal>
+        )}
+
+        {confirmModal && (
+          <Modal
+            bannerColor={theme.colors.yellow.palete}
+            title={"Atenção"}
+            handleClose={handleCloseConfirmModal}
+            titleFont={theme.fonts.primary}
+          >
+            <div
+              style={{
+                display: "flex",
+                placeItems: "center",
+                justifyContent: "center",
+                flexDirection: "column",
+              }}
+            >
+              <span
+                style={{
+                  fontSize: theme.fontSize.lg,
+                  marginTop: "5vh",
+                  marginBottom: "5vh",
+                }}
+              >
+                Deseja continuar?
+              </span>
+              <Styled.BtnContainer
+                style={{
+                  marginTop: "1vh",
+                  justifyContent: "center",
+                  marginBottom: "2vh",
+                }}
+              >
+                <ButtonSecondary
+                  action={disableFeatures}
+                  Label={"Sim"}
+                  fontSize={theme.fontSize.md}
+                  color={theme.colors.white.normal}
+                  bgColor={theme.colors.blue.palete}
+                />
+
+                <ButtonSecondary
+                  action={handleCloseConfirmModal}
+                  Label={"Não"}
+                  fontSize={theme.fontSize.md}
+                  color={theme.colors.white.normal}
+                  bgColor={theme.colors.red.normal}
+                />
+              </Styled.BtnContainer>
+            </div>
+          </Modal>
+        )}
+
         <Styled.TitleSpan>Preencha todos os campos</Styled.TitleSpan>
         <Styled.Menus>
           <Styled.MenusRow>
-            <Styled.FormItemContainer>
-              <Input
-                setValue={setBrandName}
-                value={brandName}
-                label="Nome do estabelecimento"
-              />
-            </Styled.FormItemContainer>
-            <Styled.FormItemContainer>
-              <Input
-                setValue={setWelcome}
-                value={welcome}
-                label="Frase de boas vindas"
-              />
-            </Styled.FormItemContainer>
+            <span
+              style={{
+                color: theme.colors.white.normal,
+                cursor: "pointer",
+                fontFamily: theme.fonts.primary,
+                fontSize: theme.fontSize.md2,
+              }}
+              onClick={() => {
+                navigate("/cardapio/ren");
+              }}
+            >
+              Clique aqui e veja um exemplo de cardápio
+            </span>
           </Styled.MenusRow>
-
           <Styled.MenusRow>
             <Styled.FormItemContainer>
               <Styled.ItemSpan>Logo atual: </Styled.ItemSpan>
@@ -310,8 +1282,15 @@ const UpdateData: React.FC = () => {
               </Styled.Centralize>
             </Styled.FormItemContainer>
           </Styled.MenusRow>
-
           <Styled.MenusRow>
+            <Styled.FormItemContainer>
+              <Input
+                setValue={setTitle}
+                isRequired
+                label="Nome do estabelecimento"
+                value={title}
+              />
+            </Styled.FormItemContainer>
             <Styled.FormItemContainer>
               <Styled.ItemSpan>
                 Selecione a logo do estabelecimento
@@ -320,11 +1299,21 @@ const UpdateData: React.FC = () => {
                 <Styled.FileInput
                   type="file"
                   id="mainBanner"
-                  onChange={(e) => {
+                  onChange={(e: any) => {
                     changeInput(e);
                   }}
                 />
               </Styled.Centralize>
+            </Styled.FormItemContainer>
+          </Styled.MenusRow>
+          <Styled.MenusRow>
+            <Styled.FormItemContainer>
+              <Input
+                value={welcome}
+                placeholder="Primeiro contato do seu cliente com o cardápio"
+                setValue={setWelcome}
+                label="Frase de boas vindas"
+              />
             </Styled.FormItemContainer>
             <Styled.FormItemContainer>
               <Styled.ItemSpan>
@@ -334,11 +1323,61 @@ const UpdateData: React.FC = () => {
                 <Styled.FileInput
                   type="file"
                   id="mainBanner"
-                  onChange={(e) => {
+                  onChange={(e: any) => {
                     changeInput(e, true);
                   }}
                 />
               </Styled.Centralize>
+            </Styled.FormItemContainer>
+          </Styled.MenusRow>
+          <Styled.MenusRow>
+            <Styled.FormItemContainer>
+              <InputMasked
+                value={contactReservationNumber}
+                mask="(99) 9 9999-9999"
+                setValue={setContactReservationNumber}
+                label="Número para contato dos clientes e reservas."
+              />
+              <span className="span-lbl">
+                Número que seus clientes falaram com você sobre reservas
+              </span>
+            </Styled.FormItemContainer>
+            <Styled.FormItemContainer>
+              <div className="row-container">
+                <Input
+                  value={URL}
+                  setValue={setURL}
+                  placeholder="www.meu-menu.com/sua-empresa"
+                  label="Link personalizado"
+                  isRequired
+                  isDisabled={disponiility}
+                />
+                <div className="btn-container">
+                  <ButtonSecondary
+                    action={() => {
+                      if (!disponiility) {
+                        checkURL();
+                      } else {
+                        setDisponiility(false);
+                      }
+                    }}
+                    fontSize={theme.fontSize.md}
+                    Label={
+                      disponiility
+                        ? URL.length
+                          ? "Alterar link"
+                          : "verificar disponibilidade"
+                        : "verificar disponibilidade"
+                    }
+                    color={theme.colors.red.normal}
+                    bgColor={theme.colors.white.normal}
+                  />
+                </div>
+              </div>
+              <span className="span-lbl">
+                informe como você quer ser encontrado por seus clientes.
+                www.meu-menu.com/cardapio/{URL}
+              </span>
             </Styled.FormItemContainer>
           </Styled.MenusRow>
           <Styled.TitleSpan
@@ -358,60 +1397,77 @@ const UpdateData: React.FC = () => {
           </Styled.ItemSpan>
           <Styled.MenusRow>
             <Styled.SocialMediaContainer>
-              <Styled.IconCentralize>
-                <Styled.Icon src={instagram} onClick={() => {}} />
-                <Input
-                  labelColor={theme.colors.red.normal}
-                  setValue={setinstagramLink}
-                  label="Instagram"
-                  value={instagramLink}
-                  customWidth={isMobile() ? "250px" : "170px"}
-                />
-              </Styled.IconCentralize>
-
-              <Styled.IconCentralize>
-                <Styled.Icon src={marker} onClick={() => {}} />
-                <Input
-                  labelColor={theme.colors.red.normal}
-                  setValue={setLocalizacao}
-                  label="Endereço"
-                  value={localizacao}
-                  customWidth={isMobile() ? "250px" : "300px"}
-                />
-              </Styled.IconCentralize>
-              <Styled.IconCentralize>
-                <Styled.Icon src={spotify} onClick={() => {}} />
-                <Input
-                  labelColor={theme.colors.red.normal}
-                  setValue={setSpotifyLink}
-                  label="Link da playlist"
-                  value={spotifyLink}
-                  customWidth={isMobile() ? "250px" : "170px"}
-                />
-              </Styled.IconCentralize>
-              <Styled.IconCentralize>
-                <Styled.Icon src={whatsapp} onClick={() => {}} />
-                <Input
-                  labelColor={theme.colors.red.normal}
-                  setValue={setWhatsAppLink}
-                  label="WhatsApp"
-                  value={whatsAppLink}
-                  customWidth={isMobile() ? "250px" : "170px"}
-                />
-              </Styled.IconCentralize>
-              <Styled.IconCentralize>
-                <Styled.Icon src={youtube} onClick={() => {}} />
-                <Input
-                  labelColor={theme.colors.red.normal}
-                  setValue={setYoutubeLink}
-                  label="Canal do Youtube"
-                  value={youtubeLink}
-                  customWidth={isMobile() ? "250px" : "170px"}
-                />
-              </Styled.IconCentralize>
+              <div className="row-aux">
+                <Styled.IconCentralize>
+                  <Styled.Icon src={instagram} onClick={() => {}} />
+                  <Input
+                    isStartLbl={true}
+                    value={instagramLink}
+                    labelColor={theme.colors.red.normal}
+                    setValue={setinstagramLink}
+                    label="Instagram"
+                    customWidth={isMobile() ? "250px" : "170px"}
+                  />
+                </Styled.IconCentralize>
+                <Styled.IconCentralize>
+                  <Styled.Icon src={marker} onClick={() => {}} />
+                  <Input
+                    isStartLbl={true}
+                    value={endereco}
+                    labelColor={theme.colors.red.normal}
+                    setValue={setEndereco}
+                    label="Endereço"
+                    isRequired
+                    customWidth={isMobile() ? "250px" : "300px"}
+                  />
+                </Styled.IconCentralize>
+                <Styled.IconCentralize>
+                  <Styled.Icon src={spotify} onClick={() => {}} />
+                  <Input
+                    value={spotifyLink}
+                    labelColor={theme.colors.red.normal}
+                    setValue={setSpotifyLink}
+                    label="Link da playlist"
+                    customWidth={isMobile() ? "250px" : "170px"}
+                  />
+                </Styled.IconCentralize>
+              </div>
+              <div className="row-aux">
+                <Styled.IconCentralize>
+                  <Styled.Icon src={latlon} onClick={() => {}} />
+                  <span className="placer">Localização</span>
+                  <ButtonSecondary
+                    action={() => {
+                      setModal(true);
+                    }}
+                    Label="Clique para abrir mapa"
+                    color={theme.colors.yellow.palete}
+                    bgColor={theme.colors.blue.palete}
+                  />
+                </Styled.IconCentralize>
+                <Styled.IconCentralize>
+                  <Styled.Icon src={whatsapp} onClick={() => {}} />
+                  <Input
+                    value={whatsAppLink}
+                    labelColor={theme.colors.red.normal}
+                    setValue={setWhatsAppLink}
+                    label="WhatsApp"
+                    customWidth={isMobile() ? "250px" : "170px"}
+                  />
+                </Styled.IconCentralize>
+                <Styled.IconCentralize>
+                  <Styled.Icon src={youtube} onClick={() => {}} />
+                  <Input
+                    value={youtubeLink}
+                    labelColor={theme.colors.red.normal}
+                    setValue={setYoutubeLink}
+                    label="Canal do Youtube"
+                    customWidth={isMobile() ? "250px" : "170px"}
+                  />
+                </Styled.IconCentralize>
+              </div>
             </Styled.SocialMediaContainer>
           </Styled.MenusRow>
-
           <Styled.TitleSpan
             style={{
               marginTop: "5vh",
@@ -430,25 +1486,59 @@ const UpdateData: React.FC = () => {
             <Styled.SocialMediaContainer>
               <Styled.IconCentralize>
                 <Styled.Icon src={happy} onClick={() => {}} />
-                <Input
-                  labelColor={theme.colors.red.normal}
-                  setValue={setHappyHourText}
-                  label="Intruções e regras do happy hour"
-                  isTextArea
-                  value={happyHourText}
-                  customWidth={isMobile() ? "250px" : "450px"}
+                <span className="placerAux">
+                  Intruções e regras do happy hour
+                </span>
+                <ButtonSecondary
+                  action={() => {
+                    setHappyHourModal(true);
+                    setFeatureUpdate(true);
+                  }}
+                  Label="Cadastrar"
+                  color={theme.colors.yellow.palete}
+                  bgColor={theme.colors.blue.palete}
                 />
               </Styled.IconCentralize>
 
               <Styled.IconCentralize>
                 <Styled.Icon src={resevation} onClick={() => {}} />
-                <Input
-                  labelColor={theme.colors.red.normal}
-                  setValue={setReservationText}
-                  label="Instruções de reserva"
-                  isTextArea
-                  value={reservationText}
-                  customWidth={isMobile() ? "250px" : "450px"}
+                <span className="placerAux">
+                  Instruções e detalhes de reserva
+                </span>
+                <ButtonSecondary
+                  action={() => {
+                    setFeatureUpdate(true);
+                  }}
+                  Label="Cadastrar"
+                  color={theme.colors.yellow.palete}
+                  bgColor={theme.colors.blue.palete}
+                />
+              </Styled.IconCentralize>
+              <Styled.IconCentralize>
+                <Styled.Icon src={venda} onClick={() => {}} />
+                <span className="placerAux">Detalhes de promoção</span>
+                <ButtonSecondary
+                  action={() => {
+                    setFeatureUpdateAux(true);
+                  }}
+                  Label="Cadastrar"
+                  color={theme.colors.yellow.palete}
+                  bgColor={theme.colors.blue.palete}
+                />
+              </Styled.IconCentralize>
+              <Styled.IconCentralize>
+                <Styled.Icon src={onlinevenda} onClick={() => {}} />
+                <span className="placerAux">Informações para venda online</span>
+                <ButtonSecondary
+                  action={() => {
+                    message.success(
+                      "Fique atento para próximas atualizações!",
+                      5
+                    );
+                  }}
+                  Label="Em breve..."
+                  color={theme.colors.blue.palete}
+                  bgColor={theme.colors.yellow.palete}
                 />
               </Styled.IconCentralize>
             </Styled.SocialMediaContainer>
@@ -460,6 +1550,68 @@ const UpdateData: React.FC = () => {
           >
             Detalhes:
           </Styled.TitleSpan>
+
+          <Styled.ItemSpan
+            style={{
+              fontFamily: theme.fonts.secundary,
+            }}
+          >
+            Cores para seu cardápio!
+          </Styled.ItemSpan>
+          <Styled.ColorsContainer>
+            <Styled.FormItemContainer>
+              <Styled.ItemSpan
+                style={{
+                  paddingBottom: "0px",
+                  marginTop: "5px",
+                }}
+              >
+                Cor de fundo
+              </Styled.ItemSpan>
+              <ColorPicker
+                showText
+                onChange={(value: Color, hex: string) => {
+                  setMainColor(hex);
+                }}
+                value={mainColor}
+              />
+            </Styled.FormItemContainer>
+            <Styled.FormItemContainer>
+              <Styled.ItemSpan
+                style={{
+                  paddingBottom: "0px",
+                  marginTop: "5px",
+                }}
+              >
+                Cor de contraste
+              </Styled.ItemSpan>
+              <ColorPicker
+                showText
+                onChange={(value: Color, hex: string) => {
+                  setAuxColor(hex);
+                }}
+                value={auxColor}
+              />
+            </Styled.FormItemContainer>
+            <Styled.FormItemContainer>
+              <Styled.ItemSpan
+                style={{
+                  paddingBottom: "0px",
+                  marginTop: "5px",
+                }}
+              >
+                Cor dos títulos
+              </Styled.ItemSpan>
+              <ColorPicker
+                showText
+                onChange={(value: Color, hex: string) => {
+                  setTextColor(hex);
+                }}
+                value={textColor}
+              />
+            </Styled.FormItemContainer>
+          </Styled.ColorsContainer>
+
           <Styled.ItemSpan
             style={{
               fontFamily: theme.fonts.secundary,
@@ -475,7 +1627,7 @@ const UpdateData: React.FC = () => {
                   fontFamily: theme.fonts.AlwaysSmile,
                 }}
               >
-                {brandName}
+                {title}
               </Styled.Fonts>
               <Checkbox
                 id="1"
@@ -493,7 +1645,7 @@ const UpdateData: React.FC = () => {
                   fontFamily: theme.fonts.Bachelorette,
                 }}
               >
-                {brandName}
+                {title}
               </Styled.Fonts>
               <Checkbox
                 id="2"
@@ -510,7 +1662,7 @@ const UpdateData: React.FC = () => {
                   fontFamily: theme.fonts.BeYou,
                 }}
               >
-                {brandName}
+                {title}
               </Styled.Fonts>
               <Checkbox
                 id="3"
@@ -527,7 +1679,7 @@ const UpdateData: React.FC = () => {
                   fontFamily: theme.fonts.Bravely,
                 }}
               >
-                {brandName}
+                {title}
               </Styled.Fonts>
               <Checkbox
                 id="4"
@@ -539,7 +1691,6 @@ const UpdateData: React.FC = () => {
               />
             </Styled.IconCentralize>
           </Styled.MenusRow>
-
           <Styled.MenusRow>
             <Styled.IconCentralize>
               <Styled.Fonts
@@ -547,7 +1698,7 @@ const UpdateData: React.FC = () => {
                   fontFamily: theme.fonts.GlossySheen,
                 }}
               >
-                {brandName}
+                {title}
               </Styled.Fonts>
               <Checkbox
                 id="5"
@@ -564,7 +1715,7 @@ const UpdateData: React.FC = () => {
                   fontFamily: theme.fonts.LatoRegular,
                 }}
               >
-                {brandName}
+                {title}
               </Styled.Fonts>
               <Checkbox
                 id="6"
@@ -582,7 +1733,7 @@ const UpdateData: React.FC = () => {
                   fontFamily: theme.fonts.LEMONMILK,
                 }}
               >
-                {brandName}
+                {title}
               </Styled.Fonts>
               <Checkbox
                 id="7"
@@ -599,7 +1750,7 @@ const UpdateData: React.FC = () => {
                   fontFamily: theme.fonts.NiceSugar,
                 }}
               >
-                {brandName}
+                {title}
               </Styled.Fonts>
               <Checkbox
                 id="8"
@@ -611,7 +1762,6 @@ const UpdateData: React.FC = () => {
               />
             </Styled.IconCentralize>
           </Styled.MenusRow>
-
           <Styled.MenusRow>
             <Styled.IconCentralize>
               <Styled.Fonts
@@ -619,7 +1769,7 @@ const UpdateData: React.FC = () => {
                   fontFamily: theme.fonts.RoughAnthem,
                 }}
               >
-                {brandName}
+                {title}
               </Styled.Fonts>
               <Checkbox
                 id="9"
@@ -636,7 +1786,7 @@ const UpdateData: React.FC = () => {
                   fontFamily: theme.fonts.primary,
                 }}
               >
-                {brandName}
+                {title}
               </Styled.Fonts>
               <Checkbox
                 id="10"
@@ -654,7 +1804,7 @@ const UpdateData: React.FC = () => {
                   fontFamily: theme.fonts.secundary,
                 }}
               >
-                {brandName}
+                {title}
               </Styled.Fonts>
               <Checkbox
                 id="11"
@@ -671,7 +1821,7 @@ const UpdateData: React.FC = () => {
                   fontFamily: theme.fonts.hand,
                 }}
               >
-                {brandName}
+                {title}
               </Styled.Fonts>
               <Checkbox
                 id="12"
@@ -684,27 +1834,328 @@ const UpdateData: React.FC = () => {
             </Styled.IconCentralize>
           </Styled.MenusRow>
 
+          <Styled.ItemSpan
+            style={{
+              fontFamily: theme.fonts.secundary,
+            }}
+          >
+            Selecione a fonte que mais combina com seu estabelecimento para os
+            textos e descrições dos pratos
+          </Styled.ItemSpan>
+          <Styled.MenusRow>
+            <Styled.IconCentralize>
+              <Styled.Fonts
+                style={{
+                  fontFamily: theme.fonts.AlwaysSmile,
+                  fontSize: theme.fontSize.lg,
+                  color: theme.colors.yellow.palete,
+                }}
+              >
+                {welcome}
+              </Styled.Fonts>
+              <Checkbox
+                id="13"
+                label=""
+                setValue={() => {
+                  setFontStyleAux("AlwaysSmile");
+                  handleSwitchAux("13");
+                }}
+              />
+            </Styled.IconCentralize>
+
+            <Styled.IconCentralize>
+              <Styled.Fonts
+                style={{
+                  fontFamily: theme.fonts.Bachelorette,
+                  fontSize: theme.fontSize.lg,
+                  color: theme.colors.yellow.palete,
+                }}
+              >
+                {welcome}
+              </Styled.Fonts>
+              <Checkbox
+                id="14"
+                label=""
+                setValue={() => {
+                  setFontStyleAux("Bachelorette");
+                  handleSwitchAux("14");
+                }}
+              />
+            </Styled.IconCentralize>
+            <Styled.IconCentralize>
+              <Styled.Fonts
+                style={{
+                  fontFamily: theme.fonts.BeYou,
+                  fontSize: theme.fontSize.lg,
+                  color: theme.colors.yellow.palete,
+                }}
+              >
+                {welcome}
+              </Styled.Fonts>
+              <Checkbox
+                id="15"
+                label=""
+                setValue={() => {
+                  setFontStyleAux("BeYou");
+                  handleSwitchAux("15");
+                }}
+              />
+            </Styled.IconCentralize>
+            <Styled.IconCentralize>
+              <Styled.Fonts
+                style={{
+                  fontFamily: theme.fonts.Bravely,
+                  fontSize: theme.fontSize.lg,
+                  color: theme.colors.yellow.palete,
+                }}
+              >
+                {welcome}
+              </Styled.Fonts>
+              <Checkbox
+                id="16"
+                label=""
+                setValue={() => {
+                  setFontStyleAux("Bravely");
+                  handleSwitchAux("16");
+                }}
+              />
+            </Styled.IconCentralize>
+          </Styled.MenusRow>
+          <Styled.MenusRow>
+            <Styled.IconCentralize>
+              <Styled.Fonts
+                style={{
+                  fontFamily: theme.fonts.GlossySheen,
+                  fontSize: theme.fontSize.lg,
+                  color: theme.colors.yellow.palete,
+                }}
+              >
+                {welcome}
+              </Styled.Fonts>
+              <Checkbox
+                id="17"
+                label=""
+                setValue={() => {
+                  setFontStyleAux("GlossySheen");
+                  handleSwitchAux("17");
+                }}
+              />
+            </Styled.IconCentralize>
+            <Styled.IconCentralize>
+              <Styled.Fonts
+                style={{
+                  fontFamily: theme.fonts.LatoRegular,
+                  fontSize: theme.fontSize.lg,
+                  color: theme.colors.yellow.palete,
+                }}
+              >
+                {welcome}
+              </Styled.Fonts>
+              <Checkbox
+                id="18"
+                label=""
+                setValue={() => {
+                  setFontStyleAux("LatoRegular");
+                  handleSwitchAux("18");
+                }}
+              />
+            </Styled.IconCentralize>
+
+            <Styled.IconCentralize>
+              <Styled.Fonts
+                style={{
+                  fontFamily: theme.fonts.LEMONMILK,
+                  fontSize: theme.fontSize.lg,
+                  color: theme.colors.yellow.palete,
+                }}
+              >
+                {welcome}
+              </Styled.Fonts>
+              <Checkbox
+                id="19"
+                label=""
+                setValue={() => {
+                  setFontStyleAux("LEMONMILK");
+                  handleSwitchAux("19");
+                }}
+              />
+            </Styled.IconCentralize>
+            <Styled.IconCentralize>
+              <Styled.Fonts
+                style={{
+                  fontFamily: theme.fonts.NiceSugar,
+                  fontSize: theme.fontSize.lg,
+                  color: theme.colors.yellow.palete,
+                }}
+              >
+                {welcome}
+              </Styled.Fonts>
+              <Checkbox
+                id="20"
+                label=""
+                setValue={() => {
+                  setFontStyleAux("NiceSugar");
+                  handleSwitchAux("20");
+                }}
+              />
+            </Styled.IconCentralize>
+          </Styled.MenusRow>
+          <Styled.MenusRow>
+            <Styled.IconCentralize>
+              <Styled.Fonts
+                style={{
+                  fontFamily: theme.fonts.RoughAnthem,
+                  fontSize: theme.fontSize.lg,
+                  color: theme.colors.yellow.palete,
+                }}
+              >
+                {welcome}
+              </Styled.Fonts>
+              <Checkbox
+                id="21"
+                label=""
+                setValue={() => {
+                  setFontStyleAux("RoughAnthem");
+                  handleSwitchAux("21");
+                }}
+              />
+            </Styled.IconCentralize>
+            <Styled.IconCentralize>
+              <Styled.Fonts
+                style={{
+                  fontFamily: theme.fonts.primary,
+                  fontSize: theme.fontSize.lg,
+                  color: theme.colors.yellow.palete,
+                }}
+              >
+                {welcome}
+              </Styled.Fonts>
+              <Checkbox
+                id="22"
+                label=""
+                setValue={() => {
+                  setFontStyleAux("primary");
+                  handleSwitchAux("22");
+                }}
+              />
+            </Styled.IconCentralize>
+
+            <Styled.IconCentralize>
+              <Styled.Fonts
+                style={{
+                  fontFamily: theme.fonts.secundary,
+                  fontSize: theme.fontSize.lg,
+                  color: theme.colors.yellow.palete,
+                }}
+              >
+                {welcome}
+              </Styled.Fonts>
+              <Checkbox
+                id="23"
+                label=""
+                setValue={() => {
+                  setFontStyleAux("secundary");
+                  handleSwitchAux("23");
+                }}
+              />
+            </Styled.IconCentralize>
+            <Styled.IconCentralize>
+              <Styled.Fonts
+                style={{
+                  fontFamily: theme.fonts.hand,
+                  fontSize: theme.fontSize.lg,
+                  color: theme.colors.yellow.palete,
+                }}
+              >
+                {welcome}
+              </Styled.Fonts>
+              <Checkbox
+                id="24"
+                label=""
+                setValue={() => {
+                  setFontStyleAux("hand");
+                  handleSwitchAux("24");
+                }}
+              />
+            </Styled.IconCentralize>
+          </Styled.MenusRow>
+          <Styled.ItemSpan
+            style={{
+              fontFamily: theme.fonts.primary,
+              fontSize: theme.fontSize.lg,
+            }}
+          >
+            Cabeçalho
+          </Styled.ItemSpan>
+
+          <Styled.MenusRow>
+            <Styled.IconCentralize>
+              <Checkbox
+                label="Centralizar logo"
+                value={centerIcon}
+                setValue={() => {
+                  setCenterIcon(!centerIcon);
+                }}
+              />
+            </Styled.IconCentralize>
+            <Styled.IconCentralize>
+              <Checkbox
+                label="Ocultar logo"
+                value={hideLogo}
+                setValue={() => {
+                  setHideLogo(!hideLogo);
+                }}
+              />
+            </Styled.IconCentralize>
+            <Styled.IconCentralize>
+              <Checkbox
+                label="Ocultar título"
+                value={hideTitle}
+                setValue={() => {
+                  setHideTitle(!hideTitle);
+                }}
+              />
+            </Styled.IconCentralize>
+            <Styled.IconCentralize>
+              <Checkbox
+                label="Ocultar frase de boas vindas"
+                value={hideWelcome}
+                setValue={() => {
+                  setHideWelcome(!hideWelcome);
+                }}
+              />
+            </Styled.IconCentralize>
+          </Styled.MenusRow>
           <Styled.TitleSpan>Informações Para o Meu Menu</Styled.TitleSpan>
           <Styled.ItemSpan
             style={{
               fontFamily: theme.fonts.secundary,
             }}
           >
-            Informações para a equipe do Meu Menu entrar em contato.
+            Informações para seu perfil na plataforma e para a equipe do Meu
+            Menu entrar em contato.
           </Styled.ItemSpan>
           <Styled.MenusRow>
             <Styled.FormItemContainer>
+              <Input value={nome} setValue={setNome} label="Nome" />
+            </Styled.FormItemContainer>
+            <Styled.FormItemContainer>
+              <Input value={cidade} setValue={setCidade} label="Cidade" />
+            </Styled.FormItemContainer>
+          </Styled.MenusRow>
+          <Styled.MenusRow>
+            <Styled.FormItemContainer>
               <InputMasked
+                value={contactNumber}
                 mask="(99) 9 9999-9999"
-                setValue={setContact}
-                value={contact}
+                setValue={setContactNumber}
                 label="Número para contato"
               />
             </Styled.FormItemContainer>
             <Styled.FormItemContainer>
               <Input
-                setValue={setEmail}
-                value={email}
+                value={contactEmail}
+                setValue={setContactEmail}
                 label="E-mail para contato"
               />
             </Styled.FormItemContainer>
@@ -713,9 +2164,9 @@ const UpdateData: React.FC = () => {
         <Styled.BtnContainer>
           <ButtonSecondary
             action={() => {
-              createRequest();
+              updateCompany();
             }}
-            Label="Atualizar"
+            Label="Salvar"
             color={theme.colors.red.normal}
             bgColor={theme.colors.white.normal}
           />

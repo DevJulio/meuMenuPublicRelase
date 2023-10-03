@@ -29,10 +29,8 @@ export const Img = styled.img`
   border-top-right-radius: 25px;
   border-top-left-radius: 25px;
   margin-top: -1px;
-  max-width:250px;
-  max-height:150px;
-  min-width:250px;
-  min-height:150px;
+  max-width: 250px;
+  max-height:250px;
   width: auto;
   height: auto;
 `;

@@ -9,39 +9,54 @@ import isMobile from "is-mobile";
 import ButtonSecondary from "../../../components/buttons/secondary";
 import Modal from "../../../components/modal";
 import { useNavigate } from "react-router-dom";
+import { FoodsService } from "../../../service/module/foods";
+import { isAuth } from "../../../utils/security/isCrypto";
+import { message } from "antd";
+import { TProducts } from "../../menu";
+import { fileUpload } from "../../../service/module/fileUpload";
+import CurrencyInput from "react-currency-input-field";
+import { CompanyService } from "../../../service/module/company";
+import { encryptToAuth } from "../../../utils/security/isAuth";
 
 const UpdateFood: React.FC = () => {
   const [name, setName] = useState<string>("");
   const [price, setPrice] = useState<string>("");
   const [descriptionText, setDescriptionText] = useState<string>("");
   const [harmonizacaoText, setHarmonizacaoText] = useState<string>("");
-  const [banner, setBanner] = useState();
+  const [banner, setBanner] = useState<File>();
+  const [bannerUrl, setBannerUrl] = useState<string>();
+
   const [IBU, setIBU] = useState<string>("");
-  const [contry, setContry] = useState<string>("");
   const [grape, setGrape] = useState<string>("");
   const [foodType, setFoodType] = useState<string>("");
   const [foodCategory, setFoodCategory] = useState<string>("");
+  const [country, setCountry] = useState<string>("");
+
+  const [food, setFood] = useState<TProducts>();
 
   const [modal, setModal] = useState<boolean>(false);
   const [modalFail, setModalFail] = useState<boolean>(false);
 
-  const foodDetailString = localStorage.getItem("meuMenuFoodDetail");
+  const foodDetailString = localStorage.getItem("@meumenu/foodDetail");
+
   const navigate = useNavigate();
 
   useEffect(() => {
     if (foodDetailString) {
       const foodDetail = JSON.parse(foodDetailString);
+      setFood(foodDetail);
+
       setName(foodDetail.label);
       setPrice(foodDetail.price);
       setDescriptionText(foodDetail.description);
       setHarmonizacaoText(foodDetail.harmoziation);
-      setBanner(foodDetail.img);
+      setBannerUrl(foodDetail.img);
       setFoodCategory(foodDetail.category);
 
       if (foodDetail.isDrink) {
         setFoodType("beber");
         if (foodDetail.country) {
-          setContry(foodDetail.country);
+          setCountry(foodDetail.country);
         }
         if (foodDetail.IBU) {
           setIBU(foodDetail.IBU);
@@ -53,6 +68,7 @@ const UpdateFood: React.FC = () => {
         setFoodType("comer");
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   let updatePic = false;
@@ -63,13 +79,55 @@ const UpdateFood: React.FC = () => {
     setBanner(localFile);
   };
 
-  const createRequest = () => {
-    if (name && price && descriptionText && harmonizacaoText && banner) {
+  const createRequest = async () => {
+    if (name && price && descriptionText && harmonizacaoText) {
+      let bannerUrlAux: any;
       if (updatePic) {
-        //adicionar nova foto para o update.
+        const path = "/companies/imgs/";
+        bannerUrlAux = await fileUpload(
+          banner!,
+          path + "banner" + banner!.name
+        );
       }
-      setModal(true);
-      setModalFail(false);
+
+      const newFood: TProducts = {
+        ...food!,
+        img: updatePic ? bannerUrlAux!.data : food!.img,
+        isEnable: food!.isEnable,
+        label: name,
+        qtd: 1,
+        harmoziation: harmonizacaoText,
+        description: descriptionText,
+        price,
+        category: food!.category,
+        categoryIcon: food!.categoryIcon,
+        isDrink: food!.isDrink,
+        isDestaque: food!.isDestaque,
+        isOffer: food!.isOffer,
+        IBU: IBU,
+        country: country, //
+        grape: grape,
+      };
+      localStorage.setItem("@meumenu/menu-version", "true");
+
+      try {
+        const res = await FoodsService.updateFoods(isAuth()!.codCompany!, {
+          ...newFood,
+          col: "company",
+          subcol: "menu",
+        });
+        console.log(res);
+
+        if (res.status) {
+          setModal(true);
+          setModalFail(false);
+        } else {
+          message.error("Verifique os campos e tente novamente");
+        }
+      } catch (error) {
+        console.log(error);
+        message.error("Verifique os campos e tente novamente");
+      }
     } else {
       setModal(false);
       setModalFail(true);
@@ -118,7 +176,7 @@ const UpdateFood: React.FC = () => {
               >
                 <ButtonSecondary
                   action={() => {
-                    navigate("/home");
+                    navigate("/adm/home");
                   }}
                   Label={`Fechar`}
                   fontSize={theme.fontSize.md}
@@ -182,7 +240,30 @@ const UpdateFood: React.FC = () => {
             </Styled.FormItemContainer>
 
             <Styled.FormItemContainer>
-              <Input setValue={setPrice} value={price} label="Preço" />
+              <Styled.ItemSpan
+                style={{
+                  marginTop: "0px",
+                  paddingBottom: "2.5vh",
+                  alignSelf: "start",
+                }}
+              >
+                Preço
+              </Styled.ItemSpan>
+              <CurrencyInput
+                placeholder="Informe um preço válido"
+                defaultValue={price}
+                decimalsLimit={2}
+                prefix="R$ "
+                onValueChange={(value, name) => setPrice(value!)}
+                intlConfig={{ locale: "pt-BR", currency: "BRL" }}
+                style={{
+                  color: theme.colors.black.normal,
+                  fontSize: "25px",
+                  border: `2px solid ${theme.colors.black.normal}`,
+                  borderRadius: "5px",
+                  marginTop: "10px",
+                }}
+              />
             </Styled.FormItemContainer>
           </Styled.MenusRow>
 
@@ -214,7 +295,7 @@ const UpdateFood: React.FC = () => {
             <Styled.FormItemContainer>
               <Styled.ItemSpan>Foto atual: </Styled.ItemSpan>
               <Styled.Centralize>
-                <Styled.MenuBanner src={banner} alt="" />
+                <Styled.MenuBanner src={bannerUrl} alt="" />
               </Styled.Centralize>
             </Styled.FormItemContainer>
           </Styled.MenusRow>
@@ -224,8 +305,8 @@ const UpdateFood: React.FC = () => {
               <Styled.MenusRow>
                 <Styled.FormItemContainer>
                   <Input
-                    setValue={setContry}
-                    value={contry}
+                    setValue={setCountry}
+                    value={country}
                     label="País de origem"
                   />
                 </Styled.FormItemContainer>
@@ -237,7 +318,7 @@ const UpdateFood: React.FC = () => {
                     <Styled.FileInput
                       type="file"
                       id="mainBanner"
-                      onChange={(e) => {
+                      onChange={(e: any) => {
                         changeInput(e);
                       }}
                     />
@@ -277,7 +358,7 @@ const UpdateFood: React.FC = () => {
                   <Styled.FileInput
                     type="file"
                     id="mainBanner"
-                    onChange={(e) => {
+                    onChange={(e: any) => {
                       changeInput(e);
                     }}
                   />

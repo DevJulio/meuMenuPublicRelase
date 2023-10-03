@@ -18,13 +18,7 @@ const Login: React.FC = () => {
   const onSubmit = async (user: TLogin) => {
     if (user.email && user.password) {
       try {
-        const res = await login(user);
-        if (!res) {
-          //Tratar erro
-        } else {
-          //Chamar api
-          console.log(res);
-        }
+        await login(user);
       } catch (error) {
         setError(true);
         message.error("Verifique os dados e tente novamente.");

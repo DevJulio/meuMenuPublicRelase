@@ -7,14 +7,18 @@ import * as Styled from "./styles";
 import { useNavigate } from "react-router-dom";
 import ButtonSecondary from "../../../components/buttons/secondary";
 import { theme } from "../../../theme/theme";
-import foods, { renCategories } from "../../menu/foods";
-import { ICategory } from "../../../components/category";
+import { TCategory } from "../../../components/category";
 import FoodCard from "../../../components/foodCard";
-import { TProducts } from "../../menu";
+import { TProducts, TProductsOffers } from "../../menu";
 import Modal from "../../../components/modal";
 import Input from "../../../components/input";
 import isMobile from "is-mobile";
 import { message } from "antd";
+import { isAuth, myCompany } from "../../../utils/security/isCrypto";
+import { fileUpload } from "../../../service/module/fileUpload";
+import { CompanyService } from "../../../service/module/company";
+import loadingGif from "../../../assets/icons/loading.gif";
+import CurrencyInput from "react-currency-input-field";
 
 export type TCounter = {
   id: string;
@@ -38,38 +42,53 @@ const OffersMenuCombo: React.FC = () => {
   const [modalIten, setmodalIten] = useState<TProducts>();
   const [comboState, setComboState] = useState<TProducts[]>();
   const [conterStates, setCounterStates] = useState<TCounter[]>([]);
-  const [banner, setBanner] = useState();
+  const [banner, setBanner] = useState<File>();
   const [price, setPrice] = useState<string>("");
   const [label, setLabel] = useState<string>("");
   const [descriptionText, setDescriptionText] = useState<string>("");
 
+  const [categories, setCategories] = useState<TCategory[]>([]);
+  const [foods, setFoods] = useState<TProducts[]>([]);
+
+  const [loading, setLoading] = useState<boolean>(false);
+
   useEffect(() => {
-    const mainContainer = document.getElementById("mainContainer");
-    const foodListContainer = document.getElementById("foodListContainer");
-    const comboDetailForm = document.getElementById("comboDetailForm");
+    const usr = isAuth();
+    if (usr && usr.userType === "admin") {
+      const mainContainer = document.getElementById("mainContainer");
+      const foodListContainer = document.getElementById("foodListContainer");
+      const comboDetailForm = document.getElementById("comboDetailForm");
 
-    if (mainContainer && foodListContainer && comboDetailForm) {
-      switch (mainCategory) {
-        case "listagemPratos":
-          foodListContainer.style.display = "flex";
-          mainContainer.style.display = "none";
-          comboDetailForm.style.display = "none";
-          break;
-        case "listagemCategorias":
-          mainContainer.style.display = "flex";
-          foodListContainer.style.display = "none";
-          comboDetailForm.style.display = "none";
-          break;
-        case "comboDetailForm":
-          comboDetailForm.style.display = "flex";
-          mainContainer.style.display = "none";
-          foodListContainer.style.display = "none";
-          break;
+      if (mainContainer && foodListContainer && comboDetailForm) {
+        switch (mainCategory) {
+          case "listagemPratos":
+            foodListContainer.style.display = "flex";
+            mainContainer.style.display = "none";
+            comboDetailForm.style.display = "none";
+            break;
+          case "listagemCategorias":
+            mainContainer.style.display = "flex";
+            foodListContainer.style.display = "none";
+            comboDetailForm.style.display = "none";
+            break;
+          case "comboDetailForm":
+            comboDetailForm.style.display = "flex";
+            mainContainer.style.display = "none";
+            foodListContainer.style.display = "none";
+            break;
 
-        default:
-          break;
+          default:
+            break;
+        }
       }
+      const fetchData = async () => {
+        await myCompany(setFoods, setCategories);
+      };
+      fetchData();
+    } else {
+      navigate("/login");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mainCategory]);
   useEffect(() => {
     const counter: TCounter[] = [];
@@ -82,8 +101,10 @@ const OffersMenuCombo: React.FC = () => {
           label: foodItem.label,
         })
       );
-     setCounterStates(counter);
+    setCounterStates(counter);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [foodCategory]);
+
   useEffect(() => {}, [comboState]);
 
   const handleConterChange = async (id: string, add: boolean) => {
@@ -109,15 +130,6 @@ const OffersMenuCombo: React.FC = () => {
   const handleCloseAux = () => {
     setModalPrimay(false);
   };
-  const renIndex = renCategories.findIndex(
-    (categoria) => categoria.label === "Todas" //usa o método findIndex para acessar o index de um objeto dentro de um array que possua um valor especifico
-  );
-
-  const getArraysExceptIndex = (list: ICategory[], index: number) => {
-    return list.filter((_, i) => i !== index);
-  };
-
-  const parsedRenCategories = getArraysExceptIndex(renCategories, renIndex);
 
   const getPrice = () => {
     if (comboState) {
@@ -135,13 +147,69 @@ const OffersMenuCombo: React.FC = () => {
   };
 
   const changeInput = (e: any) => {
-    if (e.target.files && e.target.files.length > 0) {
-      setBanner(e.target.files[0]);
+    const localFile = e.target.files[0];
+    if (localFile) {
+      if (localFile.size > 5 * 1024 * 1024) {
+        message.error(
+          "A imagem é muito grande. Por favor, escolha uma imagem menor que 5 mb."
+        );
+      } else {
+        setBanner(localFile);
+      }
     }
   };
-  const createCombo = () => {
+  const handleCloseLoading = () => {
+    setLoading(false);
+  };
+  const createCombo = async () => {
+    console.log(comboState);
+
     if (banner && price && label && descriptionText && comboState?.length) {
-      console.log({ banner, price, label, descriptionText, comboState });
+      setLoading(true);
+
+      const path = "/companies/imgs/offers/";
+      const bannerRes = await fileUpload(banner, path + "banner" + banner.name);
+
+      if (bannerRes?.status === 200) {
+        try {
+          const combo: TProductsOffers = {
+            isEnable: true,
+            isOffer: true,
+            banner: bannerRes.data,
+            price,
+            label,
+            description: descriptionText,
+            comboItens: comboState,
+            automation: {
+              daysWeek: [],
+              time: {
+                startAt: "00:00",
+                endAt: "00:00",
+              },
+            },
+          };
+
+          const offerRes = await CompanyService.setCompanySubCol({
+            docId: isAuth()!.codCompany!,
+            mainColection: "company",
+            subColection: "offers",
+            subdata: combo,
+          });
+          if (offerRes && offerRes.status === 200) {
+            setLoading(false);
+            message.success("Cadastro realizado com sucesso!");
+            setTimeout(() => {
+              window.location.reload();
+            }, 1500);
+          } else {
+            setLoading(false);
+            message.error("Verifique os campos e tente novamente.");
+          }
+        } catch (error) {
+          console.log(error);
+          message.error("Verifique todos os campos e tente novamente");
+        }
+      }
     } else {
       message.error("Verifique os campos e tente novamente.");
     }
@@ -152,7 +220,7 @@ const OffersMenuCombo: React.FC = () => {
       <Header />
       {modal && modalIten && (
         <Modal
-          bannerColor={"#BC4749"} //AuxColor
+          bannerColor={theme.colors.green.normal} //AuxColor
           title={modalIten.label}
           handleClose={handleClose}
           titleFont={theme.fonts.hand}
@@ -293,6 +361,31 @@ const OffersMenuCombo: React.FC = () => {
           {/* setMainCategory("listagemCategorias"); */}
         </Modal>
       )}
+      {loading && (
+        <Modal
+          bannerColor={theme.colors.yellow.palete}
+          title={"Carregando..."}
+          handleClose={handleCloseLoading}
+          titleFont={theme.fonts.primary}
+        >
+          <div
+            style={{
+              display: "flex",
+              placeItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <img
+              src={loadingGif}
+              alt=""
+              style={{
+                width: "4vw",
+                padding: "3vh",
+              }}
+            />
+          </div>
+        </Modal>
+      )}
       <Styled.MainContainer>
         <Styled.TitleSpan>Ofertas</Styled.TitleSpan>
         <Styled.MenuContainer id="mainContainer">
@@ -301,18 +394,29 @@ const OffersMenuCombo: React.FC = () => {
             prato:
           </Styled.ItemSpan>
           <Styled.CateRow>
-            {parsedRenCategories.map((cateItem, index) => (
+            {categories.map((cateItem, index) => (
               // eslint-disable-next-line jsx-a11y/anchor-is-valid
               <a
                 onClick={() => {
-                  localStorage.setItem("meuMenuOfferCategory", cateItem.label);
-                  setFoodCategory(cateItem.label);
+                  localStorage.setItem("meuMenuOfferCategory", cateItem.title);
+                  setFoodCategory(cateItem.title);
                   setMainCategory("listagemPratos");
                 }}
               >
                 <Styled.CateItem>
-                  <Styled.CateIcon src={cateItem.icon} />
-                  <span>{cateItem.label}</span>
+                  <Styled.CateIcon
+                    src={cateItem.icon}
+                    style={{
+                      filter: `brightness(1000%) grayscale(100%) 
+                        opacity(0.1)
+                        drop-shadow(0 0 0 white) 
+                        drop-shadow(0 0 0 white)
+                        drop-shadow(0 0 0 white)
+                        drop-shadow(0 0 0 white)
+                        drop-shadow(0 0 0 white)`,
+                    }}
+                  />
+                  <span>{cateItem.title}</span>
                 </Styled.CateItem>
               </a>
             ))}
@@ -533,7 +637,6 @@ const OffersMenuCombo: React.FC = () => {
               </Styled.PageSpan>
             </Styled.LblPriceDetail>
           )}
-          {/* Criar formulário para receber título, descrição, banner, preço e tbm criar label grande somando todos os valores */}
 
           <Styled.TitleSpan>Preencha todos os campos</Styled.TitleSpan>
           <Styled.Menus>
@@ -543,8 +646,32 @@ const OffersMenuCombo: React.FC = () => {
               </Styled.FormItemContainer>
 
               <Styled.FormItemContainer>
-                <Input setValue={setPrice} value={price} label="Preço" />
+                <Styled.ItemSpan
+                  style={{
+                    marginTop: "0px",
+                    paddingBottom: "2.5vh",
+                    alignSelf: "start",
+                  }}
+                >
+                  Preço
+                </Styled.ItemSpan>
+                <CurrencyInput
+                  placeholder="Informe um preço válido"
+                  defaultValue={price}
+                  decimalsLimit={2}
+                  prefix="R$ "
+                  onValueChange={(value, name) => setPrice(value!)}
+                  intlConfig={{ locale: "pt-BR", currency: "BRL" }}
+                  style={{
+                    color: theme.colors.black.normal,
+                    fontSize: "25px",
+                    border: `2px solid ${theme.colors.black.normal}`,
+                    borderRadius: "5px",
+                    marginTop: "10px",
+                  }}
+                />
               </Styled.FormItemContainer>
+
               <Styled.FormItemContainer>
                 <Styled.ItemSpan
                   style={{ color: "white", marginBottom: "-5vh" }}
@@ -556,7 +683,7 @@ const OffersMenuCombo: React.FC = () => {
                     type="file"
                     id="mainBanner"
                     accept="image/*"
-                    onChange={(e) => {
+                    onChange={(e: any) => {
                       changeInput(e);
                     }}
                   />

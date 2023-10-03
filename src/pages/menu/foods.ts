@@ -1,5 +1,5 @@
 import { TProducts, TProductsOffers } from ".";
-import { ICategory } from "../../components/category";
+import { TCategory } from "../../components/category";
 import { theme } from "../../theme/theme";
 
 import all from "../../assets/icons/categories/ios/all.png";
@@ -15,10 +15,8 @@ const foods: TProducts[] = [
     isEnable: true,
     label: "Pate de ricota com ervas",
     qtd: 1,
-    harmoziation:
-      "Para harmonizar com o pate de ricota com ervas, um vinho branco seco como um Sauvignon Blanc ou um Chardonnay não carvalhado é uma ótima escolha.",
-    description:
-      "Este pâté cremoso é feito com ricota fresca e temperado com ervas finas, como manjericão e tomilho. Perfeito como entrada ou como acompanhamento de pães crocantes",
+    harmoziation:"Para harmonizar com o pate de ricota com ervas, um vinho branco seco como um Sauvignon Blanc ou um Chardonnay não carvalhado é uma ótima escolha.",
+    description:"Este pâté cremoso é feito com ricota fresca e temperado com ervas finas, como manjericão e tomilho. Perfeito como entrada ou como acompanhamento de pães crocantes",
     price: "20,00",
     category: "Entradas",
     categoryIcon: "",
@@ -395,10 +393,10 @@ const foods: TProducts[] = [
     isDestaque: false,
   },
 ];
-export const renCategories: ICategory[] = [
+export const renCategories: TCategory[] = [
   {
     icon: all,
-    label: "Todas",
+    title: "Todas",
     color: "white",
     bgColor: "#386641",
     auxColor: "#BC4749",
@@ -407,7 +405,7 @@ export const renCategories: ICategory[] = [
 
   {
     icon: drinks,
-    label: "Bebidas",
+    title: "Bebidas",
     color: "white",
     bgColor: "#386641",
     auxColor: "#BC4749",
@@ -415,7 +413,7 @@ export const renCategories: ICategory[] = [
   },
   {
     icon: renEntradas,
-    label: "Entradas",
+    title: "Entradas",
     color: "white",
     bgColor: "#386641",
     auxColor: "#BC4749",
@@ -424,7 +422,7 @@ export const renCategories: ICategory[] = [
 
   {
     icon: renPrimeiro,
-    label: "Primeiro Prato",
+    title: "Primeiro Prato",
     color: "white",
     bgColor: "#386641",
     auxColor: "#BC4749",
@@ -433,7 +431,7 @@ export const renCategories: ICategory[] = [
 
   {
     icon: renPrincipal,
-    label: "Prato Principal",
+    title: "Prato Principal",
     color: "white",
     bgColor: "#386641",
     auxColor: "#BC4749",
@@ -442,7 +440,7 @@ export const renCategories: ICategory[] = [
 
   {
     icon: sobremesa,
-    label: "Sobremesas",
+    title: "Sobremesas",
     color: "white",
     bgColor: "#386641",
     auxColor: "#BC4749",

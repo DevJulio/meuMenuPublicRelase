@@ -1,6 +1,5 @@
 import styled from "styled-components";
 
-
 export const TitleSpan = styled.span`
   color: ${({ theme }) => theme.colors.yellow.palete};
   display: flex;
@@ -35,7 +34,6 @@ export const MenusRow = styled.div`
   flex-direction: row;
   @media ${({ theme }) => theme.devices.tablet} {
     flex-direction: column;
-
   }
 `;
 export const FormItemContainer = styled.div`
@@ -44,6 +42,29 @@ export const FormItemContainer = styled.div`
   width: 40%;
   display: flex;
   flex-direction: column;
+  .row-container {
+    display: flex;
+    flex-direction: row;
+    @media ${({ theme }) => theme.devices.tablet} {
+      display: flex;
+      flex-direction: column;
+    }
+  }
+  .span-lbl {
+    color: ${({ theme }) => theme.colors.white.normal};
+    font-size: ${({ theme }) => theme.fontSize.sm};
+    font-family: ${({ theme }) => theme.fonts.secundary};
+    margin-top: 1vh;
+  }
+  .btn-container {
+    display: flex;
+    margin-top: auto;
+    margin-left: 2vw;
+    @media ${({ theme }) => theme.devices.tablet} {
+      margin-top: 2vh;
+      margin-bottom: 1vh;
+    }
+  }
   @media ${({ theme }) => theme.devices.tablet} {
     margin-left: 0px;
     margin-right: 0px;
@@ -74,34 +95,65 @@ export const ItemSpan = styled.span`
 `;
 
 export const Centralize = styled.div`
-display: flex;
-place-Self: center;
+  display: flex;
+  place-self: center;
 `;
 export const IconCentralize = styled.div`
-display: flex;
-align-items: center;
-flex-direction: column;
-place-Self: center;
-place-items: center;
-text-align-last: center;
-margin-inline: 2vw;
-margin-bottom: 1vw;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  place-self: center;
+  place-items: center;
+  text-align-last: center;
+  margin-inline: 1vw;
+  margin-bottom: 1vw;
+  .placer {
+    color: ${({ theme }) => theme.colors.red.normal};
+    font-size: ${({ theme }) => theme.fontSize.md2};
+    font-family: ${({ theme }) => theme.fonts.primary};
+    margin-top: 3vh;
+  }
+  .placerAux {
+    color: ${({ theme }) => theme.colors.red.normal};
+    font-size: ${({ theme }) => theme.fontSize.md2};
+    font-family: ${({ theme }) => theme.fonts.primary};
+    margin-top: 0vh;
+    margin-bottom: 3vh;
+  }
+  .details-container {
+    display: flex;
+    flex-direction: row;
 
+    .detail-container-ex {
+    }
+  }
 `;
 export const SocialMediaContainer = styled.div`
-justify-content: center;
-margin-top: 1vh;
-display: flex;
-flex-direction: row;
-border-radius: 25px;
-width: 90%;
-background-color: ${({ theme }) => theme.colors.white.normal};
-align-self: center;
-justify-content: center;
-@media ${({ theme }) => theme.devices.tablet} {
-  flex-direction: column;
-}
-`
+  justify-content: center;
+  margin-top: 1vh;
+  display: flex;
+  flex-direction: row;
+  border-radius: 25px;
+  width: 90%;
+  background-color: ${({ theme }) => theme.colors.white.normal};
+  align-self: center;
+  justify-content: center;
+  .row-aux {
+    display: flex;
+    flex-direction: row;
+    @media ${({ theme }) => theme.devices.laptopL} {
+      width: 100%;
+      place-content: center;
+      flex-direction: column;
+    }
+  }
+  @media ${({ theme }) => theme.devices.laptopL} {
+    flex-direction: column;
+  }
+  @media ${({ theme }) => theme.devices.tablet} {
+    flex-direction: column;
+  }
+`;
 export const Icon = styled.img`
   width: 55px;
   margin-right: 3.5vw;
@@ -124,10 +176,10 @@ export const Fonts = styled.span`
 
 export const BtnContainer = styled.div`
   display: flex;
-   margin-top: 4vw;
-  margin-bottom: 4vw; 
+  margin-top: 4vw;
+  margin-bottom: 4vw;
 `;
-export const PlansDetailModal = styled.span`
+export const PlansDetailModal = styled.div`
   display: flex;
   justify-content: left;
   width: 95%;
@@ -135,12 +187,96 @@ export const PlansDetailModal = styled.span`
   justify-content: center;
   font-family: ${({ theme }) => theme.fonts.secundary};
   font-size: ${({ theme }) => theme.fontSize.mm};
- 
+
+  .map-container {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    place-content: center;
+  }
 `;
+
 export const MenuBanner = styled.img`
   max-width: 320px;
   margin-top: 1vw;
+  display: flex;
   margin-bottom: 1vw;
   @media ${({ theme }) => theme.devices.tablet} {
   }
 `;
+export const UpdateModalContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  .btn-container {
+  }
+  .HP {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 2vh;
+    margin-bottom: 1vh;
+
+    .HP-title {
+      font-family: ${({ theme }) => theme.fonts.secundary};
+      font-size: ${({ theme }) => theme.fontSize.md2};
+    }
+    .clock-row {
+      display: flex;
+      flex-direction: row;
+      margin-top: 1vh;
+      place-content: center;
+    }
+    .text-container {
+      display: flex;
+      flex-direction: row;
+      margin-top: 1vh;
+      place-content: center;
+      @media ${({ theme }) => theme.devices.laptopL} {
+        display: flex;
+        flex-direction: column;
+      }
+    }
+    @media ${({ theme }) => theme.devices.tablet} {
+      display: flex;
+      flex-direction: column;
+    }
+  }
+`;
+export const CheckBoxRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 2vh;
+`;
+export const CheckBoxItem = styled.div`
+  margin-inline: 1vw;
+`;
+export const ClockContainer = styled.div`
+  margin-top: 3vh;
+  display: flex;
+  flex-direction: row;
+`;
+export const ClockContainerCol = styled.div`
+  margin-top: 1vh;
+  display: flex;
+  text-align: center;
+  align-self: center;
+  flex-direction: column;
+  margin-inline: 4vw;
+  width: 10vw;
+`;
+export const ClockSpan = styled.span`
+  margin-bottom: 3vh;
+  color: ${({ theme }) => theme.colors.blue.palete};
+  font-size: ${({ theme }) => theme.fontSize.md2};
+  font-family: ${({ theme }) => theme.fonts.primary};
+`;
+export const ColorsContainer = styled.div`
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  place-content: center;
+  @media ${({ theme }) => theme.devices.tablet} {
+    flex-direction: column;
+  }
+`

@@ -24,6 +24,13 @@ const FoodCard: React.FC<IFood> = ({
   categoryIcon,
   category,
 }) => {
+  const parseColorTitle = () => {
+    if (color === "#ffffff") {
+      return "#000";
+    } else {
+      return color;
+    }
+  };
   return (
     <Styled.MainContainer
       style={{
@@ -48,7 +55,7 @@ const FoodCard: React.FC<IFood> = ({
         <Styled.Img src={img} />
         <Styled.Title
           style={{
-            color: color,
+            color: parseColorTitle(),
             fontFamily: fontStyle,
           }}
         >

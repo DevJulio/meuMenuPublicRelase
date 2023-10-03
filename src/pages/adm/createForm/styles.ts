@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { theme } from "../../../theme/theme";
 
 
 export const TitleSpan = styled.span`
@@ -44,6 +45,29 @@ export const FormItemContainer = styled.div`
   width: 40%;
   display: flex;
   flex-direction: column;
+  .row-container {
+    display: flex;
+    flex-direction: row;  
+    @media ${({ theme }) => theme.devices.tablet} {
+      display: flex;
+      flex-direction: column;
+    }
+  }
+  .span-lbl {
+    color: ${({ theme }) => theme.colors.white.normal};
+    font-size: ${({ theme }) => theme.fontSize.sm};
+    font-family: ${({ theme }) => theme.fonts.secundary};
+    margin-top: 1vh;
+  }
+  .btn-container {
+    display: flex;
+    margin-top: auto;
+    margin-left: 2vw;
+    @media ${({ theme }) => theme.devices.tablet} {
+      margin-top: 2vh;
+      margin-bottom: 1vh;
+    }
+  }
   @media ${({ theme }) => theme.devices.tablet} {
     margin-left: 0px;
     margin-right: 0px;
@@ -84,9 +108,14 @@ flex-direction: column;
 place-Self: center;
 place-items: center;
 text-align-last: center;
-margin-inline: 2vw;
+margin-inline: 1vw;
 margin-bottom: 1vw;
-
+.placer {
+  color: ${({ theme }) => theme.colors.red.normal};
+  font-size: ${({ theme }) => theme.fontSize.md2};
+  font-family: ${({ theme }) => theme.fonts.primary};
+  margin-top: 3vh;
+}
 `;
 export const SocialMediaContainer = styled.div`
 justify-content: center;
@@ -98,6 +127,17 @@ width: 90%;
 background-color: ${({ theme }) => theme.colors.white.normal};
 align-self: center;
 justify-content: center;
+.row-aux {
+  display: flex;
+  flex-direction: row;
+  @media ${({ theme }) => theme.devices.laptopL} {
+    width: 100%;
+    place-content: center;
+  }
+}
+@media ${({ theme }) => theme.devices.laptopL} {
+  flex-direction: column;
+}
 @media ${({ theme }) => theme.devices.tablet} {
   flex-direction: column;
 }
@@ -137,3 +177,4 @@ export const PlansDetailModal = styled.span`
   font-size: ${({ theme }) => theme.fontSize.mm};
  
 `;
+

@@ -21,7 +21,7 @@ const InputMasked: React.FC<Props> = ({
         <Styled.InputMaskHtml
           placeholder={placeholder}
           value={value}
-          onChange={(e) => {
+          onChange={(e: any) => {
             setValue(e.target.value);
           }}
           mask={mask}

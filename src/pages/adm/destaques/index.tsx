@@ -1,96 +1,137 @@
 import React, { useEffect, useState } from "react";
 import Footer from "../../../components/footer";
 import Header from "../../../components/header";
+import all from "../../../assets/icons/categories/ios/all.png";
 
 import * as Styled from "./styles";
 
 import { useNavigate } from "react-router-dom";
 import ButtonSecondary from "../../../components/buttons/secondary";
 import { theme } from "../../../theme/theme";
-import foods, { renCategories } from "../../menu/foods";
-import { ICategory } from "../../../components/category";
+import { TCategory } from "../../../components/category";
 import FoodCard from "../../../components/foodCard";
 import { TProducts } from "../../menu";
-import Modal from "../../../components/modal";
+import { isAuth, myCompany } from "../../../utils/security/isCrypto";
+import { CategoryService } from "../../../service/module/categories";
+import { FoodsService } from "../../../service/module/foods";
+import { message } from "antd";
 
 const Destaques: React.FC = () => {
   const [foodCategory, setFoodCategory] = useState<string>("");
   const [mainCategory, setMainCategory] = useState<string>("");
-  const [modal, setModal] = useState<boolean>(false);
-  const [modalIten, setmodalIten] = useState<TProducts>();
   const [plus, setPlus] = useState<boolean>(false);
 
+  const [categories, setCategories] = useState<TCategory[]>([]);
+  const [categoriesAux, setCategoriesAux] = useState<TCategory[]>([]);
+  const [foods, setFoods] = useState<TProducts[]>([]);
+
   useEffect(() => {
-    const mainContainer = document.getElementById("mainContainer");
-    const foodListContainer = document.getElementById("foodListContainer");
+    const usr = isAuth();
+    if (usr && usr.userType === "admin") {
+      const mainContainer = document.getElementById("mainContainer");
+      const foodListContainer = document.getElementById("foodListContainer");
 
-    if (mainContainer && foodListContainer) {
-      switch (mainCategory) {
-        case "listagemPratos":
-          mainContainer.style.display = "none";
-          foodListContainer.style.display = "flex";
-          break;
-        case "listagemCategorias":
-          mainContainer.style.display = "flex";
-          foodListContainer.style.display = "none";
-          break;
+      if (mainContainer && foodListContainer) {
+        switch (mainCategory) {
+          case "listagemPratos":
+            mainContainer.style.display = "none";
+            foodListContainer.style.display = "flex";
+            break;
+          case "listagemCategorias":
+            mainContainer.style.display = "flex";
+            foodListContainer.style.display = "none";
+            break;
 
-        default:
-          break;
+          default:
+            break;
+        }
       }
+      const fetchData = async () => {
+        await myCompany(setFoods, setCategoriesAux);
+      };
+      fetchData();
+    } else {
+      navigate("/login");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mainCategory]);
+
+  useEffect(() => {
+    const allCategories = {
+      icon: all,
+      title: "Todas",
+      color: "white",
+      bgColor: "",
+      auxColor: "",
+      fontStyle: theme.fonts.primary,
+    };
+    const currentCategories = categoriesAux;
+    currentCategories.push(allCategories);
+    setCategories(currentCategories);
+  }, [categoriesAux]);
 
   const navigate = useNavigate();
 
-  const handleClose = () => {
-    setModal(false);
+  const makeDestake = async (destaque: boolean, food: TProducts) => {
+    try {
+      const res = await FoodsService.updateFoods(isAuth()!.codCompany!, {
+        ...food,
+        isDestaque: destaque,
+        col: "company",
+        subcol: "menu",
+      });
+      if (res.status) {
+        if (destaque) {
+          message.success("Destaque adicionado");
+          return;
+        }
+        message.success("Destaque removido");
+      } else {
+        message.error("Verifique os campos e tente novamente");
+      }
+    } catch (error) {
+      console.log(error);
+      message.error("Verifique os campos e tente novamente");
+    }
   };
-  const renIndex = renCategories.findIndex(
-    (categoria) => categoria.label === "Todas" //usa o método findIndex para acessar o index de um objeto dentro de um array que possua um valor especifico
-  );
-
-  const getArraysExceptIndex = (list: ICategory[], index: number) => {
-    return list.filter((_, i) => i !== index);
-  };
-
-  const parsedRenCategories = getArraysExceptIndex(renCategories, renIndex);
 
   return (
     <>
       <Header />
-      {modal && modalIten && (
-        <Modal
-          bannerColor={"#BC4749"} //AuxColor
-          title={modalIten.label}
-          handleClose={handleClose}
-          titleFont={theme.fonts.hand}
-        >
-          {/* Novo preço e botão de confirmar cadastro de promoção */}
-          {/* redirecionar para outro modal */}
-        </Modal>
-      )}
-      {/* outro modal com: label: "oque deseja fazer agora?" botões de: novo cadastro nessa categoria, escolher outra categoria, voltar ao menu */}
-
       <Styled.MainContainer>
-        <Styled.TitleSpan>Ofertas</Styled.TitleSpan>
+        <Styled.TitleSpan>Destaques</Styled.TitleSpan>
         <Styled.MenuContainer id="mainContainer">
           <Styled.ItemSpan style={{ color: "white" }}>
             Selecione a categoria do prato:
           </Styled.ItemSpan>
           <Styled.CateRow>
-            {parsedRenCategories.map((cateItem, index) => (
+            {categories.map((cateItem, index) => (
               // eslint-disable-next-line jsx-a11y/anchor-is-valid
               <a
                 onClick={() => {
-                  localStorage.setItem("meuMenuOfferCategory", cateItem.label);
-                  setFoodCategory(cateItem.label);
-                  setMainCategory("listagemPratos");
+                  console.log(cateItem);
+                  if (cateItem.title === "Todas") {
+                    navigate("/adm/destaques/all");
+                  } else {
+                    setFoodCategory(cateItem.title);
+                    setMainCategory("listagemPratos");
+                  }
                 }}
               >
                 <Styled.CateItem>
-                  <Styled.CateIcon src={cateItem.icon} />
-                  <span>{cateItem.label}</span>
+                  <Styled.CateIcon
+                    src={cateItem.icon}
+                    style={{
+                      filter: `brightness(1000%) grayscale(100%) 
+                        opacity(0.1)
+                        drop-shadow(0 0 0 white) 
+                        drop-shadow(0 0 0 white)
+                        drop-shadow(0 0 0 white)
+                        drop-shadow(0 0 0 white)
+                        drop-shadow(0 0 0 white)`,
+                    }}
+                  />
+                  <span>{cateItem.title}</span>
                 </Styled.CateItem>
               </a>
             ))}
@@ -103,7 +144,7 @@ const Destaques: React.FC = () => {
           >
             <ButtonSecondary
               action={() => {
-                navigate("/home");
+                navigate("/adm/home");
               }}
               Label={"← voltar ao menu"}
               fontSize={theme.fontSize.md}
@@ -161,12 +202,21 @@ const Destaques: React.FC = () => {
                             img={foodItem.img}
                           />
                           <Styled.DeleteContainer
-                            onClick={(foodItem) => {
+                            onClick={() => {
                               if (plus) {
-                                //Tornar destaque
-                                setPlus(false);
+                                makeDestake(true, foodItem).then(() => {
+                                  setPlus(false);
+                                  setTimeout(() => {
+                                    window.location.reload();
+                                  }, 1500);
+                                });
                               } else {
-                                //"Remover Destaque"
+                                makeDestake(false, foodItem).then(() => {
+                                  setPlus(true);
+                                  setTimeout(() => {
+                                    window.location.reload();
+                                  }, 1500);
+                                });
                               }
                             }}
                           >
@@ -179,25 +229,37 @@ const Destaques: React.FC = () => {
                         </>
                       </Styled.FoodCategoryItem>
                     ))}
-                <Styled.FoodCategoryItem
-                  style={{
-                    alignSelf: "center",
-                    marginTop: "-8vh",
-                    // margin-top: -8vh;
-                  }}
-                  onClick={() => {
-                    setPlus(true);
-                    setMainCategory("listagemCategorias");
-                  }}
-                >
-                  <Styled.PlusContainer>
-                    <Styled.PlusSpan
-                      style={{ marginTop: "1vh", marginBottom: "0vh" }}
+                {!plus && (
+                  <Styled.FoodCategoryItem
+                    style={{
+                      alignSelf: "center",
+                      marginTop: foods.filter(
+                        (cate) =>
+                          cate.category === foodCategory &&
+                          cate.isDestaque === true
+                      ).length
+                        ? "-8vh"
+                        : "8vh",
+                    }}
+                    onClick={() => {
+                      setPlus(true);
+                      setMainCategory("foodListContainer");
+                    }}
+                  >
+                    <Styled.PlusContainer>
+                      <Styled.PlusSpan
+                        style={{ marginTop: "1vh", marginBottom: "0vh" }}
+                      >
+                        +
+                      </Styled.PlusSpan>
+                    </Styled.PlusContainer>
+                    <Styled.DeleteSpan
+                      style={{ color: theme.colors.yellow.palete }}
                     >
-                      +
-                    </Styled.PlusSpan>
-                  </Styled.PlusContainer>
-                </Styled.FoodCategoryItem>
+                      {"Adicionar novo"}
+                    </Styled.DeleteSpan>
+                  </Styled.FoodCategoryItem>
+                )}
               </Styled.ContainerCategories>
             </div>
           </Styled.CategoryContainerAux>

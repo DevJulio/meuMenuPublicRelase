@@ -9,74 +9,35 @@ import { theme } from "../../../../theme/theme";
 import ButtonSecondary from "../../../../components/buttons/secondary";
 import Input from "../../../../components/input";
 import isMobile from "is-mobile";
-import foods, { renCategories } from "../../../menu/foods";
-import { ICategory } from "../../../../components/category";
+import { TCategory } from "../../../../components/category";
 import { TCounter } from "../../keepOffersCombo";
 import { message } from "antd";
+import { TAT, TUser } from "../../../../service/module/login";
+import { CompanyService } from "../../../../service/module/company";
+import { isAuth, myCompany } from "../../../../utils/security/isCrypto";
+import { useNavigate } from "react-router-dom";
+import { TabsService } from "../../../../service/module/tabs";
+import { FoodsService } from "../../../../service/module/foods";
+import { TProducts } from "../../../menu";
 
 export type TTable = {
-  // docId: string;
+  docId?: string;
   tableLbl: string;
   custumerName: string;
   tableItens: TComandaItem[];
+  isOpen: boolean; //só exibir as que possuem true
+  createdAt?: TAT;
+  updatedAt?: TAT;
 };
 
 export type TComandaItem = {
   qtd: number;
   lbl: string;
+  price: string;
   itemId?: string;
 };
 
 const Comanda: React.FC = () => {
-  const tables: TTable[] = [
-    {
-      tableLbl: "1",
-      custumerName: "Sophia",
-      tableItens: [
-        { lbl: "Mimosa", qtd: 3 },
-        { lbl: "Torta de limão", qtd: 10 },
-      ],
-    },
-    {
-      tableLbl: "2",
-      custumerName: "Gabriel",
-      tableItens: [{ lbl: "Salada Caprese", qtd: 10 }],
-    },
-    {
-      tableLbl: "3",
-      custumerName: "Isabella",
-      tableItens: [
-        { lbl: "Croque monsieur", qtd: 2 },
-        { lbl: "Croque madame", qtd: 3 },
-      ],
-    },
-    {
-      tableLbl: "4",
-      custumerName: "Lucas",
-      tableItens: [{ lbl: "Dadinhos de tapioca", qtd: 4 }],
-    },
-    {
-      tableLbl: "5",
-      custumerName: "Olivia",
-      tableItens: [{ lbl: "Ceviche", qtd: 1 }],
-    },
-    {
-      tableLbl: "6",
-      custumerName: "Miguel",
-      tableItens: [{ lbl: "Antepasto de tomate", qtd: 2 }],
-    },
-    {
-      tableLbl: "7",
-      custumerName: "Emma",
-      tableItens: [{ lbl: "Pate de ricota com ervas", qtd: 1 }],
-    },
-    {
-      tableLbl: "8",
-      custumerName: "Enzo",
-      tableItens: [{ lbl: "Café preto", qtd: 15 }],
-    },
-  ];
-  //const [tableData, setTableData] = useState();
   const [reFetch, setReFetch] = useState<number>(); //Atribuir valor sempre q alguma atualização ou adicao
 
   const [modal, setModal] = useState<boolean>(false);
@@ -98,35 +59,69 @@ const Comanda: React.FC = () => {
   const [conterStates, setCounterStates] = useState<TCounter[]>([]);
   const [comandaItem, setComandaItem] = useState<TComandaItem>();
   const [isUpdateOrInsert, setIsUpdateOrInsert] = useState<string>("");
-
   const [tablesToBeRender, setTablesToBeRender] = useState<JSX.Element[]>();
+  const [user, setUser] = useState<TUser>();
+  const [tables, setTables] = useState<TTable[]>();
+  const [categories, setCategories] = useState<TCategory[]>([]);
+  const [foods, setFoods] = useState<TProducts[]>();
+
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // window.location.reload();
-    //tables chamada da api
-    console.log(reFetch);
-    
-    const arrayDividido = dividirArray(tables, 3);
-    setTablesToBeRender(arrayDividido);
+    const usr = isAuth();
+    if (usr && (usr.userType === "admin" || usr.userType === "staff")) {
+      setUser(usr);
+      const fetchData = async () => {
+        await myCompany(setFoods, setCategories);
+        try {
+          const categoryTabs: any = await Promise.all([
+            await TabsService.getMyTabs(true),
+          ])
+            .then((results) => {
+              return results;
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+
+          if (categoryTabs[0].length) {
+            const arrayDividido = dividirArray(
+              categoryTabs[0],
+              isMobile() ? 3 : 4
+            );
+            setTablesToBeRender(arrayDividido);
+            setTables(categoryTabs[0] as TTable[]);
+          }
+        } catch (error) {
+          console.log(error);
+          message.error("Erro ao recuperar categorias, verifique o log");
+        }
+      };
+      fetchData();
+    } else {
+      navigate("/login");
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reFetch]);
 
   useEffect(() => {
     const counter: TCounter[] = [];
-    foods
-      .filter((food) => food.category === foodCategory)
-      .map((foodItem, index) =>
-        counter.push({
-          id: index.toString(),
-          counter: 1,
-          label: foodItem.label,
-        })
-      );
+    foods &&
+      foods
+        .filter((food) => food.category === foodCategory)
+        .map((foodItem, index) =>
+          counter.push({
+            id: index.toString(),
+            counter: 1,
+            label: foodItem.label,
+          })
+        );
     setCounterStates(counter);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [foodCategory]);
 
   useEffect(() => {
-    if (currentTable) {
+    if (currentTable && tables) {
       const counter: TCounter[] = [];
       const selectedTable = tables.filter(
         (table) => table.tableLbl === currentTable?.tableLbl
@@ -185,7 +180,14 @@ const Comanda: React.FC = () => {
             return (
               <div
                 style={{
-                  width: index + 1 === arrayDividido.length ? "34%" : "50%",
+                  display: "flex",
+                  cursor: "pointer",
+                  width:
+                    index + 1 === arrayDividido.length
+                      ? isMobile()
+                        ? "33%"
+                        : "25%"
+                      : "50%",
                 }}
                 onClick={() => {
                   //tratar o fetch aqui
@@ -208,11 +210,28 @@ const Comanda: React.FC = () => {
     if (tableName && tableNumber) {
       const newTable: TTable = {
         tableLbl: tableNumber,
+        isOpen: true,
         custumerName: tableName,
-        tableItens: [{ lbl: "", qtd: 0 }],
+        tableItens: [],
       };
-      //api.post(/addTable, newTable)
-      //fetch após adição
+
+      try {
+        const offerRes = await CompanyService.setCompanySubCol({
+          docId: isAuth()!.codCompany!,
+          mainColection: "company",
+          subColection: "tabs",
+          subdata: newTable,
+        });
+        if (offerRes && offerRes.status === 200) {
+          message.success("Cadastro realizado com sucesso!");
+        } else {
+          message.error("Verifique os campos e tente novamente.");
+        }
+      } catch (error) {
+        console.log(error);
+        message.error("Verifique todos os campos e tente novamente");
+      }
+
       handleClose();
       setReFetch(Math.random());
       console.log(newTable);
@@ -220,7 +239,7 @@ const Comanda: React.FC = () => {
       message.error("Verifique os dados e tente novamente.");
     }
   };
-
+  //Antes de fazer qualquer atualização verificar se status está disponível
   const addTable = async () => {
     setModalTable(false);
     setModalTableAdd(true);
@@ -237,16 +256,6 @@ const Comanda: React.FC = () => {
     setModalTable(false);
     setModalTableUpdate(true);
   };
-
-  const renIndex = renCategories.findIndex(
-    (categoria) => categoria.label === "Todas"
-  );
-
-  const getArraysExceptIndex = (list: ICategory[], index: number) => {
-    return list.filter((_, i) => i !== index);
-  };
-
-  const parsedRenCategories = getArraysExceptIndex(renCategories, renIndex);
 
   const handleConterChange = async (id: string, add: boolean) => {
     setCounterStates((prevConterStates) =>
@@ -266,22 +275,155 @@ const Comanda: React.FC = () => {
   const addToComanda = async () => {
     handleCloseTableConfirm();
     if (isUpdateOrInsert === "Add") {
-      message.success("Item adicionado com sucesso.");
-      handleCloseTableAddItem();
-      console.log(currentTable, comandaItem, isUpdateOrInsert);
+      const hasOcorrencia: number = currentTable!.tableItens.findIndex(
+        (item) => item.lbl === comandaItem?.lbl
+      );
+      //se tem é zero, se não -1
+      if (hasOcorrencia >= 0) {
+        const oldQtd = currentTable!.tableItens[hasOcorrencia].qtd;
+        const tabUpdated = {
+          ...currentTable,
+          tableItens: currentTable!.tableItens.map((tab, index) =>
+            index === hasOcorrencia
+              ? {
+                  ...tab,
+                  qtd: oldQtd + comandaItem!.qtd,
+                }
+              : tab
+          ),
+        };
+        try {
+          const res = await TabsService.updateTabs({
+            ...tabUpdated,
+            col: "company",
+            subcol: "tabs",
+          });
+          if (res.status) {
+            message.success("Item atualizado com sucesso.");
+          } else {
+            message.error("Verifique os campos e tente novamente");
+          }
+          //atualizar a página após then do update ou do add.
+          setCurrentTable(undefined);
+          setReFetch(Math.random());
+          handleCloseTableAddItem();
+        } catch (error) {
+          console.log(error);
+          message.error("Verifique os campos e tente novamente");
+        }
+      } else {
+        console.log(currentTable!.tableItens, comandaItem);
+        const { qtd, lbl, price } = comandaItem!;
+        const newItens = [{ qtd, lbl, price }, ...currentTable!.tableItens];
+        const tab = { ...currentTable, tableItens: newItens };
+        try {
+          const res = await TabsService.updateTabs({
+            ...tab,
+            col: "company",
+            subcol: "tabs",
+          });
+          if (res.status) {
+            message.success("Item adicionado com sucesso.");
+          } else {
+            message.error("Verifique os campos e tente novamente");
+          }
+          //atualizar a página após then do update ou do add.
+          setCurrentTable(undefined);
+          setReFetch(Math.random());
+          handleCloseTableAddItem();
+        } catch (error) {
+          console.log(error);
+          message.error("Verifique os campos e tente novamente");
+        }
+      }
     }
     if (isUpdateOrInsert === "Update") {
       message.success("Item adicionado com sucesso.");
-      console.log(currentTable, comandaItem, isUpdateOrInsert);
+
+      const hasOcorrencia: number = currentTable!.tableItens.findIndex(
+        (item) => item.lbl === comandaItem?.lbl
+      );
+
+      const oldQtd = currentTable!.tableItens[hasOcorrencia].qtd;
+      const tabUpdated = {
+        ...currentTable,
+        tableItens: currentTable!.tableItens.map((tab, index) =>
+          index === hasOcorrencia
+            ? {
+                ...tab,
+                qtd: oldQtd + comandaItem!.qtd,
+              }
+            : tab
+        ),
+      };
+      try {
+        const res = await TabsService.updateTabs({
+          ...tabUpdated,
+          col: "company",
+          subcol: "tabs",
+        });
+        if (res.status) {
+          message.success("Item atualizado com sucesso.");
+        } else {
+          message.error("Verifique os campos e tente novamente");
+        }
+        //atualizar a página após then do update ou do add.
+        setCurrentTable(undefined);
+        setReFetch(Math.random());
+        handleCloseTableAddItem();
+      } catch (error) {
+        console.log(error);
+        message.error("Verifique os campos e tente novamente");
+      }
     }
-    //atualizar a página após then do update ou do add.
-    setReFetch(Math.random());
   };
+
+  const fetchFoods = async () => {
+    console.log("adiantou?");
+
+    if (foods) {
+      return foods;
+    } else {
+      try {
+        const foodsRes = await FoodsService.getMyFoods(user!.codCompany!);
+        if (foodsRes) {
+          setFoods(foodsRes as TProducts[]);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+
   const closeComanda = async () => {
+    console.log(currentTable);
+
     message.success("Comanda fechada com sucesso.");
     handleCloseTableConfirm();
     handleCloseTableClose();
-    console.log(currentTable, comandaItem);
+    setCurrentTable(undefined);
+  };
+
+  const parseValue = () => {
+    if (tables) {
+      const tab = tables
+        .filter((table) => table.tableLbl === currentTable?.tableLbl)[0]
+        .tableItens.map((tableItem) => {
+          return tableItem;
+        });
+      //TUTORIAL DE REDUCE
+      //Total é uma variável acumuladora que será retornada ao final de percorrer o array, tipo o prevstate...
+      //O 0 é o valor inicial da variavél acumuladora.
+      //qtd, price são as chaves do objeto que estão sendo acessadas de dentro do array
+      //total (variavél acumuladora) está recebendo o valor da multiplicação de price * qtd
+      //nesse caso o total já tem o valor atualizado sempre  que é executado, não precisando atribuir o seu valor a ele mesmo
+      //evitando ter que criar uma variavel extra apenas para controlar. Exemplo: total += qtd * price;
+      const calcularValorTotal = tab.reduce(
+        (total, { qtd, price }) => total + qtd * parseFloat(price),
+        0
+      );
+      return calcularValorTotal.toFixed(2);
+    }
   };
 
   //REGRAS:
@@ -290,6 +432,39 @@ const Comanda: React.FC = () => {
   return (
     <>
       <Header />
+      <Styled.MainDiv>
+        <Styled.MainRowDiv>
+          <Styled.PlusContainer
+            onClick={() => {
+              setModal(true);
+            }}
+          >
+            <Styled.PlusSpan style={{ marginTop: "1vh", marginBottom: "0vh" }}>
+              +
+            </Styled.PlusSpan>
+          </Styled.PlusContainer>
+          <Styled.TablesContainer>
+            <Styled.TablesContainerAux>
+              {tablesToBeRender}
+            </Styled.TablesContainerAux>
+          </Styled.TablesContainer>
+        </Styled.MainRowDiv>
+        <Styled.MainColDiv>
+          <Styled.TablesContainer
+            style={{
+              marginLeft: "1vw",
+              marginTop: "3vh",
+              justifyContent: "flex-start",
+              width: isMobile() ? "100%" : "93%",
+            }}
+          >
+            <Styled.Title>últimas 10 comandas fechadas</Styled.Title>
+          </Styled.TablesContainer>
+          <Styled.AllContainer>
+            <Styled.AllSpan>Todas as comandas</Styled.AllSpan>
+          </Styled.AllContainer>
+        </Styled.MainColDiv>
+      </Styled.MainDiv>
       {modal && (
         <Modal
           customWidth={isMobile() ? 90 : 60}
@@ -299,7 +474,13 @@ const Comanda: React.FC = () => {
           titleFont={theme.fonts.primary}
         >
           <>
-            <Styled.FormItemContainer>
+            <Styled.FormItemContainer
+              style={{
+                width: "100%",
+                marginLeft: "0px",
+                marginRight: "0px",
+              }}
+            >
               <Input
                 setValue={setTableName}
                 labelColor={theme.colors.blue.palete}
@@ -328,7 +509,7 @@ const Comanda: React.FC = () => {
           </>
         </Modal>
       )}
-      {modalTable && (
+      {modalTable && user && (
         <Modal
           customWidth={isMobile() ? 90 : 60}
           bannerColor={theme.colors.blue.palete}
@@ -381,21 +562,23 @@ const Comanda: React.FC = () => {
                 bgColor={theme.colors.blue.palete}
               />
             </Styled.BtnContainer>
-            <Styled.BtnContainer
-              style={{
-                justifyContent: "center",
-                marginBottom: "4vh",
-                marginTop: "3vh",
-              }}
-            >
-              <ButtonSecondary
-                action={closeTable}
-                Label={"Fechar comanda"}
-                fontSize={theme.fontSize.lg}
-                color={theme.colors.white.normal}
-                bgColor={theme.colors.red.normal}
-              />
-            </Styled.BtnContainer>
+            {user.userType === "admin" && (
+              <Styled.BtnContainer
+                style={{
+                  justifyContent: "center",
+                  marginBottom: "4vh",
+                  marginTop: "3vh",
+                }}
+              >
+                <ButtonSecondary
+                  action={closeTable}
+                  Label={"Fechar comanda"}
+                  fontSize={theme.fontSize.lg}
+                  color={theme.colors.white.normal}
+                  bgColor={theme.colors.red.normal}
+                />
+              </Styled.BtnContainer>
+            )}
           </>
         </Modal>
       )}
@@ -409,18 +592,32 @@ const Comanda: React.FC = () => {
         >
           <Styled.CategoriesContainer>
             <Styled.CategoriesContainerAux>
-              {parsedRenCategories.map((cateItem, index) => (
+              {categories.map((cateItem, index) => (
                 <Styled.CategoriaLinha
                   onClick={() => {
                     //setCounterStates([]);
                     handleCloseTableAdd();
-                    setFoodCategory(cateItem.label);
+                    setFoodCategory(cateItem.title);
                     setModalTableAddItem(true);
                   }}
+                  style={{
+                    cursor: "pointer",
+                  }}
                 >
-                  <Styled.CategoriaLinhaImg src={cateItem.icon} />
+                  <Styled.CategoriaLinhaImg
+                    src={cateItem.icon}
+                    style={{
+                      filter: `brightness(1000%) grayscale(100%) 
+                        opacity(0.1)
+                        drop-shadow(0 0 0 white) 
+                        drop-shadow(0 0 0 white)
+                        drop-shadow(0 0 0 white)
+                        drop-shadow(0 0 0 white)
+                        drop-shadow(0 0 0 white)`,
+                    }}
+                  />
                   <Styled.CategoriaLinhaSpan>
-                    {cateItem.label}
+                    {cateItem.title}
                   </Styled.CategoriaLinhaSpan>
                 </Styled.CategoriaLinha>
               ))}
@@ -439,6 +636,7 @@ const Comanda: React.FC = () => {
           <Styled.CategoriesContainer>
             <Styled.CategoriesContainerAux>
               {foodCategory &&
+                foods &&
                 foods
                   .filter((cate) => cate.category === foodCategory)
                   .map((foodItem, index) => (
@@ -495,6 +693,9 @@ const Comanda: React.FC = () => {
                             setComandaItem({
                               lbl: foodItem.label,
                               qtd: conterStates[index].counter,
+                              price: foodItem.isOffer
+                                ? foodItem.offerPrice!
+                                : foodItem.price,
                             });
                             setModalTableConfirm(true);
                           }}
@@ -638,40 +839,48 @@ const Comanda: React.FC = () => {
           handleClose={handleCloseTableCheck}
           titleFont={theme.fonts.primary}
           footerLabel="Valor total: "
-          footerMaior="150,00"
+          footerMaior={parseValue()}
           money={true}
         >
           <Styled.CategoriesContainer>
-            <Styled.CategoriesContainerAux>
-              {tables
-                .filter((table) => table.tableLbl === currentTable?.tableLbl)[0]
-                .tableItens.map((tableItem, index) => (
-                  <Styled.CategoriaLinha
-                    onClick={() => {}}
-                    style={{
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <Styled.CategoriaLinhaSpan
+            <Styled.CategoriesContainerAux
+              style={{
+                width: "100%",
+              }}
+            >
+              {tables &&
+                tables
+                  .filter(
+                    (table) => table.tableLbl === currentTable?.tableLbl
+                  )[0]
+                  .tableItens.map((tableItem, index) => (
+                    <Styled.CategoriaLinha
+                      onClick={() => {}}
                       style={{
-                        fontSize: theme.fontSize.md2,
-                        marginLeft: "1vw",
-                        padding: "1vh",
+                        justifyContent: "space-between",
+                        marginInline: "2vw",
                       }}
                     >
-                      Item: {tableItem.lbl}.
-                    </Styled.CategoriaLinhaSpan>
-                    <Styled.CategoriaLinhaSpan
-                      style={{
-                        fontSize: theme.fontSize.md2,
-                        marginLeft: "1vw",
-                        padding: "1vh",
-                      }}
-                    >
-                      QTD: {tableItem.qtd}
-                    </Styled.CategoriaLinhaSpan>
-                  </Styled.CategoriaLinha>
-                ))}
+                      <Styled.CategoriaLinhaSpan
+                        style={{
+                          fontSize: theme.fontSize.md2,
+                          marginLeft: "1vw",
+                          padding: "1vh",
+                        }}
+                      >
+                        Item: {tableItem.lbl}.
+                      </Styled.CategoriaLinhaSpan>
+                      <Styled.CategoriaLinhaSpan
+                        style={{
+                          fontSize: theme.fontSize.md2,
+                          marginLeft: "1vw",
+                          padding: "1vh",
+                        }}
+                      >
+                        QTD: {tableItem.qtd}
+                      </Styled.CategoriaLinhaSpan>
+                    </Styled.CategoriaLinha>
+                  ))}
             </Styled.CategoriesContainerAux>
           </Styled.CategoriesContainer>
         </Modal>
@@ -688,103 +897,89 @@ const Comanda: React.FC = () => {
         >
           <Styled.CategoriesContainer>
             <Styled.CategoriesContainerAux>
-              {tables
-                .filter((table) => table.tableLbl === currentTable?.tableLbl)[0]
-                .tableItens.map((tableItem, index) => (
-                  <>
-                    <Styled.FoodItem>
-                      <Styled.CategoriaLinha
-                        onClick={() => {}}
-                        style={{
-                          justifyContent: "space-between",
-                        }}
-                      >
-                        <Styled.CategoriaLinhaSpan
+              {tables &&
+                tables
+                  .filter(
+                    (table) => table.tableLbl === currentTable?.tableLbl
+                  )[0]
+                  .tableItens.map((tableItem, index) => (
+                    <>
+                      <Styled.FoodItem>
+                        <Styled.CategoriaLinha
+                          onClick={() => {}}
                           style={{
-                            fontSize: theme.fontSize.md2,
-                            marginLeft: "1vw",
-                            padding: "1vh",
+                            justifyContent: "space-between",
                           }}
                         >
-                          Item: {tableItem.lbl}.
-                        </Styled.CategoriaLinhaSpan>
-                        <Styled.CategoriaLinhaSpan
+                          <Styled.CategoriaLinhaSpan
+                            style={{
+                              fontSize: theme.fontSize.md2,
+                              marginLeft: "1vw",
+                              padding: "1vh",
+                            }}
+                          >
+                            Item: {tableItem.lbl}.
+                          </Styled.CategoriaLinhaSpan>
+                          <Styled.CategoriaLinhaSpan
+                            style={{
+                              fontSize: theme.fontSize.md2,
+                              marginLeft: "1vw",
+                              padding: "1vh",
+                            }}
+                          >
+                            QTD: {tableItem.qtd}
+                          </Styled.CategoriaLinhaSpan>
+                        </Styled.CategoriaLinha>
+                        <Styled.CounterRow
                           style={{
-                            fontSize: theme.fontSize.md2,
-                            marginLeft: "1vw",
-                            padding: "1vh",
+                            marginTop: "1vh",
                           }}
                         >
-                          QTD: {tableItem.qtd}
-                        </Styled.CategoriaLinhaSpan>
-                      </Styled.CategoriaLinha>
-                      <Styled.CounterRow
-                        style={{
-                          marginTop: "1vh",
-                        }}
-                      >
-                        <Styled.CounterSpan>
-                          {conterStates &&
-                          conterStates[index] &&
-                          conterStates[index].counter
-                            ? conterStates[index].counter
-                            : 1}
-                        </Styled.CounterSpan>
-                        <Styled.CounterBtn
-                          onClick={() => {
-                            handleConterChange(index.toString(), true);
-                          }}
-                          style={{
-                            marginLeft: "4vh",
-                          }}
-                        >
-                          +
-                        </Styled.CounterBtn>
-                      </Styled.CounterRow>
-                      <Styled.AddBtnContainer>
-                        <ButtonSecondary
-                          action={() => {
-                            setIsUpdateOrInsert("Update");
-                            setModalTableUpdate(false);
-                            setComandaItem({
-                              lbl: tableItem.lbl,
-                              qtd: conterStates[index].counter,
-                            });
-                            setModalTableAddItem(false);
-                            setModalTableConfirm(true);
-                            handleCloseTableAdd();
-                          }}
-                          Label={"Adicionar"}
-                          fontSize={theme.fontSize.md}
-                          color={theme.colors.white.normal}
-                          bgColor={theme.colors.green.normal}
-                        />
-                      </Styled.AddBtnContainer>
-                    </Styled.FoodItem>
-                  </>
-                ))}
+                          <Styled.CounterSpan>
+                            {conterStates &&
+                            conterStates[index] &&
+                            conterStates[index].counter
+                              ? conterStates[index].counter
+                              : 1}
+                          </Styled.CounterSpan>
+                          <Styled.CounterBtn
+                            onClick={() => {
+                              handleConterChange(index.toString(), true);
+                            }}
+                            style={{
+                              marginLeft: "4vh",
+                            }}
+                          >
+                            +
+                          </Styled.CounterBtn>
+                        </Styled.CounterRow>
+                        <Styled.AddBtnContainer>
+                          <ButtonSecondary
+                            action={() => {
+                              setIsUpdateOrInsert("Update");
+                              setModalTableUpdate(false);
+                              setComandaItem({
+                                lbl: tableItem.lbl,
+                                qtd: conterStates[index].counter,
+                                price: tableItem.price,
+                              });
+                              setModalTableAddItem(false);
+                              setModalTableConfirm(true);
+                              handleCloseTableAdd();
+                            }}
+                            Label={"Adicionar"}
+                            fontSize={theme.fontSize.md}
+                            color={theme.colors.white.normal}
+                            bgColor={theme.colors.green.normal}
+                          />
+                        </Styled.AddBtnContainer>
+                      </Styled.FoodItem>
+                    </>
+                  ))}
             </Styled.CategoriesContainerAux>
           </Styled.CategoriesContainer>
         </Modal>
       )}
-      <Styled.MainDiv>
-        <Styled.MainRowDiv>
-          <Styled.PlusContainer
-            onClick={() => {
-              setModal(true);
-            }}
-          >
-            <Styled.PlusSpan style={{ marginTop: "1vh", marginBottom: "0vh" }}>
-              +
-            </Styled.PlusSpan>
-          </Styled.PlusContainer>
-          <Styled.TablesContainer>
-            <Styled.TablesContainerAux>
-              {tablesToBeRender}
-            </Styled.TablesContainerAux>
-          </Styled.TablesContainer>
-        </Styled.MainRowDiv>
-      </Styled.MainDiv>
       <Footer />
     </>
   );

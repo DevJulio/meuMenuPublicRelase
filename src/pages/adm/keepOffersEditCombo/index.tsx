@@ -4,7 +4,7 @@ import Header from "../../../components/header";
 
 import * as Styled from "./styles";
 
-import { TProducts } from "../../menu";
+import { TProducts, TProductsOffers } from "../../menu";
 
 import FoodCard from "../../../components/foodCard";
 import { theme } from "../../../theme/theme";
@@ -12,25 +12,28 @@ import ButtonSecondary from "../../../components/buttons/secondary";
 import Input from "../../../components/input";
 import isMobile from "is-mobile";
 import { message } from "antd";
-import foods, { renCategories } from "../../menu/foods";
-import { ICategory } from "../../../components/category";
+import { TCategory } from "../../../components/category";
 import { TCounter } from "../keepOffersCombo";
 import Modal from "../../../components/modal";
-
-export type TCombo = {
-  banner: string;
-  price: string;
-  title: string;
-  descriptionText: string;
-  comboItens: TProducts[];
-};
+import { decryptToAuth } from "../../../utils/security/isAuth";
+import { OffersService } from "../../../service/module/offers";
+import { isAuth } from "../../../utils/security/isCrypto";
+import { useNavigate } from "react-router-dom";
+import { fileUpload } from "../../../service/module/fileUpload";
+import { CategoryService } from "../../../service/module/categories";
+import { FoodsService } from "../../../service/module/foods";
+import CurrencyInput from "react-currency-input-field";
 
 const OffersEditCombo: React.FC = () => {
-  const comboItens = localStorage.getItem("meuMenuEditOfferCombo");
-  const [comboItensState, setComboItensState] = useState<any>();
+  const comboItens: TProductsOffers = JSON.parse(
+    decryptToAuth(localStorage.getItem("@meumenu/editOfferCombo"))
+  );
+  const [comboItensState, setComboItensState] = useState<TProductsOffers>();
   const [price, setPrice] = useState<string>("");
   const [title, setTitle] = useState<string>("");
-  const [banner, setBanner] = useState<any>();
+  const [banner, setBanner] = useState<File>();
+  const [bannerUrl, setBannerUrl] = useState<string>();
+
   const [screen, setScreen] = useState<string>("");
   const [conterStates, setCounterStates] = useState<TCounter[]>([]);
   const [foodCategory, setFoodCategory] = useState<string>("");
@@ -38,27 +41,88 @@ const OffersEditCombo: React.FC = () => {
   const [modalPrimary, setModalPrimay] = useState<boolean>(false);
   const [modalIten, setmodalIten] = useState<TProducts>();
   const [modal, setModal] = useState<boolean>(false);
+  const [modalSuccess, setModalSuccess] = useState<boolean>(false);
 
   const [descriptionText, setDescriptionText] = useState<string>("");
 
-  const renIndex = renCategories.findIndex(
-    (categoria) => categoria.label === "Todas" //usa o método findIndex para acessar o index de um objeto dentro de um array que possua um valor especifico
-  );
+  const [categories, setCategories] = useState<TCategory[]>([]);
+  const [foods, setFoods] = useState<TProducts[]>([]);
 
-  const getArraysExceptIndex = (list: ICategory[], index: number) => {
-    return list.filter((_, i) => i !== index);
-  };
+  const navigate = useNavigate();
 
-  const parsedRenCategories = getArraysExceptIndex(renCategories, renIndex);
+  useEffect(() => {
+    const usr = isAuth();
+    if (usr && usr.userType === "admin") {
+      const mainContainer = document.getElementById("mainContainer");
+      const comboDetailForm = document.getElementById("comboDetailForm");
+      const foodListContainer = document.getElementById("foodListContainer");
+
+      if (mainContainer && comboDetailForm && foodListContainer) {
+        switch (screen) {
+          case "listagemPratos":
+            foodListContainer.style.display = "flex";
+            mainContainer.style.display = "none";
+            comboDetailForm.style.display = "none";
+            break;
+          case "listagemCategorias":
+            mainContainer.style.display = "flex";
+            foodListContainer.style.display = "none";
+            comboDetailForm.style.display = "none";
+            break;
+          case "comboDetailForm":
+            comboDetailForm.style.display = "flex";
+            mainContainer.style.display = "none";
+            foodListContainer.style.display = "none";
+            break;
+
+          default:
+            break;
+        }
+      }
+
+      const fetchData = async () => {
+        try {
+          const categoryAndFood: any = await Promise.all([
+            await CategoryService.getMyCategories(usr.codCompany!),
+            await FoodsService.getMyFoods(usr.codCompany!),
+          ])
+            .then((results) => {
+              return results;
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+          if (categoryAndFood[0].length) {
+            setCategories(categoryAndFood[0] as TCategory[]);
+          }
+          if (categoryAndFood[1].length) {
+            setFoods(categoryAndFood[1] as TProducts[]);
+          }
+        } catch (error) {
+          console.log(error);
+          message.error("Erro ao recuperar categorias, verifique o log");
+        }
+      };
+      fetchData();
+    } else {
+      navigate("/login");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [screen]);
 
   useEffect(() => {
     if (comboItens) {
-      const parsedComboItems: TCombo = JSON.parse(comboItens);
-      console.log(parsedComboItems);
-      setComboItensState(parsedComboItems);
-      setPrice(parsedComboItems.price);
-      setTitle(parsedComboItems.title);
-      setDescriptionText(parsedComboItems.descriptionText);
+      console.log(comboItens);
+
+      setComboItensState(comboItens);
+      setPrice(comboItens.price);
+      setTitle(comboItens.label!);
+      setBannerUrl(comboItens.banner!);
+      setDescriptionText(
+        comboItens.descriptionText
+          ? comboItens.descriptionText
+          : comboItens.description!
+      );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -75,36 +139,8 @@ const OffersEditCombo: React.FC = () => {
         })
       );
     setCounterStates(counter);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [foodCategory]);
-
-  useEffect(() => {
-    const mainContainer = document.getElementById("mainContainer");
-    const comboDetailForm = document.getElementById("comboDetailForm");
-    const foodListContainer = document.getElementById("foodListContainer");
-
-    if (mainContainer && comboDetailForm && foodListContainer) {
-      switch (screen) {
-        case "listagemPratos":
-          foodListContainer.style.display = "flex";
-          mainContainer.style.display = "none";
-          comboDetailForm.style.display = "none";
-          break;
-        case "listagemCategorias":
-          mainContainer.style.display = "flex";
-          foodListContainer.style.display = "none";
-          comboDetailForm.style.display = "none";
-          break;
-        case "comboDetailForm":
-          comboDetailForm.style.display = "flex";
-          mainContainer.style.display = "none";
-          foodListContainer.style.display = "none";
-          break;
-
-        default:
-          break;
-      }
-    }
-  }, [screen]);
 
   const getPrice = () => {
     if (comboItensState?.comboItens) {
@@ -126,10 +162,42 @@ const OffersEditCombo: React.FC = () => {
       setBanner(e.target.files[0]);
     }
   };
-  const createCombo = () => {
-    if (banner && price && title && descriptionText) {
-      // && comboState?.length
-      // console.log({ banner, price, title, descriptionText, comboState });
+  const updateCombo = async (docId: string) => {
+    if ((banner || bannerUrl) && price && title && descriptionText) {
+      const path = "/companies/imgs/offers/";
+      let bannerRes;
+      if (banner) {
+        try {
+          bannerRes = await fileUpload(banner, path + "banner" + banner.name);
+        } catch (error) {
+          console.log(error);
+          message.error("Verifique os campos e tente novamente.");
+        }
+      }
+
+      try {
+        const combo: TProductsOffers = {
+          isEnable: true,
+          banner: bannerRes ? bannerRes.data : bannerUrl,
+          price,
+          label: title,
+          docId: docId!,
+          description: descriptionText,
+          comboItens: comboItensState!.comboItens,
+          isOffer: true,
+        };
+        const res = await OffersService.updateOffers(isAuth()!.codCompany!, {
+          ...combo,
+          col: "company",
+          subcol: "offers",
+        });
+
+        if (res.status) {
+          setModalSuccess(true);
+        } else {
+          message.error("Verifique os campos e tente novamente");
+        }
+      } catch (error) {}
     } else {
       message.error("Verifique os campos e tente novamente.");
     }
@@ -157,12 +225,15 @@ const OffersEditCombo: React.FC = () => {
   const handleClose = () => {
     setModal(false);
   };
+  const handleCloseSuccess = () => {
+    setModalSuccess(false);
+  };
   return (
     <>
-      {modal && (
+      {modal && modalIten && (
         <Modal
-          bannerColor={"#BC4749"} //AuxColor
-          title={"modalIten.label"}
+          bannerColor={theme.colors.green.normal} //AuxColor
+          title={modalIten.label}
           handleClose={handleClose}
           titleFont={theme.fonts.hand}
           customWidth={70}
@@ -174,13 +245,11 @@ const OffersEditCombo: React.FC = () => {
                 fontSize: theme.fontSize.md2,
               }}
             >
-              {comboItensState ? comboItensState.comboItens.length + 1 : 0}º
+              {comboItensState ? comboItensState.comboItens!.length : 0}º
               produto adicionado ao combo com sucesso! Oque deseja fazer?
             </p>
           </Styled.FormItemContainer>
-          <Styled.BackBtnContainer
-            style={{ marginTop: "0vw", marginBottom: "3vh" }}
-          >
+          <Styled.BackBtnContainer style={{ marginTop: "0vw" }}>
             <ButtonSecondary
               action={() => {
                 handleClose();
@@ -214,7 +283,7 @@ const OffersEditCombo: React.FC = () => {
               action={() => {
                 handleClose();
                 localStorage.setItem("meuMenuComboCounter", "0");
-                // navigate("/adm/ofertas");
+                navigate("/adm/ofertas");
               }}
               Label={"descartar"}
               fontSize={theme.fontSize.md}
@@ -251,14 +320,14 @@ const OffersEditCombo: React.FC = () => {
                   const currentComboItens: any[] =
                     comboItensState.comboItens as any; //Itens atuais da lista de combos.
                   console.log({ comboItensState });
-                  const duplicated = comboItensState.comboItens.findIndex(
+                  const duplicated = comboItensState.comboItens!.findIndex(
                     //Busca o index do item duplicado
                     (combo: any) => combo.label === modalIten.label
                   );
 
                   if (duplicated >= 0) {
                     const sumItens =
-                      comboItensState.comboItens[duplicated].qtd +
+                      comboItensState.comboItens![duplicated].qtd +
                       modalIten.qtd; //soma a qtd
 
                     const parsedComboItem: TProducts = {
@@ -279,17 +348,23 @@ const OffersEditCombo: React.FC = () => {
                     const finalFormatedComboItens = [...currentComboItens];
                     finalFormatedComboItens.splice(duplicated, 1); //remove o item original com a qtd antiga.
                     console.log({ finalFormatedComboItens });
-                    // setComboItensState(finalFormatedComboItens); //Atualiza a lista.
+                    setComboItensState({
+                      ...comboItens,
+                      comboItens: finalFormatedComboItens,
+                    }); //Atualiza a lista.
                   } else {
                     currentComboItens.push(modalIten);
-                    // setComboItensState(currentComboItens);
+                    setComboItensState({
+                      ...comboItens,
+                      comboItens: currentComboItens,
+                    });
                   }
                 } else {
                   const itensList: TProducts[] = comboItensState
                     ? comboItensState
                     : [];
                   itensList.push(modalIten);
-                  setComboItensState(itensList);
+                  setComboItensState({ ...comboItens, comboItens: itensList });
                 }
                 setModal(true);
               }}
@@ -312,6 +387,50 @@ const OffersEditCombo: React.FC = () => {
           {/* setMainCategory("listagemCategorias"); */}
         </Modal>
       )}
+      {modalSuccess && (
+        <Modal
+          bannerColor={theme.colors.green.normal}
+          title={"Sucesso!"}
+          handleClose={handleCloseSuccess}
+          titleFont={theme.fonts.primary}
+        >
+          <>
+            <Styled.PlansDetailModal>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                }}
+              >
+                <p
+                  style={{
+                    textAlignLast: "center",
+                  }}
+                >
+                  Combo atualizado com sucesso!
+                </p>
+              </div>
+            </Styled.PlansDetailModal>
+            <Styled.BtnContainer
+              style={{
+                marginTop: "0px",
+                justifyContent: "center",
+                marginBottom: "2vh",
+              }}
+            >
+              <ButtonSecondary
+                action={() => {
+                  navigate("/adm/ofertas/minhas-ofertas");
+                }}
+                Label={`Fechar`}
+                fontSize={theme.fontSize.md}
+                color={theme.colors.white.normal}
+                bgColor={theme.colors.green.normal}
+              />
+            </Styled.BtnContainer>
+          </>
+        </Modal>
+      )}
       <Header />
       {comboItensState && (
         <>
@@ -331,11 +450,11 @@ const OffersEditCombo: React.FC = () => {
                 style={{
                   height: "fit-content",
                   overflowX:
-                    comboItensState.comboItens.length > 5 ? "scroll" : "auto",
+                    comboItensState.comboItens!.length > 5 ? "scroll" : "auto",
                 }}
               >
                 {comboItensState &&
-                  comboItensState.comboItens.map(
+                  comboItensState.comboItens!.map(
                     (foodItem: any, index: number) => (
                       <Styled.FoodCategoryItem
                         style={{ justifyContent: "center" }}
@@ -368,7 +487,7 @@ const OffersEditCombo: React.FC = () => {
                             <Styled.DeleteContainer
                               onClick={() => {
                                 const newItems = [
-                                  ...comboItensState.comboItens,
+                                  ...comboItensState.comboItens!,
                                 ];
                                 const details = {
                                   banner: comboItensState.banner,
@@ -438,7 +557,30 @@ const OffersEditCombo: React.FC = () => {
                 </Styled.FormItemContainer>
 
                 <Styled.FormItemContainer>
-                  <Input setValue={setPrice} value={price} label="Preço" />
+                  <Styled.ItemSpan
+                    style={{
+                      marginTop: "0px",
+                      paddingBottom: "2.5vh",
+                      alignSelf: "start",
+                    }}
+                  >
+                    Preço
+                  </Styled.ItemSpan>
+                  <CurrencyInput
+                    placeholder="Informe um preço válido"
+                    defaultValue={price}
+                    decimalsLimit={2}
+                    prefix="R$ "
+                    onValueChange={(value, name) => setPrice(value!)}
+                    intlConfig={{ locale: "pt-BR", currency: "BRL" }}
+                    style={{
+                      color: theme.colors.black.normal,
+                      fontSize: "25px",
+                      border: `2px solid ${theme.colors.black.normal}`,
+                      borderRadius: "5px",
+                      marginTop: "10px",
+                    }}
+                  />
                 </Styled.FormItemContainer>
                 <Styled.FormItemContainer>
                   <Styled.ItemSpan
@@ -451,7 +593,7 @@ const OffersEditCombo: React.FC = () => {
                       type="file"
                       id="mainBanner"
                       accept="image/*"
-                      onChange={(e) => {
+                      onChange={(e: any) => {
                         changeInput(e);
                       }}
                     />
@@ -481,7 +623,9 @@ const OffersEditCombo: React.FC = () => {
             </Styled.Menus>
             <Styled.BackBtnContainer>
               <ButtonSecondary
-                action={createCombo}
+                action={() => {
+                  updateCombo(comboItens.docId!);
+                }}
                 Label={"Salvar alterações"}
                 fontSize={theme.fontSize.md}
                 color={theme.colors.white.normal}
@@ -493,25 +637,36 @@ const OffersEditCombo: React.FC = () => {
           <Styled.MenuContainer id="mainContainer" style={{ display: "none" }}>
             <Styled.ItemSpan style={{ color: "white" }}>
               Selecione a categoria do{" "}
-              {comboItensState ? comboItensState.comboItens.length + 1 : 1}º
+              {comboItensState ? comboItensState.comboItens!.length + 1 : 1}º
               prato:
             </Styled.ItemSpan>
             <Styled.CateRow>
-              {parsedRenCategories.map((cateItem, index) => (
+              {categories.map((cateItem, index) => (
                 // eslint-disable-next-line jsx-a11y/anchor-is-valid
                 <a
                   onClick={() => {
                     localStorage.setItem(
                       "meuMenuOfferCategory",
-                      cateItem.label
+                      cateItem.title
                     );
-                    setFoodCategory(cateItem.label);
+                    setFoodCategory(cateItem.title);
                     setScreen("listagemPratos");
                   }}
                 >
                   <Styled.CateItem>
-                    <Styled.CateIcon src={cateItem.icon} />
-                    <span>{cateItem.label}</span>
+                    <Styled.CateIcon
+                      src={cateItem.icon}
+                      style={{
+                        filter: `brightness(1000%) grayscale(100%) 
+                        opacity(0.1)
+                        drop-shadow(0 0 0 white) 
+                        drop-shadow(0 0 0 white)
+                        drop-shadow(0 0 0 white)
+                        drop-shadow(0 0 0 white)
+                        drop-shadow(0 0 0 white)`,
+                      }}
+                    />
+                    <span>{cateItem.title}</span>
                   </Styled.CateItem>
                 </a>
               ))}
@@ -535,7 +690,7 @@ const OffersEditCombo: React.FC = () => {
           >
             <Styled.ItemSpan style={{ color: "white" }}>
               Selecione o{" "}
-              {comboItensState ? comboItensState.comboItens.length + 1 : 1}º
+              {comboItensState ? comboItensState.comboItens!.length + 1 : 1}º
               prato:
             </Styled.ItemSpan>
 
@@ -552,7 +707,9 @@ const OffersEditCombo: React.FC = () => {
                   style={{
                     height: "fit-content",
                     overflowX:
-                      comboItensState.comboItens.length > 5 ? "scroll" : "auto",
+                      comboItensState.comboItens!.length > 5
+                        ? "scroll"
+                        : "auto",
                   }}
                 >
                   {foodCategory &&

@@ -93,7 +93,7 @@ justify-content: center;
 `;
 export const FoodCategoryItem = styled.div`
   display: flex;
-  margin-bottom: 5vh;
+  margin-bottom: 1vh;
   cursor: pointer;
   flex-direction: column;
  `
@@ -180,7 +180,7 @@ flex-direction: row;
 align-self: center;
 background-color: ${({ theme }) => theme.colors.red.normal};
     border-radius: 25px;
- 
+    margin-top: 2vh;
 `
 export const PageSpan = styled.span`
   font-family: ${({ theme }) => theme.fonts.primary};

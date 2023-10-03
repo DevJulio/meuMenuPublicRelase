@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Footer from "../../../components/footer";
 import Header from "../../../components/header";
 import * as Styled from "./styles";
+import categorias from "../../../assets/icons/admIcons/categorias.png";
 
 import { theme } from "../../../theme/theme";
 
@@ -9,46 +10,102 @@ import ButtonSecondary from "../../../components/buttons/secondary";
 import Modal from "../../../components/modal";
 import Homecard from "../../../components/homeCard";
 import { TCardProps } from "../../../components/plansCards/card";
-import { drinkCategories, foodCategories, mainCategories } from "./categories";
+import { mainCategories } from "./categories";
 import { useNavigate } from "react-router-dom";
 import isMobile from "is-mobile";
 import Input from "../../../components/input";
 import { message } from "antd";
+import { isAuth } from "../../../utils/security/isCrypto";
+import { TUser } from "../../../service/module/login";
+import { CategoryService } from "../../../service/module/categories";
 
 const MenuMeuMenu: React.FC = () => {
   const [modal, setModal] = useState<boolean>(false);
   const [mainCategory, setMainCategory] = useState<string>("");
   const [modalCategory, setModalCategory] = useState<boolean>(false);
-  const [newCategory, setNewCategory] = useState<string>("");
+  const [categoryTitle, setCategoryTitle] = useState<string>("");
+  const [categoryDesc, setCategoryDesc] = useState<string>("");
+
+  const [foodCategories, setFoodCategories] = useState<TCardProps[]>([]);
+  const [drinkCategories, setdrinkCategories] = useState<TCardProps[]>([]);
+  const [user, setUser] = useState<TUser>();
 
   useEffect(() => {
-    const mainCategoryDiv = document.getElementById("mainCategory");
-    const foodDiv = document.getElementById("food");
-    const drinkDiv = document.getElementById("drink");
+    const usr = isAuth();
+    if (usr && usr.userType === "admin") {
+      setUser(usr);
+      const fetchData = async () => {
+        const mainCategoryDiv = document.getElementById("mainCategory");
+        const foodDiv = document.getElementById("food");
+        const drinkDiv = document.getElementById("drink");
 
-    if (drinkDiv && mainCategoryDiv && foodDiv) {
-      switch (mainCategory) {
-        case "comer":
-          mainCategoryDiv.style.display = "none";
-          drinkDiv.style.display = "none";
-          foodDiv.style.display = "flex";
-          break;
-        case "beber":
-          mainCategoryDiv.style.display = "none";
-          foodDiv.style.display = "none";
-          drinkDiv.style.display = "flex";
+        if (drinkDiv && mainCategoryDiv && foodDiv) {
+          switch (mainCategory) {
+            case "comer":
+              if (!foodCategories.length) {
+                const foodRes = await CategoryService.getCategories();
+                if (foodRes) {
+                  const parseFood = foodRes.data as TCardProps[];
+                  const parseFoodAux = parseFood.filter(
+                    (food) => food.isDrink === false && food.status === true
+                  );
+                  parseFoodAux.push({
+                    icon: categorias,
+                    title: "Nova categoria",
+                    text: "Solicite uma nova categoria",
+                    mainColor: theme.colors.white.normal,
+                    auxColor: theme.colors.blue.palete,
+                    textColor: theme.colors.blue.palete,
+                    customWidth: true,
+                  });
+                  setFoodCategories(parseFoodAux);
+                }
+              }
+              mainCategoryDiv.style.display = "none";
+              drinkDiv.style.display = "none";
+              foodDiv.style.display = "flex";
+              break;
+            case "beber":
+              if (!drinkCategories.length) {
+                const drinkRes = await CategoryService.getCategories();
+                if (drinkRes) {
+                  const parseDrink = drinkRes.data as TCardProps[];
+                  const parseDrinkAux = parseDrink.filter(
+                    (food) => food.isDrink === true && food.status === true
+                  );
+                  parseDrinkAux.push({
+                    icon: categorias,
+                    title: "Nova categoria",
+                    text: "Solicite uma nova categoria",
+                    mainColor: theme.colors.white.normal,
+                    auxColor: theme.colors.blue.palete,
+                    textColor: theme.colors.blue.palete,
+                    customWidth: true,
+                  });
+                  setdrinkCategories(parseDrinkAux);
+                }
+              }
+              mainCategoryDiv.style.display = "none";
+              foodDiv.style.display = "none";
+              drinkDiv.style.display = "flex";
 
-          break;
-        case "":
-          mainCategoryDiv.style.display = "flex";
-          foodDiv.style.display = "none";
-          drinkDiv.style.display = "none";
+              break;
+            case "":
+              mainCategoryDiv.style.display = "flex";
+              foodDiv.style.display = "none";
+              drinkDiv.style.display = "none";
 
-          break;
-        default:
-          break;
-      }
+              break;
+            default:
+              break;
+          }
+        }
+      };
+      fetchData();
+    } else {
+      navigate("/login");
     }
+    // eslint-disable-next-line
   }, [mainCategory]);
 
   const navigate = useNavigate();
@@ -77,8 +134,13 @@ const MenuMeuMenu: React.FC = () => {
                   width: isMobile() ? "80%" : "50%",
                 }}
                 onClick={() => {
-                  if (item.title !== "Outra..") {
-                    localStorage.setItem("meuMenuFoodCategory", item.title);
+                  console.log(item);
+                  if (item.title !== "Nova categoria") {
+                    localStorage.setItem("@meumenu/foodcategory", item.title);
+                    localStorage.setItem(
+                      "@meumenu/categoryDetails",
+                      JSON.stringify(item)
+                    );
                     navigate("/cadastro-item-cardapio");
                   } else {
                     setModalCategory(true);
@@ -98,14 +160,34 @@ const MenuMeuMenu: React.FC = () => {
   const drinkRows = dividirArray(drinkCategories, 3);
 
   const addCategory = async () => {
-    console.log(newCategory);
-    message.success({
-      content:
-        "Suceso ao solicitar de cadastro de categoria, aguarde retorno da equipe MEU MENU!",
-      duration: 10,
-    });
-
-    //chamar api para uma tabela com solicitaçoes de criação de categorias.
+    const unparsedUser = user as any;
+    console.log(unparsedUser);
+    if (categoryTitle && categoryDesc) {
+      try {
+        const resCategory: any = await CategoryService.setCategory({
+          status: false,
+          solicitationDesc: categoryDesc,
+          title: categoryTitle,
+          requester: unparsedUser.data.title,
+        });
+        if (resCategory.status === 200) {
+          handleCloseCategory();
+          message.success({
+            content:
+              "Suceso ao solicitar de cadastro de categoria, aguarde retorno da equipe MEU MENU!",
+            duration: 5,
+          });
+        }
+      } catch (error) {
+        message.error({
+          content: "verifique os campos e tente novamente",
+        });
+      }
+    } else {
+      message.error({
+        content: "verifique os campos e tente novamente",
+      });
+    }
   };
 
   return (
@@ -113,36 +195,47 @@ const MenuMeuMenu: React.FC = () => {
       <Header />
       {modalCategory && (
         <Modal
-          bannerColor={"#BC4749"} //AuxColor
-          title={"Criar categoria"}
+          bannerColor={theme.colors.red.normal} //AuxColor
+          title={"Solicitar criação de categoria"}
           handleClose={handleCloseCategory}
           titleFont={theme.fonts.primary}
         >
           <Styled.ModalContainer>
-            <Styled.FormItemContainer>
-              <Input
-                setValue={setNewCategory}
-                labelColor={theme.colors.blue.palete}
-                label="Novo nome: "
-              />
-            </Styled.FormItemContainer>
-            <Styled.BackBtnContainer>
-              <ButtonSecondary
-                action={() => {
-                  if (newCategory) {
-                    addCategory();
-                    handleCloseCategory();
-                  } else {
-                    message.error("Verifique o nome e tente novamente.");
-                  }
-                }}
-                Label={"Salvar"}
-                fontSize={theme.fontSize.md}
-                color={theme.colors.white.normal}
-                bgColor={theme.colors.green.normal}
-              />
-            </Styled.BackBtnContainer>
+            <div className="form-row">
+              <Styled.FormItemContainer>
+                <Input
+                  setValue={setCategoryTitle}
+                  labelColor={theme.colors.blue.palete}
+                  label="Nome para categoria: "
+                />
+              </Styled.FormItemContainer>
+              <Styled.FormItemContainer>
+                <Input
+                  setValue={setCategoryDesc}
+                  labelColor={theme.colors.blue.palete}
+                  label="Diga mais sobre a categoria: "
+                  placeholder="quais produtos vão ficar nessa categoria?"
+                  isTextArea
+                />
+              </Styled.FormItemContainer>
+            </div>
           </Styled.ModalContainer>
+          <Styled.BackBtnContainer>
+            <ButtonSecondary
+              action={() => {
+                if (categoryTitle) {
+                  addCategory();
+                  handleCloseCategory();
+                } else {
+                  message.error("Verifique o nome e tente novamente.");
+                }
+              }}
+              Label={"Salvar"}
+              fontSize={theme.fontSize.md}
+              color={theme.colors.white.normal}
+              bgColor={theme.colors.green.normal}
+            />
+          </Styled.BackBtnContainer>
         </Modal>
       )}
       <Styled.MainContainer>
@@ -226,7 +319,7 @@ const MenuMeuMenu: React.FC = () => {
                 width: isMobile() ? "80%" : "50%",
               }}
               onClick={() => {
-                localStorage.setItem("meuMenuFoodType", "comer");
+                localStorage.setItem("@meumenu/foodType", "comer");
                 setMainCategory("comer");
               }}
             >
@@ -238,7 +331,7 @@ const MenuMeuMenu: React.FC = () => {
                 marginRight: "1vw",
               }}
               onClick={() => {
-                localStorage.setItem("meuMenuFoodType", "beber");
+                localStorage.setItem("@meumenu/foodType", "beber");
                 setMainCategory("beber");
               }}
             >

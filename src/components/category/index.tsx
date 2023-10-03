@@ -1,20 +1,21 @@
 import React from "react";
 import * as Styled from "./styles";
+import { generateFilterTag } from "../../utils/pngColors";
 
-export interface ICategory {
+export type TCategory = {
   icon: string;
-  label: string;
+  title: string;
   color: string;
   bgColor: string;
   auxColor: string;
   fontStyle: string;
   fontColor?: string;
   id?: number;
-}
+};
 
-const Category: React.FC<ICategory> = ({
+const Category: React.FC<TCategory> = ({
   icon,
-  label,
+  title,
   color,
   bgColor,
   auxColor,
@@ -54,14 +55,26 @@ const Category: React.FC<ICategory> = ({
         }
       }}
     >
-      <img src={icon} alt="icon" />
+      <img
+        src={icon}
+        alt="icon"
+        style={{
+          filter: `brightness(1000%) grayscale(100%) 
+          opacity(0.1)
+          drop-shadow(0 0 0 ${fontColor}) 
+          drop-shadow(0 0 0 ${fontColor})
+          drop-shadow(0 0 0 ${fontColor})
+          drop-shadow(0 0 0 ${fontColor})
+          drop-shadow(0 0 0 ${fontColor})`,
+        }}
+      />
       <span
         style={{
           color: fontColor,
         }}
         id={id ? id.toString() + "Span" : ""}
       >
-        {label}
+        {title}
       </span>
     </Styled.Container>
   );

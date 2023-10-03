@@ -13,6 +13,9 @@ interface IHeaderProps {
   textColor: string;
   fontStyle: string;
   fontStyleAux: string;
+  hideLogo: boolean;
+  hideTitle: boolean;
+  centerIcon: boolean;
 }
 
 const HeaderCustom: React.FC<IHeaderProps> = ({
@@ -23,6 +26,9 @@ const HeaderCustom: React.FC<IHeaderProps> = ({
   textColor,
   fontStyle,
   fontStyleAux,
+  hideLogo,
+  hideTitle,
+  centerIcon,
 }) => {
   setTimeout(() => {
     const element = document.querySelector(
@@ -44,24 +50,60 @@ const HeaderCustom: React.FC<IHeaderProps> = ({
   // localBurgerStyle.bmMorphShape.background = mainColor;
   // localBurgerStyle.bmCross.background = auxColor;
 
+  const isIconOnCenter = () => {
+    if (hideLogo) {
+      return (
+        <Styled.LogoContainer
+          onClick={() => {
+            redirect("/");
+          }}
+        ></Styled.LogoContainer>
+      );
+    } else {
+      if (centerIcon) {
+        return (
+          <>
+            <Styled.LogoContainerAux
+              onClick={() => {
+                redirect("/");
+              }}
+            >
+              <Styled.LogoImg src={icon} alt="" />
+            </Styled.LogoContainerAux>
+          </>
+        );
+      } else {
+        return (
+          <>
+            <Styled.LogoContainer
+              onClick={() => {
+                redirect("/");
+              }}
+            >
+              <Styled.LogoImg src={icon} alt="" />
+            </Styled.LogoContainer>
+          </>
+        );
+      }
+    }
+  };
+
   return (
     <>
       <Styled.Container>
         <Styled.MainContainer style={{ backgroundColor: mainColor }}>
-          <Styled.LogoContainer
-            onClick={() => {
-              redirect("/");
-            }}
-          >
-            <Styled.LogoImg src={icon} alt="" />
-          </Styled.LogoContainer>
-          <Styled.MainSpanContainer>
-            <Styled.NameSpan
-              style={{ color: textColor, fontFamily: fontStyle }}
-            >
-              {title}
-            </Styled.NameSpan>
-          </Styled.MainSpanContainer>
+          {isIconOnCenter()}
+          {hideTitle ? (
+            <></>
+          ) : (
+            <Styled.MainSpanContainer>
+              <Styled.NameSpan
+                style={{ color: textColor, fontFamily: fontStyle }}
+              >
+                {title}
+              </Styled.NameSpan>
+            </Styled.MainSpanContainer>
+          )}
           <Styled.MenuContainer>
             <Menu styles={burgerMenuStyles}>
               <Styled.MenuItem

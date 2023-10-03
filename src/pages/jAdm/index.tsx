@@ -16,7 +16,7 @@ const JHome: React.FC = () => {
 
   useEffect(() => {
     const usr = isAuth(true);
-    if (usr.userType === "admin-j") {
+    if (usr && usr.userType === "admin-j") {
       setUser(usr);
     } else {
       navigate("/login");
@@ -38,14 +38,7 @@ const JHome: React.FC = () => {
         <Styled.CardsContainer>
           {row.map((item: TCardProps) => {
             return (
-              <div
-                style={{
-                  width: isMobile() ? "80%" : "50%",
-                }}
-                onClick={() => {
-                  item.url && navigate(item.url);
-                }}
-              >
+              <div style={{ width: isMobile() ? "80%" : "50%"}} onClick={() => { item.url && navigate(item.url)}}>
                 <Homecard {...item} />
               </div>
             );

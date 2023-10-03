@@ -223,7 +223,7 @@ export const foodCategories: TCardProps[] = [
     {
         icon: outro, //11 <===========
         title: "Outra..",
-        text: "Crie uma nova categoria",
+        text: "Solicite a criação de uma nova categoria",
         mainColor: theme.colors.white.normal,
         auxColor: theme.colors.blue.palete,
         textColor: theme.colors.blue.palete,

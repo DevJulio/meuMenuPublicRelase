@@ -8,7 +8,7 @@ export async function genericToken() {
     if (isAuth()) {
         console.log("if");
         clearGenericToken();
-        return isAuth() as string;
+        return isAuth();
     } else {
         console.log("else");
         let tempToken = localStorage.getItem(configTempToken);
@@ -17,9 +17,10 @@ export async function genericToken() {
             return tempToken
         } else {
             console.log("else else");
-            tempToken = (getMainToken()) as string;
-            localStorage.setItem(configTempToken, tempToken);
-            return tempToken as string;
+            // tempToken = (getMainToken());
+            // localStorage.setItem(configTempToken, tempToken);
+            // return tempToken as string;
+            return ""
         }
     }
 }

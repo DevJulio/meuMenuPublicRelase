@@ -28,9 +28,7 @@ export const Img = styled.img`
   border-top-left-radius: 25px;
   margin-top: -1px;
   max-width: 250px;
-  max-height: 150px;
-  min-width: 250px;
-  min-height: 150px;
+  max-height: 250px;
   width: auto;
   height: auto;
 `;
@@ -86,7 +84,6 @@ export const OfferText = styled.span`
   text-align: center;
   margin-left: 10px;
   color: black;
-
 `;
 
 export const Anchor = styled.a`

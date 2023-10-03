@@ -8,8 +8,7 @@ import marker from "../../../assets/icons/socialMedia/gif/marker.gif";
 import spotify from "../../../assets/icons/socialMedia/gif/spotify.gif";
 import whatsapp from "../../../assets/icons/socialMedia/gif/whatsapp.gif";
 import youtube from "../../../assets/icons/socialMedia/gif/youtube.gif";
-import happy from "../../../assets/icons/socialMedia/gif/happy.gif";
-import resevation from "../../../assets/icons/socialMedia/gif/resevation.png";
+import latlon from "../../../assets/icons/socialMedia/gif/latlon.gif";
 import loadingGif from "../../../assets/icons/loading.gif";
 
 import { theme } from "../../../theme/theme";
@@ -18,12 +17,19 @@ import Checkbox from "../../../components/CheckBox";
 import InputMasked from "../../../components/MaskedIpunt";
 import ButtonSecondary from "../../../components/buttons/secondary";
 import Modal from "../../../components/modal";
-import { TCompany, TUser, createUser } from "../../../service/module/login";
+import {
+  TCompany,
+  TLatLon,
+  TUser,
+  createUser,
+} from "../../../service/module/login";
 import { useNavigate } from "react-router-dom";
 import { fileUpload } from "../../../service/module/fileUpload";
 import { message } from "antd";
 import { CompanyService } from "../../../service/module/company";
 import { UserService } from "../../../service/module/users";
+import { decryptToAuth } from "../../../utils/security/isAuth";
+import MapComponent from "../../../components/googleMap";
 
 const SolicitationMeuMenu: React.FC = () => {
   const [title, setTitle] = useState<string>("Sua empresa");
@@ -31,6 +37,7 @@ const SolicitationMeuMenu: React.FC = () => {
 
   const [nome, setNome] = useState<string>("");
   const [cidade, setCidade] = useState<string>("");
+  const [URL, setURL] = useState<string>("");
 
   const [contactNumber, setContactNumber] = useState<string>("");
   const [contactReservationNumber, setContactReservationNumber] =
@@ -40,12 +47,12 @@ const SolicitationMeuMenu: React.FC = () => {
 
   const [welcome, setWelcome] = useState<string>("");
   const [instagramLink, setinstagramLink] = useState<string>("");
-  const [localizacao, setLocalizacao] = useState<string>("");
+  const [endereco, setEndereco] = useState<string>("");
   const [spotifyLink, setSpotifyLink] = useState<string>("");
   const [whatsAppLink, setWhatsAppLink] = useState<string>("");
   const [youtubeLink, setYoutubeLink] = useState<string>("");
-  const [reservationText, setReservationText] = useState<string>("");
-  const [happyHourText, setHappyHourText] = useState<string>("");
+  //const [reservationText, setReservationText] = useState<string>("");
+  //const [happyHourText, setHappyHourText] = useState<string>("");
 
   const [icon, setIcon] = useState<File>();
   const [banner, setBanner] = useState<File>();
@@ -55,14 +62,8 @@ const SolicitationMeuMenu: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [modalAux, setModalAux] = useState<boolean>(false);
   const [modalFail, setModalFail] = useState<boolean>(false);
-
-  const handleMapClick = (clickEvent: any) => {
-    // const { latLng } = clickEvent;
-    // setSelectedLocation({
-    // lat: latLng.lat(),
-    // lng: latLng.lng(),
-    // });
-  };
+  const [disponiility, setDisponiility] = useState<boolean>(false);
+  const [localization, setLocalization] = useState<TLatLon>({ lat: 0, lng: 0 });
 
   const changeInput = (e: any, isBanner: boolean = false) => {
     const localFile = e.target.files[0];
@@ -93,6 +94,7 @@ const SolicitationMeuMenu: React.FC = () => {
       fontStyle &&
       login &&
       nome &&
+      URL &&
       password
     ) {
       const path = "/companies/imgs/";
@@ -109,7 +111,6 @@ const SolicitationMeuMenu: React.FC = () => {
           .catch((error) => {
             console.error(error);
           });
-
         const checkUploadAux = imgUploadResult as Array<any>;
         const checkUpload = checkUploadAux.every(
           (data: any) => data.status === 200
@@ -117,12 +118,16 @@ const SolicitationMeuMenu: React.FC = () => {
         if (checkUpload) {
           const iconUrl = checkUploadAux[0].data;
           const bannerUrl = checkUploadAux[1].data;
+          const newDate = new Date();
           try {
             const company: TCompany = {
               title: title,
+              plan: decryptToAuth(localStorage.getItem("@meumenu/planType")),
               statusCadastro: false,
+              isAproved: true,
               icon: iconUrl,
-              address: localizacao,
+              URL,
+              address: endereco,
               adminsUids: [{ uid: userUid }],
               stafsUids: [{ uid: "" }],
               details: {
@@ -135,49 +140,118 @@ const SolicitationMeuMenu: React.FC = () => {
                 fontStyleAux: "",
                 welcome,
                 banner: bannerUrl,
-                offers: true,
-                hasHappyHour: happyHourText ? true : false,
-                reservation: reservationText ? true : false,
-                reservationTextDetail: reservationText,
-                reservationContactNumber: contactReservationNumber,
-                offersText: "Confira as nossas promoções!",
-                happyHourText: "É dia de happy hour",
-                happyHourTextDetail: happyHourText,
-                reservationText: "Reserve sua mesa!",
+                hideLogo: false,
+                hideTitle: false,
+                hideWelcome: false,
+                centerIcon: false,
+                offers: {
+                  bannerText: "Confira as nossas promoções!",
+                  bannerTitle: "",
+                  status: false,
+                  bannerURL:
+                    "https://firebasestorage.googleapis.com/v0/b/meumenu-b4b02.appspot.com/o/defaultImgs%2Foffers.jpeg?alt=media&token=df5afbf0-bd97-46f7-b88a-bd0fd4f709ee",
+                },
+                reservation: {
+                  bannerText: "Evite filas, faça sua reserva.",
+                  bannerTitle: "",
+                  status: false,
+                  reservationNumber: contactReservationNumber,
+                  bannerURL:
+                    "https://firebasestorage.googleapis.com/v0/b/meumenu-b4b02.appspot.com/o/defaultImgs%2Freservation.jpeg?alt=media&token=98e7f02d-f400-42eb-8b34-fc020f0771d7",
+                },
+                happyHour: {
+                  bannerText: "É dia de happy hour!",
+                  bannerTitle: "",
+                  status: false,
+                  daysOfWeek: [],
+                  startAt: "",
+                  endAt: "",
+                  bannerURL:
+                    "https://firebasestorage.googleapis.com/v0/b/meumenu-b4b02.appspot.com/o/defaultImgs%2Fhappyhour.jpg?alt=media&token=a719f15d-dbcd-407e-8828-b885fd1c21aa",
+                },
                 contactEmail,
                 contactNumber,
+                contactName: nome,
                 city: cidade,
                 socialMedia: {
+                  localization: localization,
+                  address: endereco,
+                  spotify: spotifyLink,
                   instagram: instagramLink,
                   youtube: youtubeLink,
                   whatsapp: whatsAppLink,
-                  address: localizacao,
-                  spotify: spotifyLink,
                 },
               },
-              categories: [],
-              menu: [],
               offers: [],
               tables: [],
               staff: [],
+              createdAt: {
+                seconds: newDate.getTime() / 1000,
+                nanoseconds: newDate.getMilliseconds(),
+              },
+              updatedAt: {
+                seconds: 0,
+                nanoseconds: 0,
+              },
+              menuVersion: 0,
             };
-
-            //Cadastrar empresa na tabela de solicitação, e pegar código.
             const resCompany: any = await CompanyService.setCompany(company);
             if (resCompany.status === 200) {
               const companyDocId = resCompany.data;
-              console.log(
-                "ID DO DOC DA REMPRESA RECÉM CRIADA ==> ",
-                companyDocId
-              );
+              //Toda subcoll tem que ser criada aqui
+              try {
+                await CompanyService.setCompanySubCol({
+                  docId: companyDocId,
+                  mainColection: "company",
+                  subColection: "categories",
+                });
+              } catch (error) {
+                console.log(error);
+              }
+
+              try {
+                await CompanyService.setCompanySubCol({
+                  docId: companyDocId,
+                  mainColection: "company",
+                  subColection: "menu",
+                });
+              } catch (error) {
+                console.log(error);
+              }
+              try {
+                await CompanyService.setCompanySubCol({
+                  docId: companyDocId,
+                  mainColection: "company",
+                  subColection: "offers",
+                });
+              } catch (error) {
+                console.log(error);
+              }
+              try {
+                await CompanyService.setCompanySubCol({
+                  docId: companyDocId,
+                  mainColection: "company",
+                  subColection: "tabs",
+                });
+              } catch (error) {
+                console.log(error);
+              }
+
               const user: TUser = {
                 name: nome,
                 statusCadastro: false,
                 uid: userUid,
                 userType: "admin",
-                codCompany: companyDocId, //alterar com o código do documento criado da empresa
+                codCompany: companyDocId,
+                createdAt: {
+                  seconds: newDate.getTime() / 1000,
+                  nanoseconds: newDate.getMilliseconds(),
+                },
+                updatedAt: {
+                  seconds: 0,
+                  nanoseconds: 0,
+                },
               };
-              console.log("USUÁRIO QUE SERÁ CRIADO ==> ", user);
               const resUser: any = await UserService.setUser(user);
               if (resUser.status === 200) {
                 setLoading(false);
@@ -238,6 +312,7 @@ const SolicitationMeuMenu: React.FC = () => {
 
   const handleClose = () => {
     setModal(false);
+    navigate("/login");
   };
   const handleCloseAux = () => {
     setModalAux(false);
@@ -266,7 +341,20 @@ const SolicitationMeuMenu: React.FC = () => {
   };
 
   const navigate = useNavigate();
-  //const width = window.screen.width;
+
+  const checkURL = async () => {
+    if (URL.length > 0) {
+      const urlRes = await CompanyService.CheckUrl(URL);
+      if (urlRes) {
+        message.success("URL disponível!");
+        setDisponiility(true);
+      } else {
+        message.error("URL já em uso, tente novamente");
+      }
+    } else {
+      message.error("uma URL personalizada precisa ser informada!");
+    }
+  };
 
   return (
     <>
@@ -317,6 +405,7 @@ const SolicitationMeuMenu: React.FC = () => {
                 <ButtonSecondary
                   //TODO: COLOCAR NUMERO DO ZAP
                   action={() => {
+                    navigate("/login");
                     window.location.href =
                       "https://api.whatsapp.com/send?phone=5564996140938&text=Meu menu!";
                   }}
@@ -375,14 +464,17 @@ const SolicitationMeuMenu: React.FC = () => {
         )}
         {modalAux && (
           <Modal
-            bannerColor={theme.colors.green.normal}
+            bannerColor={theme.colors.blue.palete}
             title={"Onde fica seu estabelecimento?"}
             handleClose={handleCloseAux}
             titleFont={theme.fonts.primary}
           >
             <>
-              <div></div>
-              {/* <Styled.BtnContainer
+              <MapComponent
+                localization={localization}
+                setLocalization={setLocalization}
+              />
+              <Styled.BtnContainer
                 style={{
                   marginTop: "0px",
                   justifyContent: "center",
@@ -390,14 +482,20 @@ const SolicitationMeuMenu: React.FC = () => {
                 }}
               >
                 <ButtonSecondary
-                  //TODO: COLOCAR NUMERO DO ZAP
-                  action={() => {}}
-                  Label={"Entrar em contato com o Meu Menu!"}
+                  action={() => {
+                    if (localization.lat === 0) {
+                      message.error("Você precisa escolher um local");
+                    } else {
+                      handleCloseAux();
+                      message.success("Localização adicionada com sucesso!");
+                    }
+                  }}
+                  Label={"Salvar"}
                   fontSize={theme.fontSize.md}
                   color={theme.colors.white.normal}
                   bgColor={theme.colors.green.normal}
                 />
-              </Styled.BtnContainer> */}
+              </Styled.BtnContainer>
             </>
           </Modal>
         )}
@@ -446,7 +544,11 @@ const SolicitationMeuMenu: React.FC = () => {
           </Styled.MenusRow>
           <Styled.MenusRow>
             <Styled.FormItemContainer>
-              <Input setValue={setTitle} label="Nome do estabelecimento" />
+              <Input
+                setValue={setTitle}
+                isRequired
+                label="Nome do estabelecimento"
+              />
             </Styled.FormItemContainer>
             <Styled.FormItemContainer>
               <Styled.ItemSpan>
@@ -493,10 +595,47 @@ const SolicitationMeuMenu: React.FC = () => {
                 setValue={setContactReservationNumber}
                 label="Número para contato dos clientes e reservas."
               />
+              <span className="span-lbl">
+                Número que seus clientes falaram com você sobre reservas
+              </span>
             </Styled.FormItemContainer>
-            {/* <Styled.FormItemContainer>
-              <Input setValue={setCidade} label="Cidade" />
-            </Styled.FormItemContainer> */}
+            <Styled.FormItemContainer>
+              <div className="row-container">
+                <Input
+                  value={URL}
+                  setValue={setURL}
+                  placeholder="www.meu-menu.com/sua-empresa"
+                  label="Link personalizado"
+                  isRequired
+                  isDisabled={disponiility}
+                />
+                <div className="btn-container">
+                  <ButtonSecondary
+                    action={() => {
+                      if (!disponiility) {
+                        checkURL();
+                      } else {
+                        setDisponiility(false);
+                      }
+                    }}
+                    fontSize={theme.fontSize.md}
+                    Label={
+                      disponiility
+                        ? URL.length
+                          ? "Alterar link"
+                          : "verificar disponibilidade"
+                        : "verificar disponibilidade"
+                    }
+                    color={theme.colors.red.normal}
+                    bgColor={theme.colors.white.normal}
+                  />
+                </div>
+              </div>
+              <span className="span-lbl">
+                informe como você quer ser encontrado por seus clientes.
+                www.meu-menu.com/cardapio/{URL}
+              </span>
+            </Styled.FormItemContainer>
           </Styled.MenusRow>
           <Styled.TitleSpan
             style={{
@@ -515,126 +654,75 @@ const SolicitationMeuMenu: React.FC = () => {
           </Styled.ItemSpan>
           <Styled.MenusRow>
             <Styled.SocialMediaContainer>
-              <Styled.IconCentralize>
-                <Styled.Icon src={instagram} onClick={() => {}} />
-                <Input
-                  labelColor={theme.colors.red.normal}
-                  setValue={setinstagramLink}
-                  label="Instagram"
-                  customWidth={isMobile() ? "250px" : "170px"}
-                />
-              </Styled.IconCentralize>
-
-              <Styled.IconCentralize>
-                <Styled.Icon src={marker} onClick={() => {}} />
-                <Input
-                  labelColor={theme.colors.red.normal}
-                  setValue={setLocalizacao}
-                  label="Endereço"
-                  customWidth={isMobile() ? "250px" : "300px"}
-                />
-              </Styled.IconCentralize>
-              <Styled.IconCentralize>
-                <Styled.Icon src={spotify} onClick={() => {}} />
-                <Input
-                  labelColor={theme.colors.red.normal}
-                  setValue={setSpotifyLink}
-                  label="Link da playlist"
-                  customWidth={isMobile() ? "250px" : "170px"}
-                />
-              </Styled.IconCentralize>
-              <Styled.IconCentralize>
-                <Styled.Icon src={whatsapp} onClick={() => {}} />
-                <Input
-                  labelColor={theme.colors.red.normal}
-                  setValue={setWhatsAppLink}
-                  label="WhatsApp"
-                  customWidth={isMobile() ? "250px" : "170px"}
-                />
-              </Styled.IconCentralize>
-              <Styled.IconCentralize>
-                <Styled.Icon src={youtube} onClick={() => {}} />
-                <Input
-                  labelColor={theme.colors.red.normal}
-                  setValue={setYoutubeLink}
-                  label="Canal do Youtube"
-                  customWidth={isMobile() ? "250px" : "170px"}
-                />
-              </Styled.IconCentralize>
-            </Styled.SocialMediaContainer>
-          </Styled.MenusRow>
-          {/* <Styled.MenusRow style={{ flexDirection: "column" }}>
-            <Styled.TitleSpan
-              style={{
-                marginTop: "5vh",
-              }}
-            >
-              Localização:
-            </Styled.TitleSpan>
-            <Styled.BtnContainer>
-              {!modalAux ? (
-                <>
+              <div className="row-aux">
+                <Styled.IconCentralize>
+                  <Styled.Icon src={instagram} onClick={() => {}} />
+                  <Input
+                    isStartLbl={true}
+                    value={instagramLink}
+                    labelColor={theme.colors.red.normal}
+                    setValue={setinstagramLink}
+                    label="Instagram"
+                    customWidth={isMobile() ? "250px" : "170px"}
+                  />
+                </Styled.IconCentralize>
+                <Styled.IconCentralize>
+                  <Styled.Icon src={marker} onClick={() => {}} />
+                  <Input
+                    isStartLbl={true}
+                    value={endereco}
+                    labelColor={theme.colors.red.normal}
+                    setValue={setEndereco}
+                    label="Endereço"
+                    isRequired
+                    customWidth={isMobile() ? "250px" : "300px"}
+                  />
+                </Styled.IconCentralize>
+                <Styled.IconCentralize>
+                  <Styled.Icon src={spotify} onClick={() => {}} />
+                  <Input
+                    value={spotifyLink}
+                    labelColor={theme.colors.red.normal}
+                    setValue={setSpotifyLink}
+                    label="Link da playlist"
+                    customWidth={isMobile() ? "250px" : "170px"}
+                  />
+                </Styled.IconCentralize>
+              </div>
+              <div className="row-aux">
+                <Styled.IconCentralize>
+                  <Styled.Icon src={latlon} onClick={() => {}} />
+                  <span className="placer">Localização</span>
                   <ButtonSecondary
                     action={() => {
                       setModalAux(true);
                     }}
                     Label="Clique para abrir mapa"
-                    color={theme.colors.red.normal}
-                    bgColor={theme.colors.white.normal}
+                    color={theme.colors.yellow.palete}
+                    bgColor={theme.colors.blue.palete}
                   />
-                </>
-              ) : (
-                <>
-                  <iframe
-                    title="Map"
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d30571.286431759458!2d-49.280785039213846!3d-16.70634218493767!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x935ef12544136db3%3A0x1b20c322bbad1d83!2sGoi%C3%A2nia%20Shopping!5e0!3m2!1spt-BR!2sbr!4v1677269482432!5m2!1spt-BR!2sbr"
-                    width={width - 25}
-                    height="400"
-                    style={{ border: "0", borderRadius: "25px" }}
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                  ></iframe>
-                </>
-              )}
-            </Styled.BtnContainer>
-          </Styled.MenusRow> */}
-          <Styled.TitleSpan
-            style={{
-              marginTop: "5vh",
-            }}
-          >
-            Reservas / Happy Hour:
-          </Styled.TitleSpan>
-          <Styled.ItemSpan
-            style={{
-              fontFamily: theme.fonts.secundary,
-            }}
-          >
-            Desconsiderar caso não ofereça os serviços a seguir:
-          </Styled.ItemSpan>
-          <Styled.MenusRow>
-            <Styled.SocialMediaContainer>
-              <Styled.IconCentralize>
-                <Styled.Icon src={happy} onClick={() => {}} />
-                <Input
-                  labelColor={theme.colors.red.normal}
-                  setValue={setHappyHourText}
-                  label="Intruções e regras do happy hour"
-                  isTextArea
-                  customWidth={isMobile() ? "250px" : "450px"}
-                />
-              </Styled.IconCentralize>
-
-              <Styled.IconCentralize>
-                <Styled.Icon src={resevation} onClick={() => {}} />
-                <Input
-                  labelColor={theme.colors.red.normal}
-                  setValue={setReservationText}
-                  label="Instruções de reserva"
-                  isTextArea
-                  customWidth={isMobile() ? "250px" : "450px"}
-                />
-              </Styled.IconCentralize>
+                </Styled.IconCentralize>
+                <Styled.IconCentralize>
+                  <Styled.Icon src={whatsapp} onClick={() => {}} />
+                  <Input
+                    value={whatsAppLink}
+                    labelColor={theme.colors.red.normal}
+                    setValue={setWhatsAppLink}
+                    label="WhatsApp"
+                    customWidth={isMobile() ? "250px" : "170px"}
+                  />
+                </Styled.IconCentralize>
+                <Styled.IconCentralize>
+                  <Styled.Icon src={youtube} onClick={() => {}} />
+                  <Input
+                    value={youtubeLink}
+                    labelColor={theme.colors.red.normal}
+                    setValue={setYoutubeLink}
+                    label="Canal do Youtube"
+                    customWidth={isMobile() ? "250px" : "170px"}
+                  />
+                </Styled.IconCentralize>
+              </div>
             </Styled.SocialMediaContainer>
           </Styled.MenusRow>
           <Styled.TitleSpan

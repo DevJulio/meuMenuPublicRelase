@@ -8,9 +8,11 @@ export const MainContainer = styled.div`
   display: flex;
   flex-direction: row;
   width: 100%;
+  padding-top: 1vh;
   background-color: ${({ theme }) => theme.colors.blue.palete};
   @media ${({ theme }) => theme.devices.tablet} {
     flex: 3;
+    align-items: center;
   }
 `;
 
@@ -19,6 +21,18 @@ export const LogoContainer = styled.div`
   cursor: pointer;
   @media ${({ theme }) => theme.devices.tablet} {
     flex: 1;
+    margin-left: 2vw;
+  }
+`;
+export const LogoContainerAux = styled.div`
+  display: flex;
+  cursor: pointer;
+  @media ${({ theme }) => theme.devices.tablet} {
+    margin-left: 2vw;
+    place-content: flex-end;
+    margin-top: -1vh;
+    flex: 2;
+    margin-bottom: -4vh;  
   }
 `;
 
@@ -69,6 +83,7 @@ export const MenuContainer = styled.div`
     flex: 1;
     display: flex;
     justify-content: right;
+    margin-bottom: 3vh;
   }
 `;
 
@@ -82,7 +97,7 @@ export const MenuDesktopContainer = styled.div`
   }
 `;
 export const MenuDesktopAnchor = styled.a`
-text-decoration: none;
+  text-decoration: none;
   margin-right: 1vw;
   font-size: ${({ theme }) => theme.fontSize.md2};
   font-family: ${({ theme }) => theme.fonts.primary};
